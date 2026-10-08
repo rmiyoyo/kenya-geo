@@ -71,6 +71,10 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	postOffices, err := buildPostOffices(counties)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	if err := writeLines("data/counties.json", counties); err != nil {
 		log.Fatal(err)
@@ -78,7 +82,10 @@ func main() {
 	if err := writeLines("data/wards.json", wards); err != nil {
 		log.Fatal(err)
 	}
-	log.Printf("wrote %d counties and %d wards", len(counties), len(wards))
+	if err := writeLines("data/postoffices.json", postOffices); err != nil {
+		log.Fatal(err)
+	}
+	log.Printf("wrote %d counties, %d wards and %d post offices", len(counties), len(wards), len(postOffices))
 }
 
 func buildCounties() ([]County, error) {

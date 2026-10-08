@@ -13,6 +13,7 @@ const (
 	KindCounty Kind = iota
 	KindConstituency
 	KindWard
+	KindPostOffice
 )
 
 func (k Kind) String() string {
@@ -23,6 +24,8 @@ func (k Kind) String() string {
 		return "constituency"
 	case KindWard:
 		return "ward"
+	case KindPostOffice:
+		return "post office"
 	}
 	return "unknown"
 }
@@ -59,6 +62,9 @@ func (d *Data) Search(query string, limit int) []Match {
 	}
 	for _, w := range d.wards {
 		consider(Match{Kind: KindWard, Name: w.Name, Code: w.Code, CountyCode: w.CountyCode}, w.Name)
+	}
+	for _, p := range d.postOffices {
+		consider(Match{Kind: KindPostOffice, Name: p.Name, Code: p.Code, CountyCode: p.CountyCode}, p.Name)
 	}
 
 	sort.SliceStable(out, func(i, j int) bool {
