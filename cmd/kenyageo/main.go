@@ -1,7 +1,3 @@
-// Command kenyageo is a small CLI over the kenyageo package.
-//
-//	go run ./cmd/kenyageo county nakuru
-//	go run ./cmd/kenyageo search kibra
 package main
 
 import (
@@ -27,7 +23,7 @@ func main() {
 			fmt.Fprintf(os.Stderr, "no county called %q\n", arg)
 			os.Exit(1)
 		}
-		fmt.Printf("%d  %s  (HQ %s, %s region)\n", c.Code, c.Name, c.Headquarters, c.Region)
+		fmt.Printf("%d  %s  (HQ %s, former %s Province)\n", c.Code, c.Name, c.Headquarters, c.FormerProvince)
 		for _, name := range geo.Constituencies(c.Code) {
 			wards := geo.WardsInConstituency(name)
 			fmt.Printf("  %-22s %d wards\n", name, len(wards))
