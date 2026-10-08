@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"sort"
+	"strings"
 	"sync"
 )
 
@@ -15,6 +16,9 @@ var countiesJSON []byte
 
 //go:embed data/wards.json
 var wardsJSON []byte
+
+//go:embed data/postoffices.json
+var postOfficesJSON []byte
 
 type LatLng struct {
 	Lat float64 `json:"lat"`
@@ -57,9 +61,17 @@ type Ward struct {
 	Centroid *LatLng `json:"centroid"`
 }
 
+type PostOffice struct {
+	Code       string  `json:"postal_code"`
+	Name       string  `json:"name"`
+	CountyCode int     `json:"county_code"`
+	Location   *LatLng `json:"location"`
+}
+
 type Data struct {
-	counties []County
-	wards    []Ward
+	counties    []County
+	wards       []Ward
+	postOffices []PostOffice
 
 	countyByCode   map[int]int
 	countyByName   map[string]int
@@ -68,10 +80,13 @@ type Data struct {
 	wardsByConst   map[string][]int
 	constsByCounty map[int][]string
 	constCounty    map[string]int
+
+	postByCode   map[string][]int
+	postByCounty map[int][]int
 }
 
 var defaultData = sync.OnceValue(func() *Data {
-	d, err := Load(bytes.NewReader(countiesJSON), bytes.NewReader(wardsJSON))
+	d, err := Load(bytes.NewReader(countiesJSON), bytes.NewReader(wardsJSON), bytes.NewReader(postOfficesJSON))
 	if err != nil {
 		panic("kenyageo: embedded data is invalid: " + err.Error())
 	}
@@ -80,13 +95,16 @@ var defaultData = sync.OnceValue(func() *Data {
 
 func Default() *Data { return defaultData() }
 
-func Load(counties, wards io.Reader) (*Data, error) {
+func Load(counties, wards, postOffices io.Reader) (*Data, error) {
 	d := &Data{}
 	if err := json.NewDecoder(counties).Decode(&d.counties); err != nil {
 		return nil, fmt.Errorf("decoding counties: %w", err)
 	}
 	if err := json.NewDecoder(wards).Decode(&d.wards); err != nil {
 		return nil, fmt.Errorf("decoding wards: %w", err)
+	}
+	if err := json.NewDecoder(postOffices).Decode(&d.postOffices); err != nil {
+		return nil, fmt.Errorf("decoding post offices: %w", err)
 	}
 
 	sort.Slice(d.counties, func(i, j int) bool { return d.counties[i].Code < d.counties[j].Code })
@@ -130,6 +148,19 @@ func Load(counties, wards io.Reader) (*Data, error) {
 	}
 	for _, names := range d.constsByCounty {
 		sort.Strings(names)
+	}
+
+	sort.SliceStable(d.postOffices, func(i, j int) bool { return d.postOffices[i].Code < d.postOffices[j].Code })
+	d.postByCode = make(map[string][]int, len(d.postOffices))
+	d.postByCounty = make(map[int][]int)
+	for i, p := range d.postOffices {
+		if _, ok := d.countyByCode[p.CountyCode]; !ok && p.CountyCode != 0 {
+			return nil, fmt.Errorf("post office %s (%s): unknown county %d", p.Code, p.Name, p.CountyCode)
+		}
+		d.postByCode[p.Code] = append(d.postByCode[p.Code], i)
+		if p.CountyCode != 0 {
+			d.postByCounty[p.CountyCode] = append(d.postByCounty[p.CountyCode], i)
+		}
 	}
 	return d, nil
 }
@@ -181,6 +212,25 @@ func (d *Data) pick(idx []int) []Ward {
 	out := make([]Ward, len(idx))
 	for i, j := range idx {
 		out[i] = d.wards[j]
+	}
+	return out
+}
+
+func (d *Data) PostOffices(postalCode string) []PostOffice {
+	return d.pickPost(d.postByCode[strings.TrimSpace(postalCode)])
+}
+
+func (d *Data) PostOfficesInCounty(countyCode int) []PostOffice {
+	return d.pickPost(d.postByCounty[countyCode])
+}
+
+func (d *Data) pickPost(idx []int) []PostOffice {
+	if len(idx) == 0 {
+		return nil
+	}
+	out := make([]PostOffice, len(idx))
+	for i, j := range idx {
+		out[i] = d.postOffices[j]
 	}
 	return out
 }

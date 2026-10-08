@@ -96,6 +96,53 @@ func TestWardCentroids(t *testing.T) {
 	}
 }
 
+func TestPostOffices(t *testing.T) {
+	d := Default()
+	if got := len(d.postOffices); got != 890 {
+		t.Errorf("post offices = %d, want 890", got)
+	}
+
+	gpo := d.PostOffices("00100")
+	if len(gpo) != 1 || gpo[0].Name != "Nairobi Gpo" || gpo[0].CountyCode != 47 {
+		t.Errorf("PostOffices(00100) = %+v", gpo)
+	}
+	if got := len(d.PostOffices("40629")); got != 2 {
+		t.Errorf("PostOffices(40629) = %d offices, want 2 (Mudhiero and Ndere share it)", got)
+	}
+	if d.PostOffices("99999") != nil {
+		t.Error("PostOffices(99999) should be nil")
+	}
+
+	singore := d.PostOffices("30703")
+	if len(singore) != 1 || singore[0].CountyCode != 28 {
+		t.Errorf("Singore = %+v, want Elgeyo-Marakwet (28)", singore)
+	}
+
+	located, unknownCounty := 0, 0
+	for _, p := range d.postOffices {
+		if p.Location != nil {
+			located++
+			if !inKenya(*p.Location) {
+				t.Errorf("post office %s %s: location %v outside Kenya", p.Code, p.Name, *p.Location)
+			}
+		}
+		if p.CountyCode == 0 {
+			unknownCounty++
+		}
+	}
+	if located != 553 || unknownCounty != 30 {
+		t.Errorf("located = %d, unknown county = %d; want 553 and 30", located, unknownCounty)
+	}
+
+	total := 0
+	for _, c := range d.Counties() {
+		total += len(d.PostOfficesInCounty(c.Code))
+	}
+	if total != 890-30 {
+		t.Errorf("post offices across counties = %d, want %d", total, 890-30)
+	}
+}
+
 func inKenya(p LatLng) bool {
 	return p.Lat > -4.8 && p.Lat < 5.1 && p.Lng > 33.8 && p.Lng < 42
 }
@@ -208,6 +255,7 @@ func TestSearch(t *testing.T) {
 		{"nakru", "Nakuru County", KindCounty},
 		{"tambua", "TAMBUA", KindWard},
 		{"lari kirenga", "LARI/KIRENGA", KindWard},
+		{"kenyatta hospital", "Kenyatta Hospital", KindPostOffice},
 	}
 	for _, tt := range tests {
 		t.Run(tt.query, func(t *testing.T) {
@@ -253,7 +301,7 @@ func TestNormalize(t *testing.T) {
 func TestLoadRejectsUnknownCounty(t *testing.T) {
 	counties := `[{"code":1,"name":"Mombasa County"}]`
 	wards := `[{"ward_code":"0001","name":"X","constituency_name":"Y","county_code":1,"county_name":"Nowhere County"}]`
-	_, err := Load(strings.NewReader(counties), strings.NewReader(wards))
+	_, err := Load(strings.NewReader(counties), strings.NewReader(wards), strings.NewReader("[]"))
 	if err == nil || !strings.Contains(err.Error(), "Nowhere") {
 		t.Errorf("err = %v, want unknown county error", err)
 	}
@@ -302,5 +350,6 @@ func ExampleData_Search() {
 	}
 	// Output:
 	// constituency Makadara
+	// post office Makadara
 	// ward MJI WA KALE/MAKADARA
 }

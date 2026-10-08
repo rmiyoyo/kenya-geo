@@ -1,6 +1,6 @@
 # kenya-geo
 
-A Go package for Kenya's 47 counties, 290 constituencies and 1,450 wards. It includes 2019 census figures and map coordinates. The data is compiled into the binary, so nothing is downloaded at runtime.
+A Go package for Kenya's 47 counties, 290 constituencies, 1,450 wards and 890 post offices. It includes 2019 census figures and map coordinates. The data is compiled into the binary, so nothing is downloaded at runtime.
 
 ```go
 import kenyageo "github.com/rmiyoyo/kenya-geo"
@@ -15,7 +15,9 @@ geo.WardsInCounty(c.Code)                // []Ward
 geo.WardsInConstituency("Kibra")         // []Ward
 w, ok := geo.WardByCode("0040")          // WAA, Matuga, Kwale
 w.Centroid                               // *LatLng, nil when unknown
-geo.Search("nakru", 10)                  // fuzzy: counties, constituencies and wards, best first
+geo.PostOffices("00100")                 // []PostOffice: Nairobi GPO
+geo.PostOfficesInCounty(27)              // post offices in Uasin Gishu
+geo.Search("nakru", 10)                  // fuzzy: counties, constituencies, wards and post offices
 ```
 
 ## Try it
@@ -25,6 +27,7 @@ go test ./...                        # tests + runnable examples
 go test -bench=. -benchmem           # benchmarks
 go run ./cmd/kenyageo county nakuru  # constituencies and ward counts
 go run ./cmd/kenyageo search kibera  # fuzzy search
+go run ./cmd/kenyageo postcode 30100 # post office lookup
 go run ./internal/gendata            # rebuild data/*.json from the sources
 ```
 
@@ -44,6 +47,8 @@ ISO codes are numbered alphabetically, so they don't match the county codes (Tur
 
 **Wards** (`data/wards.json`): `ward_code`, `name`, `constituency_name`, `county_code`, `county_name` and `registered_voters_2022` come from the original IEBC wards file. `centroid` is computed from geoBoundaries polygons and is known for 1,432 of 1,450 wards.
 
+**Post offices** (`data/postoffices.json`): `postal_code`, `name`, `county_code` and `location`, from the GeoNames postal code file for Kenya. A few codes are shared by two offices, so `PostOffices` returns a slice. `county_code` is 0 for 30 offices whose county isn't known (see below). `location` is set only for the 553 offices GeoNames matched to a real place; for the other 337 its coordinates are averages of neighbouring codes, often in the wrong county, so they're left out.
+
 Centroids and bounding boxes are good for placing map labels or zooming a map. They can't tell you which ward a point is in; that needs the polygons, which is a natural next step.
 
 ## Sources
@@ -52,6 +57,7 @@ Centroids and bounding boxes are good for placing map labels or zooming a map. T
 |---|---|---|
 | [KNBS 2019 Kenya Population and Housing Census, Volume I](https://open.africa/dataset/2019-kenya-population-and-housing-census) (via openAFRICA) | county population by sex, land area | open data |
 | [geoBoundaries gbOpen KEN ADM1/ADM3](https://www.geoboundaries.org/) (RCMRD source, 2020) | ISO codes, centroids, bounding boxes | public domain |
+| [GeoNames postal codes](https://www.geonames.org/) (`data/source/geonames-KE.txt`, from KE.zip) | post offices | CC BY 4.0, credit GeoNames |
 | `data/source/counties.json`, `data/source/wards.json` | codes, names, HQs, wards, 2022 voters | your original files |
 
 `go run ./internal/gendata` downloads the KNBS and geoBoundaries files into `data/raw/` (git-ignored), merges them with `data/source/`, applies the fixes below and writes `data/counties.json` and `data/wards.json`. Never edit those two files by hand.
@@ -69,12 +75,14 @@ Centroids and bounding boxes are good for placing map labels or zooming a map. T
 | Zero-width space inside TAMBUA | Removed | |
 | "OMBeyi", "OLOlMASANI" in mixed case | Upper-cased | |
 | KNBS sub-county table: Nakuru male 177,272 and female 184,835 | 1,077,272 and 1,084,835 | Male + female + intersex now equals the county total 2,162,202 |
+| GeoNames puts offices it can't place in Nairobi, e.g. Koracha (40639) and Singore (30703), far outside the city | If GeoNames matched the office to a real place, the county comes from its location (Singore → Elgeyo-Marakwet). Otherwise the county is left unknown (0). Nairobi head offices (00100, 00200 ... 00800) stay in Nairobi | Location tested against the geoBoundaries Nairobi outline |
 
 Known remaining gaps:
 - DELLA still has no 2022 voter count.
 - 18 wards have no centroid because their names differ too much between IEBC and geoBoundaries (e.g. HIRIMANI, MKOMANI and the two TOWNSHIP wards in Kiambu).
 - The geoBoundaries county outline puts four Bureti wards (TEBESONIK, CHEBOIN, CHEMOSOT, LITEIN) just across the Kericho–Bomet line; their centroids are right, the county outline is slightly off.
 - 33 ward names repeat across counties (CENTRAL, TOWNSHIP, ...), so use ward codes as identifiers.
+- 30 post offices have no county. Outside Nairobi, GeoNames' county also disagrees with the map for about 120 offices. Spot checks found GeoNames' county right more often than the map test (Kimana is in Kajiado, Hola in Tana River), so its county is kept.
 
 ## Layout
 
@@ -85,7 +93,7 @@ Known remaining gaps:
 | `kenyageo_test.go` | Table-driven tests, examples, benchmarks |
 | `cmd/kenyageo/` | A small CLI that uses the package like an outside caller |
 | `internal/gendata/` | The data generator: downloads, census parsing, point-in-polygon, fixes |
-| `data/source/` | Your original files, unmodified |
+| `data/source/` | Your original files and the GeoNames file, unmodified |
 | `data/*.json` | Generated, embedded files |
 
 ## Go concepts used, and where
