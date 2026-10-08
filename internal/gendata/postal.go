@@ -10,10 +10,11 @@ import (
 )
 
 type PostOffice struct {
-	Code       string  `json:"postal_code"`
-	Name       string  `json:"name"`
-	CountyCode int     `json:"county_code"`
-	Location   *LatLng `json:"location"`
+	Code         string  `json:"postal_code"`
+	Name         string  `json:"name"`
+	CountyCode   int     `json:"county_code"`
+	CountySource string  `json:"county_source"`
+	Location     *LatLng `json:"location"`
 }
 
 func buildPostOffices(counties []County) ([]PostOffice, error) {
@@ -46,7 +47,6 @@ func buildPostOffices(counties []County) ([]PostOffice, error) {
 	}
 
 	out := make([]PostOffice, 0, len(rows))
-	unknown, moved := 0, 0
 	for _, row := range rows {
 		if len(row) < 12 {
 			return nil, fmt.Errorf("geonames: short row %q", row)
@@ -61,33 +61,65 @@ func buildPostOffices(counties []County) ([]PostOffice, error) {
 		if !ok {
 			return nil, fmt.Errorf("geonames: unknown county %q", row[3])
 		}
-		p := PostOffice{Code: row[1], Name: cleanName(row[2]), CountyCode: code}
+		p := PostOffice{Code: row[1], Name: cleanName(row[2]), CountyCode: code, CountySource: "geonames"}
 		precise := accuracy >= 3
 		if precise {
 			p.Location = &LatLng{Lat: lat, Lng: lng}
 		}
 		pt := [2]float64{lng, lat}
 		if code == 47 && !nairobiHeadOffice(p.Code) && !nairobi.contains(pt) {
-			p.CountyCode = 0
+			p.CountyCode, p.CountySource = 0, ""
 			if precise {
-				p.CountyCode = countyAt(pt, shapes, countyByKey)
-			}
-			if p.CountyCode == 0 {
-				unknown++
-			} else {
-				moved++
+				if c := countyAt(pt, shapes, countyByKey); c != 0 {
+					p.CountyCode, p.CountySource = c, "location"
+				}
 			}
 		}
 		out = append(out, p)
 	}
+
+	for i := range out {
+		p := &out[i]
+		if p.CountyCode != 0 {
+			continue
+		}
+		if c, ok := postOfficeCountyFixes[p.Code]; ok {
+			p.CountyCode, p.CountySource = c, "manual"
+		} else if c := neighbourCounty(p.Code, out); c != 0 {
+			p.CountyCode, p.CountySource = c, "neighbours"
+		}
+	}
+
+	sources := map[string]int{}
+	for _, p := range out {
+		sources[p.CountySource]++
+	}
+	log.Printf("post offices: %d, county sources %v", len(out), sources)
+
 	sort.Slice(out, func(i, j int) bool {
 		if out[i].Code != out[j].Code {
 			return out[i].Code < out[j].Code
 		}
 		return out[i].Name < out[j].Name
 	})
-	log.Printf("post offices: %d, %d moved out of Nairobi, %d with unknown county", len(out), moved, unknown)
 	return out, nil
+}
+
+func neighbourCounty(code string, offices []PostOffice) int {
+	votes := map[int]int{}
+	total := 0
+	for _, o := range offices {
+		if o.CountyCode != 0 && o.CountySource != "neighbours" && o.Code != code && o.Code[:4] == code[:4] {
+			votes[o.CountyCode]++
+			total++
+		}
+	}
+	for county, n := range votes {
+		if n >= 3 && n*4 >= total*3 {
+			return county
+		}
+	}
+	return 0
 }
 
 func nairobiHeadOffice(code string) bool {
