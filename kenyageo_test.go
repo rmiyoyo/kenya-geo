@@ -18,21 +18,93 @@ func TestEmbeddedDataLoads(t *testing.T) {
 	for _, c := range d.Counties() {
 		constituencies += len(d.Constituencies(c.Code))
 	}
-	// Kenya has 290 constituencies, but the source file labels Gatundu
-	// North's four wards (0555-0558) as Gatundu South, so only 289 appear.
-	// Update this to 290 once the data is fixed.
-	if constituencies != 289 {
-		t.Errorf("constituencies = %d, want 289", constituencies)
+	if constituencies != 290 {
+		t.Errorf("constituencies = %d, want 290", constituencies)
 	}
 }
 
-// A table-driven test: one slice of cases, one loop. t.Run gives each case
-// its own name in the output, e.g. TestCountyByName/curly_apostrophe.
+func TestCensusTotals(t *testing.T) {
+	var pop, male, female, intersex int
+	for _, c := range Default().Counties() {
+		if got := c.PopulationMale + c.PopulationFemale + c.PopulationIntersex; got != c.Population {
+			t.Errorf("%s: male+female+intersex = %d, want %d", c.Name, got, c.Population)
+		}
+		pop += c.Population
+		male += c.PopulationMale
+		female += c.PopulationFemale
+		intersex += c.PopulationIntersex
+	}
+	if pop != 47_564_296 || male != 23_548_056 || female != 24_014_716 || intersex != 1_524 {
+		t.Errorf("national totals = %d (m %d, f %d, i %d), want 47564296 (m 23548056, f 24014716, i 1524)",
+			pop, male, female, intersex)
+	}
+}
+
+func TestCountyFields(t *testing.T) {
+	d := Default()
+	provinces := map[string]int{}
+	isos := map[string]bool{}
+	for _, c := range d.Counties() {
+		provinces[c.FormerProvince]++
+		isos[c.ISOCode] = true
+		if !strings.HasPrefix(c.ISOCode, "KE-") {
+			t.Errorf("%s: ISO code %q", c.Name, c.ISOCode)
+		}
+		if !inKenya(c.Centroid) {
+			t.Errorf("%s: centroid %v is outside Kenya", c.Name, c.Centroid)
+		}
+		if strings.ContainsAny(c.Name, "–’") {
+			t.Errorf("%s: name has non-ASCII punctuation", c.Name)
+		}
+	}
+	if len(provinces) != 8 || len(isos) != 47 {
+		t.Errorf("former provinces = %v, distinct ISO codes = %d", provinces, len(isos))
+	}
+
+	kilifi, _ := d.CountyByCode(3)
+	if kilifi.Population != 1_453_787 {
+		t.Errorf("Kilifi population = %d, want 1453787", kilifi.Population)
+	}
+	turkana, _ := d.CountyByCode(23)
+	if turkana.FormerProvince != "Rift Valley" || turkana.ISOCode != "KE-43" {
+		t.Errorf("Turkana = %q %q", turkana.FormerProvince, turkana.ISOCode)
+	}
+	nairobi, _ := d.CountyByCode(47)
+	if got := nairobi.Density(); got < 6000 || got > 6500 {
+		t.Errorf("Nairobi density = %.0f, want about 6247", got)
+	}
+}
+
+func TestWardCentroids(t *testing.T) {
+	d := Default()
+	missing := 0
+	for _, w := range d.wards {
+		if w.Centroid == nil {
+			missing++
+			continue
+		}
+
+		c, _ := d.CountyByCode(w.CountyCode)
+		p := *w.Centroid
+		const m = 0.1
+		if p.Lng < c.BBox[0]-m || p.Lng > c.BBox[2]+m || p.Lat < c.BBox[1]-m || p.Lat > c.BBox[3]+m {
+			t.Errorf("ward %s %s: centroid %v outside %s", w.Code, w.Name, p, c.Name)
+		}
+	}
+	if missing > 30 {
+		t.Errorf("%d wards have no centroid, want at most 30", missing)
+	}
+}
+
+func inKenya(p LatLng) bool {
+	return p.Lat > -4.8 && p.Lat < 5.1 && p.Lng > 33.8 && p.Lng < 42
+}
+
 func TestCountyByName(t *testing.T) {
 	tests := []struct {
 		name  string
 		input string
-		want  int // county code; 0 means "not found"
+		want  int
 	}{
 		{"exact", "Nairobi County", 47},
 		{"no suffix, lower case", "nairobi", 47},
@@ -89,6 +161,11 @@ func TestWards(t *testing.T) {
 		t.Error("WardsInCounty(99) should be nil")
 	}
 
+	gatunduNorth := d.WardsInConstituency("Gatundu North")
+	if len(gatunduNorth) != 4 {
+		t.Errorf("Gatundu North wards = %d, want 4", len(gatunduNorth))
+	}
+
 	lari := d.WardsInConstituency("lari")
 	if len(lari) == 0 {
 		t.Fatal("no wards for Lari")
@@ -101,9 +178,9 @@ func TestWards(t *testing.T) {
 }
 
 func TestNullVotersBecomeNil(t *testing.T) {
-	w, ok := Default().WardByCode("01811810")
-	if !ok {
-		t.Fatal("ward 01811810 (Della) missing")
+	w, ok := Default().WardByCode("0181")
+	if !ok || w.Name != "DELLA" {
+		t.Fatalf("ward 0181 = %+v, want DELLA", w)
 	}
 	if w.RegisteredVoters2022 != nil {
 		t.Errorf("voters = %d, want nil", *w.RegisteredVoters2022)
@@ -128,8 +205,8 @@ func TestSearch(t *testing.T) {
 		{"nyeri", "Nyeri County", KindCounty},
 		{"Kamukunji", "Kamukunji", KindConstituency},
 		{"eastleigh south", "EASTLEIGH SOUTH", KindWard},
-		{"nakru", "Nakuru County", KindCounty}, // typo
-		{"tambua", "TAMB​UA", KindWard},        // source name hides a zero-width space
+		{"nakru", "Nakuru County", KindCounty},
+		{"tambua", "TAMBUA", KindWard},
 		{"lari kirenga", "LARI/KIRENGA", KindWard},
 	}
 	for _, tt := range tests {
@@ -161,7 +238,7 @@ func TestNormalize(t *testing.T) {
 		"Murang’a County":  "muranga",
 		"Taita–Taveta":     "taita taveta",
 		"LARI/KIRENGA":     "lari kirenga",
-		"TAMB​UA":          "tambua",
+		"TAMB\u200bUA":     "tambua",
 		" Homa  Bay ":      "homa bay",
 		"AGENG'A NANGUBA":  "agenga nanguba",
 		"Kerugoya / Kutus": "kerugoya kutus",
@@ -175,7 +252,7 @@ func TestNormalize(t *testing.T) {
 
 func TestLoadRejectsUnknownCounty(t *testing.T) {
 	counties := `[{"code":1,"name":"Mombasa County"}]`
-	wards := `[{"ward_code":"0001","name":"X","constituency_name":"Y","county_name":"Nowhere County"}]`
+	wards := `[{"ward_code":"0001","name":"X","constituency_name":"Y","county_code":1,"county_name":"Nowhere County"}]`
 	_, err := Load(strings.NewReader(counties), strings.NewReader(wards))
 	if err == nil || !strings.Contains(err.Error(), "Nowhere") {
 		t.Errorf("err = %v, want unknown county error", err)
@@ -190,7 +267,7 @@ func TestLevenshtein(t *testing.T) {
 		{"", "", 0},
 		{"kitten", "sitting", 3},
 		{"nakuru", "nakru", 1},
-		{"murang’a", "muranga", 1}, // one rune, not three bytes
+		{"murang’a", "muranga", 1},
 	}
 	for _, tt := range tests {
 		if got := levenshtein([]rune(tt.a), []rune(tt.b)); got != tt.want {
@@ -199,7 +276,6 @@ func TestLevenshtein(t *testing.T) {
 	}
 }
 
-// Benchmarks run with: go test -bench=. -benchmem
 func BenchmarkCountyByName(b *testing.B) {
 	d := Default()
 	for b.Loop() {
@@ -214,12 +290,10 @@ func BenchmarkSearch(b *testing.B) {
 	}
 }
 
-// Example functions are compiled, run by go test (the output is checked
-// against the "Output:" comment), and shown in the package's documentation.
 func ExampleData_CountyByName() {
 	c, ok := Default().CountyByName("taita taveta")
 	fmt.Println(c.Code, c.Name, c.Headquarters, ok)
-	// Output: 6 Taita–Taveta County Mwatate true
+	// Output: 6 Taita-Taveta County Mwatate true
 }
 
 func ExampleData_Search() {
