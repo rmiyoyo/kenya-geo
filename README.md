@@ -47,7 +47,7 @@ ISO codes are numbered alphabetically, so they don't match the county codes (Tur
 
 **Wards** (`data/wards.json`): `ward_code`, `name`, `constituency_name`, `county_code`, `county_name` and `registered_voters_2022` come from the original IEBC wards file. `centroid` is computed from geoBoundaries polygons and is known for 1,432 of 1,450 wards.
 
-**Post offices** (`data/postoffices.json`): `postal_code`, `name`, `county_code`, `county_source` and `location`, from the GeoNames postal code file for Kenya. A few codes are shared by two offices, so `PostOffices` returns a slice. `county_source` says where the county came from: `geonames`, `location`, `manual` or `neighbours` (see below); it is empty, with `county_code` 0, for the 3 offices whose county is still unknown. `location` is set only for the 553 offices GeoNames matched to a real place; for the other 337 its coordinates are averages of neighbouring codes, often in the wrong county, so they're left out.
+**Post offices** (`data/postoffices.json`): `postal_code`, `name`, `county_code`, `county_source` and `location`, from the GeoNames postal code file for Kenya. A few codes are shared by two offices, so `PostOffices` returns a slice. `county_source` says where the county came from: `geonames`, `location`, `manual` or `neighbours` (see below); every office now has a county. `location` is set only for the 553 offices GeoNames matched to a real place; for the other 337 its coordinates are averages of neighbouring codes, often in the wrong county, so they're left out.
 
 Centroids and bounding boxes are good for placing map labels or zooming a map. They can't tell you which ward a point is in; that needs the polygons, which is a natural next step.
 
@@ -75,14 +75,14 @@ Centroids and bounding boxes are good for placing map labels or zooming a map. T
 | Zero-width space inside TAMBUA | Removed | |
 | "OMBeyi", "OLOlMASANI" in mixed case | Upper-cased | |
 | KNBS sub-county table: Nakuru male 177,272 and female 184,835 | 1,077,272 and 1,084,835 | Male + female + intersex now equals the county total 2,162,202 |
-| GeoNames puts offices it can't place in Nairobi, e.g. Koracha (40639) and Singore (30703), far outside the city | If GeoNames matched the office to a real place, the county comes from its location (Singore → Elgeyo-Marakwet). Otherwise it comes from a manual fix, or from the post offices whose codes share its first four digits, when at least three of them agree and they make up at least 75% (Koracha 40639 → Siaya, from 5 of 5). Nairobi head offices (00100, 00200 ... 00800) stay in Nairobi | Location tested against the geoBoundaries Nairobi outline; manual fixes (`postOfficeCountyFixes` in `internal/gendata/fixes.go`): Kenyatta Hospital → Nairobi, Bunyore → Vihiga, Budalangi and Kakemer → Busia, all of which agree with their neighbouring codes except Kenyatta Hospital |
+| GeoNames puts offices it can't place in Nairobi, e.g. Koracha (40639) and Singore (30703), far outside the city | If GeoNames matched the office to a real place, the county comes from its location (Singore → Elgeyo-Marakwet). Otherwise it comes from a manual fix, or from the post offices whose codes share its first four digits, when at least three of them agree and they make up at least 75% (Koracha 40639 → Siaya, from 5 of 5). Nairobi head offices (00100, 00200 ... 00800) stay in Nairobi | Location tested against the geoBoundaries Nairobi outline; manual fixes (`postOfficeCountyFixes` in `internal/gendata/fixes.go`): Kenyatta Hospital → Nairobi, Bunyore → Vihiga, Budalangi, Kakemer and Kocholya → Busia, Kakibora → Trans-Nzoia, Nthogoini → Machakos |
 
 Known remaining gaps:
 - DELLA still has no 2022 voter count.
 - 18 wards have no centroid because their names differ too much between IEBC and geoBoundaries (e.g. HIRIMANI, MKOMANI and the two TOWNSHIP wards in Kiambu).
 - The geoBoundaries county outline puts four Bureti wards (TEBESONIK, CHEBOIN, CHEMOSOT, LITEIN) just across the Kericho–Bomet line; their centroids are right, the county outline is slightly off.
 - 33 ward names repeat across counties (CENTRAL, TOWNSHIP, ...), so use ward codes as identifiers.
-- 3 post offices have no county: Kakibora (30216), Kocholya (50420) and Nthogoini (90149), whose neighbouring codes are split between counties. 23 counties are inferred from neighbouring codes rather than confirmed. Outside Nairobi, GeoNames' county also disagrees with the map for about 120 offices. Spot checks found GeoNames' county right more often than the map test (Kimana is in Kajiado, Hola in Tana River), so its county is kept.
+- 23 post office counties are inferred from neighbouring codes rather than confirmed; `county_source` is `neighbours` for those. Outside Nairobi, GeoNames' county also disagrees with the map for about 120 offices. Spot checks found GeoNames' county right more often than the map test (Kimana is in Kajiado, Hola in Tana River), so its county is kept.
 
 ## Layout
 

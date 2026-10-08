@@ -19,6 +19,9 @@ var postOfficeCountyFixes = map[string]int{
 	"50301": 38,
 	"50415": 40,
 	"50419": 40,
+	"30216": 26,
+	"50420": 40,
+	"90149": 16,
 }
 
 func fixKNBS(county string, k *knbsCounty) {

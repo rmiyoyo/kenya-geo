@@ -130,8 +130,8 @@ func TestPostOffices(t *testing.T) {
 			unknownCounty++
 		}
 	}
-	if located != 553 || unknownCounty != 3 {
-		t.Errorf("located = %d, unknown county = %d; want 553 and 3", located, unknownCounty)
+	if located != 553 || unknownCounty != 0 {
+		t.Errorf("located = %d, unknown county = %d; want 553 and 0", located, unknownCounty)
 	}
 
 	for code, want := range map[string]int{"00202": 47, "50301": 38, "40639": 41, "50407": 40, "90216": 15} {
@@ -145,8 +145,8 @@ func TestPostOffices(t *testing.T) {
 	for _, c := range d.Counties() {
 		total += len(d.PostOfficesInCounty(c.Code))
 	}
-	if total != 890-3 {
-		t.Errorf("post offices across counties = %d, want %d", total, 890-3)
+	if total != 890 {
+		t.Errorf("post offices across counties = %d, want 890", total)
 	}
 }
 
