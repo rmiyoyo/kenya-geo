@@ -14,6 +14,16 @@ func applyWardFixes(w *Ward) {
 	}
 }
 
+var postOfficeCountyFixes = map[string]int{
+	"00202": 47,
+	"50301": 38,
+	"50415": 40,
+	"50419": 40,
+	"30216": 26,
+	"50420": 40,
+	"90149": 16,
+}
+
 func fixKNBS(county string, k *knbsCounty) {
 	if county == "nakuru" && k.male == 177272 && k.female == 184835 {
 		k.male, k.female = 1077272, 1084835
