@@ -30,23 +30,23 @@ Requires Go 1.24 or later.
 package main
 
 import (
-	"fmt"
+    "fmt"
 
-	kenyageo "github.com/rmiyoyo/kenya-geo"
+    kenyageo "github.com/rmiyoyo/kenya-geo"
 )
 
 func main() {
-	geo := kenyageo.Default()
+    geo := kenyageo.Default()
 
-	c, ok := geo.CountyByName("murang'a")
-	if !ok {
-		return
-	}
-	fmt.Println(c.Code, c.Name, c.Headquarters) // 21 Murang'a County Murang'a
+    c, ok := geo.CountyByName("murang'a")
+    if !ok {
+        return
+    }
+    fmt.Println(c.Code, c.Name, c.Headquarters) // 21 Murang'a County Murang'a
 
-	for _, name := range geo.Constituencies(c.Code) {
-		fmt.Println(name, len(geo.WardsInConstituency(name)))
-	}
+    for _, name := range geo.Constituencies(c.Code) {
+        fmt.Println(name, len(geo.WardsInConstituency(name)))
+    }
 }
 ```
 
@@ -86,7 +86,7 @@ A few postal codes are shared by two offices, so `PostOffices` returns a slice.
 
 ```go
 for _, m := range geo.Search("nakru", 10) {
-	fmt.Println(m.Kind, m.Name, m.Score)
+    fmt.Println(m.Kind, m.Name, m.Score)
 }
 ```
 
