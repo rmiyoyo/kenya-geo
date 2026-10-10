@@ -1,0 +1,26 @@
+name: Data
+
+on:
+  pull_request:
+    paths:
+      - internal/gendata/**
+      - data/**
+      - .github/workflows/data.yml
+
+jobs:
+  generated:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - name: regenerate data
+        run: go run ./internal/gendata
+      - name: check data/*.json matches the generator
+        run: |
+          if [ -n "$(git status --porcelain data)" ]; then
+            git status --short data
+            echo "data/*.json is out of date: run go run ./internal/gendata and commit the result"
+            exit 1
+          fi
