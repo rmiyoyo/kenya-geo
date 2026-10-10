@@ -135,6 +135,19 @@ func TestAddress(t *testing.T) {
 	}
 }
 
+func TestVoters(t *testing.T) {
+	var v kenyageo.VoterTotal
+	if code := get(t, "/counties/nairobi/voters", &v); code != http.StatusOK || v.RegisteredVoters2022 != 2415310 || !v.Complete {
+		t.Errorf("Nairobi: status %d, %+v", code, v)
+	}
+	if code := get(t, "/constituencies/eldas/voters", &v); code != http.StatusOK || v.Complete {
+		t.Errorf("Eldas: status %d, %+v", code, v)
+	}
+	if code := get(t, "/voters", &v); code != http.StatusOK || v.Wards != 1450 {
+		t.Errorf("national: status %d, %+v", code, v)
+	}
+}
+
 func TestSearch(t *testing.T) {
 	var matches []Match
 	if code := get(t, "/search?q=nakru&limit=3", &matches); code != http.StatusOK || len(matches) == 0 {
@@ -158,6 +171,8 @@ func TestErrors(t *testing.T) {
 		"/counties/48/boundary":                    http.StatusNotFound,
 		"/postcodes/99999":                         http.StatusNotFound,
 		"/constituencies/nowhere/wards":            http.StatusNotFound,
+		"/constituencies/nowhere/voters":           http.StatusNotFound,
+		"/counties/48/voters":                      http.StatusNotFound,
 		"/search":                                  http.StatusBadRequest,
 		"/addresses":                               http.StatusBadRequest,
 		"/addresses?q=12%20Moi%20Avenue":           http.StatusBadRequest,

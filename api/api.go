@@ -30,9 +30,12 @@ func New(geo *kenyageo.Data) http.Handler {
 	mux.HandleFunc("GET /counties/{county}/boundary", s.countyBoundary)
 	mux.HandleFunc("GET /counties/{county}/constituencies", s.constituencies)
 	mux.HandleFunc("GET /counties/{county}/neighbours", s.neighbours)
+	mux.HandleFunc("GET /counties/{county}/voters", s.countyVoters)
 	mux.HandleFunc("GET /counties/{county}/wards", s.countyWards)
 	mux.HandleFunc("GET /counties/{county}/postoffices", s.countyPostOffices)
+	mux.HandleFunc("GET /constituencies/{name}/voters", s.constituencyVoters)
 	mux.HandleFunc("GET /constituencies/{name}/wards", s.constituencyWards)
+	mux.HandleFunc("GET /voters", s.voters)
 	mux.HandleFunc("GET /wards/{code}", s.ward)
 	mux.HandleFunc("GET /wards/{code}/boundary", s.wardBoundary)
 	mux.HandleFunc("GET /postcodes/{code}", s.postcode)
@@ -78,6 +81,13 @@ func (s server) neighbours(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (s server) countyVoters(w http.ResponseWriter, r *http.Request) {
+	if c, ok := s.findCounty(w, r); ok {
+		v, _ := s.geo.CountyVoters(c.Code)
+		writeJSON(w, http.StatusOK, v)
+	}
+}
+
 func (s server) countyWards(w http.ResponseWriter, r *http.Request) {
 	if c, ok := s.findCounty(w, r); ok {
 		writeJSON(w, http.StatusOK, s.geo.WardsInCounty(c.Code))
@@ -103,6 +113,20 @@ func (s server) findCounty(w http.ResponseWriter, r *http.Request) (kenyageo.Cou
 		writeError(w, http.StatusNotFound, "no county "+strconv.Quote(key))
 	}
 	return c, ok
+}
+
+func (s server) constituencyVoters(w http.ResponseWriter, r *http.Request) {
+	name := r.PathValue("name")
+	v, ok := s.geo.ConstituencyVoters(name)
+	if !ok {
+		writeError(w, http.StatusNotFound, "no constituency "+strconv.Quote(name))
+		return
+	}
+	writeJSON(w, http.StatusOK, v)
+}
+
+func (s server) voters(w http.ResponseWriter, r *http.Request) {
+	writeJSON(w, http.StatusOK, s.geo.NationalVoters())
 }
 
 func (s server) constituencyWards(w http.ResponseWriter, r *http.Request) {

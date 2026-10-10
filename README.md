@@ -78,6 +78,18 @@ w.RegisteredVoters2022         // *int, nil when unknown
 
 Ward names repeat across the country (there are several CENTRAL and TOWNSHIP wards), so store ward codes, not names.
 
+### Registered voters
+
+Voter totals add up the 2022 ward figures:
+
+```go
+v, ok := geo.CountyVoters(47)         // Nairobi: {RegisteredVoters2022: 2415310, Wards: 85, Complete: true}
+v, ok = geo.ConstituencyVoters("Kibra")
+n := geo.NationalVoters()             // all 1,450 wards
+```
+
+`Complete` is false when a ward in the total has no figure. Only Della ward (Eldas, Wajir) is missing one, so the Eldas, Wajir and national totals are slightly low. The national total is 22,096,344, a little under IEBC's published 22,120,458, which also counts voters registered in the diaspora and in prisons.
+
 ### Which ward is this point in?
 
 ```go
@@ -172,7 +184,7 @@ err = geo.LoadCountyShapes(countyShapesFile) // needed for CountyAt and CountyBo
 ```sh
 go install github.com/rmiyoyo/kenya-geo/cmd/kenyageo@latest
 
-kenyageo county nakuru    # constituencies and ward counts
+kenyageo county nakuru    # neighbours, voters, constituencies and ward counts
 kenyageo postcode 30100   # post office lookup
 kenyageo search kibera    # fuzzy search
 kenyageo at -1.2884 36.8233  # ward, constituency and county for a point
@@ -197,9 +209,12 @@ kenyageo-server -addr :8080
 | `GET /counties/{county}/constituencies` | constituency names |
 | `GET /counties/{county}/neighbours` | counties that share a border with it |
 | `GET /counties/{county}/boundary` | the county outline as a GeoJSON Feature |
+| `GET /counties/{county}/voters` | registered voters, ward count and whether every ward has a figure |
 | `GET /counties/{county}/wards` | wards in the county |
 | `GET /counties/{county}/postoffices` | post offices in the county |
 | `GET /constituencies/{name}/wards` | wards in a constituency, e.g. `/constituencies/kibra/wards` |
+| `GET /constituencies/{name}/voters` | registered voters in a constituency |
+| `GET /voters` | the national total |
 | `GET /wards/{code}` | one ward |
 | `GET /wards/{code}/boundary` | the ward outline as a GeoJSON Feature |
 | `GET /postcodes/{code}` | post offices with that postal code |
