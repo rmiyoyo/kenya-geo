@@ -21,3 +21,8 @@ jobs:
         run: go run honnef.co/go/tools/cmd/staticcheck@2025.1.1 ./...
       - name: go test
         run: go test -race ./...
+      - name: fuzz
+        run: |
+          for f in FuzzNormalize FuzzParseAddress FuzzSearch; do
+            go test -run '^$' -fuzz "^$f\$" -fuzztime 15s . || exit 1
+          done

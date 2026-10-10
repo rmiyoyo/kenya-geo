@@ -41,6 +41,7 @@ func TestParseAddressErrors(t *testing.T) {
 	tests := map[string]error{
 		"123 Moi Avenue, Nairobi":    ErrNoBox,
 		"":                           ErrNoBox,
+		"P.O. Box Nairobi 00100":     ErrNoBox,
 		"P.O. Box 9-99999 Nowhere":   ErrUnknownPostOffice,
 		"P.O. Box 9 Atlantis":        ErrUnknownPostOffice,
 		"P.O. Box 9":                 ErrUnknownPostOffice,

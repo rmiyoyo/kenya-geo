@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"slices"
 	"strings"
+	"unicode"
+	"unicode/utf8"
 )
 
 var (
@@ -93,6 +95,9 @@ func (d *Data) ParseAddress(s string) (Address, error) {
 	}
 	town := strings.Join(rest, " ")
 	a.Town = titleCase(town)
+	if a.Box == "" && !a.PrivateBag {
+		return a, fmt.Errorf("%w: the P.O. Box has no number", ErrNoBox)
+	}
 
 	if a.PostalCode == "" {
 		idx := d.postByName[town]
@@ -161,7 +166,8 @@ func isPostalCode(s string) bool {
 func titleCase(s string) string {
 	words := strings.Fields(s)
 	for i, w := range words {
-		words[i] = strings.ToUpper(w[:1]) + w[1:]
+		r, size := utf8.DecodeRuneInString(w)
+		words[i] = string(unicode.ToUpper(r)) + w[size:]
 	}
 	return strings.Join(words, " ")
 }
