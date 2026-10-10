@@ -12,7 +12,7 @@ Kenya's 47 counties, 290 constituencies, 1,450 wards and 890 post offices for Go
 - ISO 3166-2 codes and former provinces
 - Centroids and bounding boxes for counties, centroids for wards
 - Find the ward, constituency and county for any coordinate
-- 890 post offices by postal code, each placed in a county
+- 890 post offices by postal code, each placed in a county, and the nearest offices to any point
 - Forgiving name lookups: case, apostrophes, dashes and a trailing "County" don't matter
 - Fuzzy search across counties, constituencies, wards and post offices
 - No dependencies outside the standard library; safe for concurrent use
@@ -93,6 +93,14 @@ geo.PostOfficesInCounty(27)    // every post office in Uasin Gishu
 
 A few postal codes are shared by two offices, so `PostOffices` returns a slice.
 
+```go
+for _, p := range geo.PostOfficesNear(-0.2833, 36.0667, 3) {
+    fmt.Println(p.Code, p.Name, p.DistanceKm)  // 20100 Nakuru 2.7, then Lanet, Kabatini
+}
+```
+
+`PostOfficesNear` returns the closest post offices to a point, nearest first, with the straight-line distance in kilometres. Only the 553 offices with a known location are considered, so the nearest result can be a few kilometres off where an office without a location (such as Nairobi GPO) is closer.
+
 ### Search
 
 ```go
@@ -121,6 +129,7 @@ kenyageo county nakuru    # constituencies and ward counts
 kenyageo postcode 30100   # post office lookup
 kenyageo search kibera    # fuzzy search
 kenyageo at -1.2884 36.8233  # ward, constituency and county for a point
+kenyageo near -0.2833 36.0667  # the five closest post offices
 ```
 
 ## Data
