@@ -245,6 +245,9 @@ The image is about 18 MB: a static binary on the distroless base, running as a n
 | `GET /at?lat=-1.2884&lng=36.8233` | the ward at that point |
 | `GET /counties/at?lat=-0.0917&lng=34.768` | the county at that point |
 | `GET /postoffices/near?lat=-0.2833&lng=36.0667&limit=5` | the closest post offices, nearest first, with `distance_km` |
+| `GET /openapi.json` | the OpenAPI description of this API |
+
+`GET /openapi.json` returns an [OpenAPI 3.1](https://spec.openapis.org/oas/v3.1.0) description of every endpoint, with the shape of each response. Load it into Swagger UI, Postman or a client generator such as `oapi-codegen`. The file lives at `api/openapi.json`; tests check that it lists exactly the routes the server has and that real responses match its schemas, so it can't quietly drift out of date.
 
 Boundary responses use the `application/geo+json` content type. Errors come back as `{"error": "..."}` with status 400 for a bad query and 404 when nothing matches. Responses allow requests from any origin, so a web page can call the API directly.
 

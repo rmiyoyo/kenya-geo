@@ -1,0 +1,1216 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "kenya-geo",
+    "version": "0.2.0",
+    "description": "Kenya's counties, constituencies, wards and post offices. Every response allows requests from any origin.",
+    "license": {
+      "name": "MIT",
+      "identifier": "MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080"
+    }
+  ],
+  "paths": {
+    "/counties": {
+      "get": {
+        "operationId": "listCounties",
+        "summary": "All 47 counties, by code.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Counties.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/County"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/counties/at": {
+      "get": {
+        "operationId": "countyAt",
+        "summary": "The county containing a point.",
+        "parameters": [
+          {
+            "name": "lat",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number"
+            },
+            "example": -1.2884
+          },
+          {
+            "name": "lng",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number"
+            },
+            "example": 36.8233
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The county.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/County"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad or missing query parameter.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No such county at that point.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/counties/{county}": {
+      "get": {
+        "operationId": "getCounty",
+        "summary": "One county.",
+        "parameters": [
+          {
+            "name": "county",
+            "in": "path",
+            "required": true,
+            "description": "County code (`32`) or name (`nakuru`, `Nakuru County`).",
+            "schema": {
+              "type": "string"
+            },
+            "example": "nakuru"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The county.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/County"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No such county.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/counties/{county}/boundary": {
+      "get": {
+        "operationId": "countyBoundary",
+        "summary": "The county outline as GeoJSON.",
+        "parameters": [
+          {
+            "name": "county",
+            "in": "path",
+            "required": true,
+            "description": "County code (`32`) or name (`nakuru`, `Nakuru County`).",
+            "schema": {
+              "type": "string"
+            },
+            "example": "nakuru"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A GeoJSON Feature whose properties are the County.",
+            "content": {
+              "application/geo+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Feature"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No such county.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/counties/{county}/constituencies": {
+      "get": {
+        "operationId": "countyConstituencies",
+        "summary": "Constituency names in a county, alphabetical.",
+        "parameters": [
+          {
+            "name": "county",
+            "in": "path",
+            "required": true,
+            "description": "County code (`32`) or name (`nakuru`, `Nakuru County`).",
+            "schema": {
+              "type": "string"
+            },
+            "example": "nakuru"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Names.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No such county.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/counties/{county}/neighbours": {
+      "get": {
+        "operationId": "countyNeighbours",
+        "summary": "Counties that share a border with it.",
+        "parameters": [
+          {
+            "name": "county",
+            "in": "path",
+            "required": true,
+            "description": "County code (`32`) or name (`nakuru`, `Nakuru County`).",
+            "schema": {
+              "type": "string"
+            },
+            "example": "nakuru"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Neighbouring counties.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/County"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No such county.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/counties/{county}/voters": {
+      "get": {
+        "operationId": "countyVoters",
+        "summary": "2022 registered voters in a county.",
+        "parameters": [
+          {
+            "name": "county",
+            "in": "path",
+            "required": true,
+            "description": "County code (`32`) or name (`nakuru`, `Nakuru County`).",
+            "schema": {
+              "type": "string"
+            },
+            "example": "nakuru"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The total.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VoterTotal"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No such county.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/counties/{county}/wards": {
+      "get": {
+        "operationId": "countyWards",
+        "summary": "Wards in a county.",
+        "parameters": [
+          {
+            "name": "county",
+            "in": "path",
+            "required": true,
+            "description": "County code (`32`) or name (`nakuru`, `Nakuru County`).",
+            "schema": {
+              "type": "string"
+            },
+            "example": "nakuru"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Wards.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Ward"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No such county.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/counties/{county}/postoffices": {
+      "get": {
+        "operationId": "countyPostOffices",
+        "summary": "Post offices in a county.",
+        "parameters": [
+          {
+            "name": "county",
+            "in": "path",
+            "required": true,
+            "description": "County code (`32`) or name (`nakuru`, `Nakuru County`).",
+            "schema": {
+              "type": "string"
+            },
+            "example": "nakuru"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Post offices, possibly none.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PostOffice"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No such county.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/constituencies/{name}/voters": {
+      "get": {
+        "operationId": "constituencyVoters",
+        "summary": "2022 registered voters in a constituency.",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "description": "Constituency name. Case, apostrophes and punctuation don't matter; encode a slash as `%2F`.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "kibra"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The total.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VoterTotal"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No such constituency.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/constituencies/{name}/wards": {
+      "get": {
+        "operationId": "constituencyWards",
+        "summary": "Wards in a constituency.",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "description": "Constituency name. Case, apostrophes and punctuation don't matter; encode a slash as `%2F`.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "kibra"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Wards.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Ward"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No such constituency.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/voters": {
+      "get": {
+        "operationId": "nationalVoters",
+        "summary": "2022 registered voters in the whole country.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The national total.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VoterTotal"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/wards/{code}": {
+      "get": {
+        "operationId": "getWard",
+        "summary": "One ward.",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "required": true,
+            "description": "Four-digit IEBC ward code.",
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]{4}$"
+            },
+            "example": "1439"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The ward.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ward"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No such ward.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/wards/{code}/boundary": {
+      "get": {
+        "operationId": "wardBoundary",
+        "summary": "The ward outline as GeoJSON.",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "required": true,
+            "description": "Four-digit IEBC ward code.",
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]{4}$"
+            },
+            "example": "1439"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A GeoJSON Feature whose properties are the Ward.",
+            "content": {
+              "application/geo+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Feature"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No such ward, or no boundary for it.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/postcodes/{code}": {
+      "get": {
+        "operationId": "getPostcode",
+        "summary": "Post offices with a postal code.",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "required": true,
+            "description": "Five-digit postal code.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "00100"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usually one post office.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PostOffice"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No such postal code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/search": {
+      "get": {
+        "operationId": "search",
+        "summary": "Fuzzy search across counties, constituencies, wards and post offices.",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "nakru"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Matches, best first.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Match"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad or missing query parameter.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/addresses": {
+      "get": {
+        "operationId": "parseAddress",
+        "summary": "Parse and check a postal address.",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "P.O. Box 123-00100 Nairobi"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The parsed address.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Address"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "No P.O. Box or Private Bag, or a P.O. Box without a number.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown postal code, or no code and an unknown town.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The town does not match the postal code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/at": {
+      "get": {
+        "operationId": "wardAt",
+        "summary": "The ward containing a point.",
+        "parameters": [
+          {
+            "name": "lat",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number"
+            },
+            "example": -1.2884
+          },
+          {
+            "name": "lng",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number"
+            },
+            "example": 36.8233
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The ward.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ward"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad or missing query parameter.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No such ward at that point.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/postoffices/near": {
+      "get": {
+        "operationId": "postOfficesNear",
+        "summary": "The closest post offices to a point.",
+        "parameters": [
+          {
+            "name": "lat",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number"
+            },
+            "example": -1.2884
+          },
+          {
+            "name": "lng",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number"
+            },
+            "example": 36.8233
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 5
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Post offices, nearest first.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NearbyPostOffice"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad or missing query parameter.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/openapi.json": {
+      "get": {
+        "operationId": "openapi",
+        "summary": "This description.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The OpenAPI document.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "error"
+        ]
+      },
+      "LatLng": {
+        "type": "object",
+        "properties": {
+          "lat": {
+            "type": "number"
+          },
+          "lng": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "lat",
+          "lng"
+        ]
+      },
+      "County": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 47
+          },
+          "name": {
+            "type": "string"
+          },
+          "iso_code": {
+            "type": "string"
+          },
+          "former_province": {
+            "type": "string"
+          },
+          "headquarters": {
+            "type": "string"
+          },
+          "population": {
+            "type": "integer"
+          },
+          "population_male": {
+            "type": "integer"
+          },
+          "population_female": {
+            "type": "integer"
+          },
+          "population_intersex": {
+            "type": "integer"
+          },
+          "area_km2": {
+            "type": "number"
+          },
+          "centroid": {
+            "$ref": "#/components/schemas/LatLng"
+          },
+          "bbox": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 4,
+            "maxItems": 4,
+            "description": "min lng, min lat, max lng, max lat"
+          },
+          "neighbours": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "description": "Codes of the counties that share a border."
+          }
+        },
+        "required": [
+          "code",
+          "name",
+          "iso_code",
+          "former_province",
+          "headquarters",
+          "population",
+          "population_male",
+          "population_female",
+          "population_intersex",
+          "area_km2",
+          "centroid",
+          "bbox",
+          "neighbours"
+        ]
+      },
+      "Ward": {
+        "type": "object",
+        "properties": {
+          "ward_code": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "constituency_name": {
+            "type": "string"
+          },
+          "county_code": {
+            "type": "integer"
+          },
+          "county_name": {
+            "type": "string"
+          },
+          "registered_voters_2022": {
+            "oneOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "centroid": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/LatLng"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "ward_code",
+          "name",
+          "constituency_name",
+          "county_code",
+          "county_name",
+          "registered_voters_2022",
+          "centroid"
+        ]
+      },
+      "PostOffice": {
+        "type": "object",
+        "properties": {
+          "postal_code": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "county_code": {
+            "type": "integer",
+            "description": "0 when unknown."
+          },
+          "county_source": {
+            "type": "string",
+            "enum": [
+              "geonames",
+              "location",
+              "manual",
+              "neighbours"
+            ]
+          },
+          "location": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/LatLng"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "postal_code",
+          "name",
+          "county_code",
+          "county_source",
+          "location"
+        ]
+      },
+      "NearbyPostOffice": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PostOffice"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "distance_km": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "distance_km"
+            ]
+          }
+        ]
+      },
+      "Match": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "county",
+              "constituency",
+              "ward",
+              "post office"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string",
+            "description": "County, ward or postal code; absent for constituencies."
+          },
+          "county_code": {
+            "type": "integer"
+          },
+          "score": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "maximum": 1
+          }
+        },
+        "required": [
+          "kind",
+          "name",
+          "county_code",
+          "score"
+        ]
+      },
+      "Address": {
+        "type": "object",
+        "properties": {
+          "box": {
+            "type": "string"
+          },
+          "private_bag": {
+            "type": "boolean"
+          },
+          "postal_code": {
+            "type": "string"
+          },
+          "town": {
+            "type": "string"
+          },
+          "post_office": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/PostOffice"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "private_bag",
+          "postal_code",
+          "post_office"
+        ]
+      },
+      "VoterTotal": {
+        "type": "object",
+        "properties": {
+          "registered_voters_2022": {
+            "type": "integer"
+          },
+          "wards": {
+            "type": "integer"
+          },
+          "complete": {
+            "type": "boolean",
+            "description": "False when a ward in the total has no figure."
+          }
+        },
+        "required": [
+          "registered_voters_2022",
+          "wards",
+          "complete"
+        ]
+      },
+      "Feature": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "const": "Feature"
+          },
+          "geometry": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "const": "MultiPolygon"
+              },
+              "coordinates": {
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "array",
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "number"
+                      },
+                      "minItems": 2,
+                      "maxItems": 2
+                    }
+                  }
+                }
+              }
+            },
+            "required": [
+              "type",
+              "coordinates"
+            ]
+          },
+          "properties": {
+            "description": "The Ward or County.",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Ward"
+              },
+              {
+                "$ref": "#/components/schemas/County"
+              }
+            ]
+          }
+        },
+        "required": [
+          "type",
+          "geometry",
+          "properties"
+        ]
+      }
+    }
+  }
+}
