@@ -284,3 +284,14 @@ go test ./...
 ```
 
 Don't edit `data/*.json` by hand. Change the sources in `data/source/` or the fixes in `internal/gendata/` instead.
+
+CI runs these on every pull request, so run them before pushing:
+
+```sh
+gofmt -l .                  # should print nothing
+go vet ./...
+go run honnef.co/go/tools/cmd/staticcheck@2025.1.1 ./...
+go test -race ./...
+```
+
+Pull requests that touch `internal/gendata/` or `data/` also regenerate the data from scratch and fail if the committed `data/*.json` doesn't match. The geoBoundaries files are downloaded from the latest release, so that check can also fail when geoBoundaries changes upstream; regenerating and committing the result fixes it.
