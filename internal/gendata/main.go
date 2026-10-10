@@ -65,7 +65,7 @@ func main() {
 		}
 	}
 
-	counties, err := buildCounties()
+	counties, countyShapes, err := buildCounties()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -90,27 +90,30 @@ func main() {
 	if err := writeLines("data/wardshapes.json", shapes); err != nil {
 		log.Fatal(err)
 	}
+	if err := writeLines("data/countyshapes.json", countyShapes); err != nil {
+		log.Fatal(err)
+	}
 	log.Printf("wrote %d counties, %d wards (%d with boundaries) and %d post offices",
 		len(counties), len(wards), len(shapes), len(postOffices))
 }
 
-func buildCounties() ([]County, error) {
+func buildCounties() ([]County, []CountyShape, error) {
 	var src []struct {
 		Code         int    `json:"code"`
 		Name         string `json:"name"`
 		Headquarters string `json:"headquarters"`
 	}
 	if err := readJSON("data/source/counties.json", &src); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	census, err := readKNBS()
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	shapes, err := readShapes("data/raw/geoboundaries-ADM1.geojson")
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	shapeByName := map[string]shape{}
 	for _, s := range shapes {
@@ -118,16 +121,17 @@ func buildCounties() ([]County, error) {
 	}
 
 	out := make([]County, 0, len(src))
+	var outShapes []CountyShape
 	for _, c := range src {
 		name := cleanName(c.Name)
 		key := norm(name)
 		k, ok := census[key]
 		if !ok {
-			return nil, fmt.Errorf("no KNBS figures for %q", name)
+			return nil, nil, fmt.Errorf("no KNBS figures for %q", name)
 		}
 		s, ok := shapeByName[key]
 		if !ok {
-			return nil, fmt.Errorf("no boundary for %q", name)
+			return nil, nil, fmt.Errorf("no boundary for %q", name)
 		}
 		out = append(out, County{
 			Code:               c.Code,
@@ -143,9 +147,16 @@ func buildCounties() ([]County, error) {
 			Centroid:           s.Centroid,
 			BBox:               s.BBox,
 		})
+		outShapes = append(outShapes, CountyShape{Code: c.Code, Polygons: s.rounded()})
 	}
 	sort.Slice(out, func(i, j int) bool { return out[i].Code < out[j].Code })
-	return out, nil
+	sort.Slice(outShapes, func(i, j int) bool { return outShapes[i].Code < outShapes[j].Code })
+	return out, outShapes, nil
+}
+
+type CountyShape struct {
+	Code     int       `json:"code"`
+	Polygons []polygon `json:"polygons"`
 }
 
 func buildWards(counties []County) ([]Ward, []WardShape, error) {

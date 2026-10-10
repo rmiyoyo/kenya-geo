@@ -55,8 +55,13 @@ func main() {
 		}
 		w, ok := geo.WardAt(lat, lng)
 		if !ok {
-			fmt.Fprintf(os.Stderr, "no ward at %v, %v\n", lat, lng)
-			os.Exit(1)
+			c, ok := geo.CountyAt(lat, lng)
+			if !ok {
+				fmt.Fprintf(os.Stderr, "no ward or county at %v, %v\n", lat, lng)
+				os.Exit(1)
+			}
+			fmt.Printf("%s (no ward boundary here)\n", c.Name)
+			return
 		}
 		fmt.Printf("%s  %s ward, %s constituency, %s\n", w.Code, w.Name, w.Constituency, w.CountyName)
 	case "near":

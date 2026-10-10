@@ -11,7 +11,7 @@ Kenya's 47 counties, 290 constituencies, 1,450 wards and 890 post offices for Go
 - 2019 census population by sex, land area and density for each county
 - ISO 3166-2 codes and former provinces
 - Centroids and bounding boxes for counties, centroids for wards
-- Find the ward, constituency and county for any coordinate
+- Find the ward, constituency and county for any coordinate, or just the county from county boundaries
 - 890 post offices by postal code, each placed in a county, and the nearest offices to any point
 - Forgiving name lookups: case, apostrophes, dashes and a trailing "County" don't matter
 - Fuzzy search across counties, constituencies, wards and post offices
@@ -85,6 +85,14 @@ fmt.Println(w.Name, w.Constituency, w.CountyName)
 
 `WardAt` returns false for points outside Kenya, in the sea, or in one of the few areas without a ward boundary (see the accuracy notes). The boundaries are loaded the first time you call it, which takes about 30 ms; after that a lookup takes a few microseconds.
 
+`CountyAt` does the same with county boundaries, so it also works where no ward boundary is known:
+
+```go
+c, ok := geo.CountyAt(-0.0917, 34.768)  // Kisumu County
+```
+
+The two use different boundary sets, so within a few kilometres of a county line they can disagree: the ward's `CountyName` follows the IEBC ward list, while `CountyAt` follows the county outline.
+
 ### Post offices
 
 ```go
@@ -118,7 +126,8 @@ Results are ranked by how closely they match, and each carries the code of the c
 
 ```go
 geo, err := kenyageo.Load(countiesFile, wardsFile, postOfficesFile)
-err = geo.LoadWardShapes(wardShapesFile)   // needed for WardAt
+err = geo.LoadWardShapes(wardShapesFile)     // needed for WardAt
+err = geo.LoadCountyShapes(countyShapesFile) // needed for CountyAt
 ```
 
 ## Command-line tool
@@ -154,6 +163,7 @@ kenyageo-server -addr :8080
 | `GET /postcodes/{code}` | post offices with that postal code |
 | `GET /search?q=nakru&limit=10` | fuzzy search results with `kind`, `name`, `code`, `county_code` and `score` |
 | `GET /at?lat=-1.2884&lng=36.8233` | the ward at that point |
+| `GET /counties/at?lat=-0.0917&lng=34.768` | the county at that point |
 | `GET /postoffices/near?lat=-0.2833&lng=36.0667&limit=5` | the closest post offices, nearest first, with `distance_km` |
 
 Errors come back as `{"error": "..."}` with status 400 for a bad query and 404 when nothing matches. Responses allow requests from any origin, so a web page can call the API directly.
@@ -172,6 +182,7 @@ mux.Handle("/geo/", http.StripPrefix("/geo", api.New(kenyageo.Default())))
 | `data/wards.json` | ward code, name, constituency, county, 2022 registered voters, centroid |
 | `data/postoffices.json` | postal code, name, county, how the county was decided, location |
 | `data/wardshapes.json` | ward code and boundary polygons, as GeoJSON-style `[lng, lat]` rings |
+| `data/countyshapes.json` | county code and boundary polygons, in the same format |
 
 The same JSON files can be used from any language.
 

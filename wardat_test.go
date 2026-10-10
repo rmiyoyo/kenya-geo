@@ -75,16 +75,16 @@ func TestWardAtFindsWardCentroids(t *testing.T) {
 
 func TestWardShapes(t *testing.T) {
 	d := Default()
-	shapes := d.shapes()
+	shapes := d.wardShapes()
 	if len(shapes) < 1430 {
 		t.Errorf("%d ward shapes, want at least 1430", len(shapes))
 	}
 	seen := map[int]bool{}
 	for _, s := range shapes {
-		if seen[s.ward] {
-			t.Errorf("ward %s has two shapes", d.wards[s.ward].Code)
+		if seen[s.index] {
+			t.Errorf("ward %s has two shapes", d.wards[s.index].Code)
 		}
-		seen[s.ward] = true
+		seen[s.index] = true
 	}
 }
 
@@ -114,7 +114,7 @@ func TestWardAtWithoutShapes(t *testing.T) {
 }
 
 func TestRingContainsHole(t *testing.T) {
-	s := wardShape{polygons: [][][][2]float64{{
+	s := area{polygons: [][][][2]float64{{
 		{{0, 0}, {10, 0}, {10, 10}, {0, 10}},
 		{{4, 4}, {6, 4}, {6, 6}, {4, 6}},
 	}}}
