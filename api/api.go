@@ -1,6 +1,7 @@
 package api
 
 import (
+	_ "embed"
 	"encoding/json"
 	"errors"
 	"net/http"
@@ -21,29 +22,50 @@ type server struct {
 	geo *kenyageo.Data
 }
 
+type route struct {
+	pattern string
+	handler func(server, http.ResponseWriter, *http.Request)
+}
+
+var routes = []route{
+	{"GET /counties", server.counties},
+	{"GET /counties/at", server.countyAt},
+	{"GET /counties/{county}", server.county},
+	{"GET /counties/{county}/boundary", server.countyBoundary},
+	{"GET /counties/{county}/constituencies", server.constituencies},
+	{"GET /counties/{county}/neighbours", server.neighbours},
+	{"GET /counties/{county}/voters", server.countyVoters},
+	{"GET /counties/{county}/wards", server.countyWards},
+	{"GET /counties/{county}/postoffices", server.countyPostOffices},
+	{"GET /constituencies/{name}/voters", server.constituencyVoters},
+	{"GET /constituencies/{name}/wards", server.constituencyWards},
+	{"GET /voters", server.voters},
+	{"GET /wards/{code}", server.ward},
+	{"GET /wards/{code}/boundary", server.wardBoundary},
+	{"GET /postcodes/{code}", server.postcode},
+	{"GET /search", server.search},
+	{"GET /addresses", server.address},
+	{"GET /at", server.at},
+	{"GET /postoffices/near", server.near},
+	{"GET /openapi.json", server.openapi},
+}
+
+//go:embed openapi.json
+var openapiJSON []byte
+
 func New(geo *kenyageo.Data) http.Handler {
 	s := server{geo: geo}
 	mux := http.NewServeMux()
-	mux.HandleFunc("GET /counties", s.counties)
-	mux.HandleFunc("GET /counties/at", s.countyAt)
-	mux.HandleFunc("GET /counties/{county}", s.county)
-	mux.HandleFunc("GET /counties/{county}/boundary", s.countyBoundary)
-	mux.HandleFunc("GET /counties/{county}/constituencies", s.constituencies)
-	mux.HandleFunc("GET /counties/{county}/neighbours", s.neighbours)
-	mux.HandleFunc("GET /counties/{county}/voters", s.countyVoters)
-	mux.HandleFunc("GET /counties/{county}/wards", s.countyWards)
-	mux.HandleFunc("GET /counties/{county}/postoffices", s.countyPostOffices)
-	mux.HandleFunc("GET /constituencies/{name}/voters", s.constituencyVoters)
-	mux.HandleFunc("GET /constituencies/{name}/wards", s.constituencyWards)
-	mux.HandleFunc("GET /voters", s.voters)
-	mux.HandleFunc("GET /wards/{code}", s.ward)
-	mux.HandleFunc("GET /wards/{code}/boundary", s.wardBoundary)
-	mux.HandleFunc("GET /postcodes/{code}", s.postcode)
-	mux.HandleFunc("GET /search", s.search)
-	mux.HandleFunc("GET /addresses", s.address)
-	mux.HandleFunc("GET /at", s.at)
-	mux.HandleFunc("GET /postoffices/near", s.near)
+	for _, rt := range routes {
+		mux.HandleFunc(rt.pattern, func(w http.ResponseWriter, r *http.Request) { rt.handler(s, w, r) })
+	}
 	return mux
+}
+
+func (s server) openapi(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Write(openapiJSON)
 }
 
 func (s server) counties(w http.ResponseWriter, r *http.Request) {
