@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"strconv"
 
@@ -36,6 +37,7 @@ func New(geo *kenyageo.Data) http.Handler {
 	mux.HandleFunc("GET /wards/{code}/boundary", s.wardBoundary)
 	mux.HandleFunc("GET /postcodes/{code}", s.postcode)
 	mux.HandleFunc("GET /search", s.search)
+	mux.HandleFunc("GET /addresses", s.address)
 	mux.HandleFunc("GET /at", s.at)
 	mux.HandleFunc("GET /postoffices/near", s.near)
 	return mux
@@ -163,6 +165,23 @@ func (s server) search(w http.ResponseWriter, r *http.Request) {
 		out = append(out, Match{Kind: m.Kind.String(), Name: m.Name, Code: m.Code, CountyCode: m.CountyCode, Score: m.Score})
 	}
 	writeJSON(w, http.StatusOK, out)
+}
+
+func (s server) address(w http.ResponseWriter, r *http.Request) {
+	q := r.URL.Query().Get("q")
+	a, err := s.geo.ParseAddress(q)
+	switch {
+	case errors.Is(err, kenyageo.ErrNoBox):
+		writeError(w, http.StatusBadRequest, err.Error())
+	case errors.Is(err, kenyageo.ErrUnknownPostOffice):
+		writeError(w, http.StatusNotFound, err.Error())
+	case errors.Is(err, kenyageo.ErrTownMismatch):
+		writeError(w, http.StatusUnprocessableEntity, err.Error())
+	case err != nil:
+		writeError(w, http.StatusBadRequest, err.Error())
+	default:
+		writeJSON(w, http.StatusOK, a)
+	}
 }
 
 func (s server) at(w http.ResponseWriter, r *http.Request) {

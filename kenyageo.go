@@ -91,6 +91,7 @@ type Data struct {
 
 	postByCode   map[string][]int
 	postByCounty map[int][]int
+	postByName   map[string][]int
 
 	wardShapes   func() []area
 	countyShapes func() []area
@@ -180,11 +181,13 @@ func Load(counties, wards, postOffices io.Reader) (*Data, error) {
 	sort.SliceStable(d.postOffices, func(i, j int) bool { return d.postOffices[i].Code < d.postOffices[j].Code })
 	d.postByCode = make(map[string][]int, len(d.postOffices))
 	d.postByCounty = make(map[int][]int)
+	d.postByName = make(map[string][]int, len(d.postOffices))
 	for i, p := range d.postOffices {
 		if _, ok := d.countyByCode[p.CountyCode]; !ok && p.CountyCode != 0 {
 			return nil, fmt.Errorf("post office %s (%s): unknown county %d", p.Code, p.Name, p.CountyCode)
 		}
 		d.postByCode[p.Code] = append(d.postByCode[p.Code], i)
+		d.postByName[officeKey(p.Name)] = append(d.postByName[officeKey(p.Name)], i)
 		if p.CountyCode != 0 {
 			d.postByCounty[p.CountyCode] = append(d.postByCounty[p.CountyCode], i)
 		}

@@ -14,6 +14,7 @@ Kenya's 47 counties, 290 constituencies, 1,450 wards and 890 post offices for Go
 - Find the ward, constituency and county for any coordinate, or just the county from county boundaries
 - Ward and county boundaries as GeoJSON
 - 890 post offices by postal code, each placed in a county, and the nearest offices to any point
+- A postal address parser that checks the box, postal code and town agree
 - Forgiving name lookups: case, apostrophes, dashes and a trailing "County" don't matter
 - Fuzzy search across counties, constituencies, wards and post offices
 - A JSON HTTP API and a ready-to-run server
@@ -124,6 +125,28 @@ for _, p := range geo.PostOfficesNear(-0.2833, 36.0667, 3) {
 
 `PostOfficesNear` returns the closest post offices to a point, nearest first, with the straight-line distance in kilometres. Only the 553 offices with a known location are considered, so the nearest result can be a few kilometres off where an office without a location (such as Nairobi GPO) is closer.
 
+### Postal addresses
+
+`ParseAddress` reads a Kenyan postal address and checks it against the post office list:
+
+```go
+a, err := geo.ParseAddress("P.O. Box 30100, 00100 GPO Nairobi")
+fmt.Println(a.Box, a.PostalCode, a.PostOffice.Name) // 30100 00100 Nairobi Gpo
+fmt.Println(a)                                      // P.O. Box 30100-00100 Nairobi
+```
+
+It accepts the usual ways of writing one: `P.O. Box`, `P. O. BOX`, `PO Box`, `Box` and `Private Bag`, with the box number and postal code joined by a dash, a comma or a space, in any case, with a name on the lines before and "Kenya" at the end. When the postal code is missing it is taken from the town, so `Box 45, Kisumu` becomes `P.O. Box 45-40100 Kisumu`.
+
+The town is checked against the post office for that code. It matches when it is the office's name (one typo allowed) or the county the office is in, so `P.O. Box 123-00101 Nairobi` is fine even though 00101 is the Jamia office. `String` prints the address in the standard `P.O. Box 123-00100 Nairobi` form.
+
+Errors can be checked with `errors.Is`:
+
+| Error | Meaning |
+| --- | --- |
+| `ErrNoBox` | no P.O. Box or Private Bag in the text, such as a street address |
+| `ErrUnknownPostOffice` | the postal code doesn't exist, or there is no code and the town isn't a post office |
+| `ErrTownMismatch` | the town doesn't belong to the postal code; the address is still returned, with the office for the code |
+
 ### Search
 
 ```go
@@ -155,6 +178,7 @@ kenyageo search kibera    # fuzzy search
 kenyageo at -1.2884 36.8233  # ward, constituency and county for a point
 kenyageo near -0.2833 36.0667  # the five closest post offices
 kenyageo boundary 1439       # a ward or county outline as GeoJSON
+kenyageo address "P.O. Box 123-00100 Nairobi"  # parse and check a postal address
 ```
 
 ## HTTP API
@@ -180,6 +204,7 @@ kenyageo-server -addr :8080
 | `GET /wards/{code}/boundary` | the ward outline as a GeoJSON Feature |
 | `GET /postcodes/{code}` | post offices with that postal code |
 | `GET /search?q=nakru&limit=10` | fuzzy search results with `kind`, `name`, `code`, `county_code` and `score` |
+| `GET /addresses?q=P.O.%20Box%20123-00100%20Nairobi` | the parsed address with its post office; 400 if there is no box, 404 for an unknown office, 422 if the town and code disagree |
 | `GET /at?lat=-1.2884&lng=36.8233` | the ward at that point |
 | `GET /counties/at?lat=-0.0917&lng=34.768` | the county at that point |
 | `GET /postoffices/near?lat=-0.2833&lng=36.0667&limit=5` | the closest post offices, nearest first, with `distance_km` |
