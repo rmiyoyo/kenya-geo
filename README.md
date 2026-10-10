@@ -155,7 +155,7 @@ Errors can be checked with `errors.Is`:
 
 | Error | Meaning |
 | --- | --- |
-| `ErrNoBox` | no P.O. Box or Private Bag in the text, such as a street address |
+| `ErrNoBox` | no P.O. Box or Private Bag in the text, such as a street address, or a P.O. Box without a number |
 | `ErrUnknownPostOffice` | the postal code doesn't exist, or there is no code and the town isn't a post office |
 | `ErrTownMismatch` | the town doesn't belong to the postal code; the address is still returned, with the office for the code |
 
