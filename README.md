@@ -154,6 +154,7 @@ kenyageo-server -addr :8080
 | `GET /postcodes/{code}` | post offices with that postal code |
 | `GET /search?q=nakru&limit=10` | fuzzy search results with `kind`, `name`, `code`, `county_code` and `score` |
 | `GET /at?lat=-1.2884&lng=36.8233` | the ward at that point |
+| `GET /postoffices/near?lat=-0.2833&lng=36.0667&limit=5` | the closest post offices, nearest first, with `distance_km` |
 
 Errors come back as `{"error": "..."}` with status 400 for a bad query and 404 when nothing matches. Responses allow requests from any origin, so a web page can call the API directly.
 

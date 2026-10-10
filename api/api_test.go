@@ -84,6 +84,19 @@ func TestLookups(t *testing.T) {
 	}
 }
 
+func TestNear(t *testing.T) {
+	var offices []kenyageo.NearbyPostOffice
+	if code := get(t, "/postoffices/near?lat=-0.2833&lng=36.0667", &offices); code != http.StatusOK || len(offices) != 5 {
+		t.Fatalf("status %d, %d offices, want 5", code, len(offices))
+	}
+	if offices[0].Code != "20100" || offices[0].DistanceKm > 5 {
+		t.Errorf("nearest to Nakuru town = %+v, want 20100 Nakuru", offices[0])
+	}
+	if get(t, "/postoffices/near?lat=-0.2833&lng=36.0667&limit=2", &offices); len(offices) != 2 {
+		t.Errorf("limit=2 returned %d offices", len(offices))
+	}
+}
+
 func TestSearch(t *testing.T) {
 	var matches []Match
 	if code := get(t, "/search?q=nakru&limit=3", &matches); code != http.StatusOK || len(matches) == 0 {
@@ -99,17 +112,19 @@ func TestSearch(t *testing.T) {
 
 func TestErrors(t *testing.T) {
 	tests := map[string]int{
-		"/counties/48":                  http.StatusNotFound,
-		"/counties/atlantis":            http.StatusNotFound,
-		"/wards/9999":                   http.StatusNotFound,
-		"/postcodes/99999":              http.StatusNotFound,
-		"/constituencies/nowhere/wards": http.StatusNotFound,
-		"/search":                       http.StatusBadRequest,
-		"/search?q=x&limit=0":           http.StatusBadRequest,
-		"/search?q=x&limit=lots":        http.StatusBadRequest,
-		"/at?lat=north&lng=1":           http.StatusBadRequest,
-		"/at?lat=-4.5&lng=40.5":         http.StatusNotFound,
-		"/nothing-here":                 http.StatusNotFound,
+		"/counties/48":                             http.StatusNotFound,
+		"/counties/atlantis":                       http.StatusNotFound,
+		"/wards/9999":                              http.StatusNotFound,
+		"/postcodes/99999":                         http.StatusNotFound,
+		"/constituencies/nowhere/wards":            http.StatusNotFound,
+		"/search":                                  http.StatusBadRequest,
+		"/search?q=x&limit=0":                      http.StatusBadRequest,
+		"/search?q=x&limit=lots":                   http.StatusBadRequest,
+		"/at?lat=north&lng=1":                      http.StatusBadRequest,
+		"/at?lat=-4.5&lng=40.5":                    http.StatusNotFound,
+		"/postoffices/near?lat=1":                  http.StatusBadRequest,
+		"/postoffices/near?lat=1&lng=37&limit=500": http.StatusBadRequest,
+		"/nothing-here":                            http.StatusNotFound,
 	}
 	for path, want := range tests {
 		rec := httptest.NewRecorder()
