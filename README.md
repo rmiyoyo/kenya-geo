@@ -213,6 +213,17 @@ go install github.com/rmiyoyo/kenya-geo/cmd/kenyageo-server@latest
 kenyageo-server -addr :8080
 ```
 
+It listens on `$PORT` when that is set (as Cloud Run, Fly.io and Heroku set it), and otherwise on `:8080`; `-addr` overrides both. On SIGTERM or Ctrl-C it stops taking new connections and finishes the requests in flight before exiting.
+
+### Docker
+
+```sh
+docker build -t kenyageo-server .
+docker run -p 8080:8080 kenyageo-server
+```
+
+The image is about 18 MB: a static binary on the distroless base, running as a non-root user, with no shell or package manager. Its health check runs `kenyageo-server -healthcheck`, which asks the running server for a county and exits non-zero if it doesn't answer. CI builds the image and checks a running container on every pull request.
+
 | Endpoint | Returns |
 | --- | --- |
 | `GET /counties` | all 47 counties |

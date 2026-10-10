@@ -26,3 +26,18 @@ jobs:
           for f in FuzzNormalize FuzzParseAddress FuzzSearch; do
             go test -run '^$' -fuzz "^$f\$" -fuzztime 15s . || exit 1
           done
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: build image
+        run: docker build -t kenyageo-server .
+      - name: smoke test
+        run: |
+          docker run -d --name kenyageo -p 8080:8080 kenyageo-server
+          for i in $(seq 1 10); do curl -sf localhost:8080/counties/47 > /dev/null && break; sleep 1; done
+          curl -sf "localhost:8080/at?lat=-1.2884&lng=36.8233" | grep -q NAIROBI
+          docker exec kenyageo /kenyageo-server -healthcheck
+          docker stop kenyageo
+          test "$(docker inspect kenyageo --format '{{.State.ExitCode}}')" = 0
