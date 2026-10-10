@@ -97,6 +97,13 @@ func TestNear(t *testing.T) {
 	}
 }
 
+func TestCountyAt(t *testing.T) {
+	var c kenyageo.County
+	if code := get(t, "/counties/at?lat=-0.0917&lng=34.768", &c); code != http.StatusOK || c.Code != 42 {
+		t.Errorf("status %d, county %d %s, want 42 Kisumu", code, c.Code, c.Name)
+	}
+}
+
 func TestSearch(t *testing.T) {
 	var matches []Match
 	if code := get(t, "/search?q=nakru&limit=3", &matches); code != http.StatusOK || len(matches) == 0 {
@@ -122,6 +129,8 @@ func TestErrors(t *testing.T) {
 		"/search?q=x&limit=lots":                   http.StatusBadRequest,
 		"/at?lat=north&lng=1":                      http.StatusBadRequest,
 		"/at?lat=-4.5&lng=40.5":                    http.StatusNotFound,
+		"/counties/at?lat=x&lng=1":                 http.StatusBadRequest,
+		"/counties/at?lat=-4.5&lng=40.5":           http.StatusNotFound,
 		"/postoffices/near?lat=1":                  http.StatusBadRequest,
 		"/postoffices/near?lat=1&lng=37&limit=500": http.StatusBadRequest,
 		"/nothing-here":                            http.StatusNotFound,
