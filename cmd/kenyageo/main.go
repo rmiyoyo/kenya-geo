@@ -31,9 +31,11 @@ func main() {
 			names = append(names, strings.TrimSuffix(n.Name, " County"))
 		}
 		fmt.Printf("  borders %s\n", strings.Join(names, ", "))
+		v, _ := geo.CountyVoters(c.Code)
+		fmt.Printf("  %s registered voters in 2022%s\n", thousands(v.RegisteredVoters2022), incomplete(v))
 		for _, name := range geo.Constituencies(c.Code) {
-			wards := geo.WardsInConstituency(name)
-			fmt.Printf("  %-22s %d wards\n", name, len(wards))
+			v, _ := geo.ConstituencyVoters(name)
+			fmt.Printf("  %-22s %2d wards %10s voters%s\n", name, v.Wards, thousands(v.RegisteredVoters2022), incomplete(v))
 		}
 	case "postcode":
 		offices := geo.PostOffices(arg)
@@ -107,6 +109,21 @@ func main() {
 		fmt.Fprintf(os.Stderr, "unknown command %q\n", os.Args[1])
 		os.Exit(2)
 	}
+}
+
+func thousands(n int) string {
+	s := strconv.Itoa(n)
+	for i := len(s) - 3; i > 0; i -= 3 {
+		s = s[:i] + "," + s[i:]
+	}
+	return s
+}
+
+func incomplete(v kenyageo.VoterTotal) string {
+	if v.Complete {
+		return ""
+	}
+	return " (a ward has no figure)"
 }
 
 func parseLatLng(s string) (lat, lng float64, err error) {
