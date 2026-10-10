@@ -193,6 +193,17 @@ kenyageo boundary 1439       # a ward or county outline as GeoJSON
 kenyageo address "P.O. Box 123-00100 Nairobi"  # parse and check a postal address
 ```
 
+Add `-json` before the command to get JSON instead of text, for scripts and `jq`:
+
+```sh
+kenyageo -json county nakuru | jq '.constituencies[] | {name, voters: .voters.registered_voters_2022}'
+kenyageo -json at -1.2884 36.8233 | jq -r .ward.name
+```
+
+`county` gives the county with its voter total and each constituency's; `at` gives `{"ward": ..., "county": ...}`, with `ward` null where no ward boundary is known; the other commands give the same JSON as the HTTP API. `boundary` always prints GeoJSON.
+
+The exit status is 0 on success, 1 when nothing matches (or an address's town and postal code disagree, in which case the parsed address is still printed) and 2 for a bad command or argument.
+
 ## HTTP API
 
 The `api` package serves the same data as JSON, and `kenyageo-server` runs it:
