@@ -136,7 +136,7 @@ for _, p := range geo.PostOfficesNear(-0.2833, 36.0667, 3) {
 }
 ```
 
-From central Nakuru this prints `20100 Nakuru 2.7`, then Lanet and Kabatini. `PostOfficesNear` returns the closest post offices to a point, nearest first, with the straight-line distance in kilometres. Only the 553 offices with a known location are considered, so the nearest result can be a few kilometres off where an office without a location (such as Nairobi GPO) is closer.
+From central Nakuru this prints `20100 Nakuru 2.7`, then Lanet and Kabatini. `PostOfficesNear` returns the closest post offices to a point, nearest first, with the straight-line distance in kilometres. Only the 577 offices with a known location are considered, so the nearest result can be a few kilometres off where an office without a location is closer. From the KICC, the nearest are City Square and Nairobi GPO.
 
 ### Postal addresses
 
@@ -281,7 +281,8 @@ The same JSON files can be used from any language.
 - Neighbouring counties are worked out from the county boundaries: two counties are neighbours when their outlines run within about a kilometre of each other for at least three boundary points. Borders across Lake Victoria count, so Siaya and Homa Bay are neighbours.
 - Ward centroids and boundaries are known for 1,437 of the 1,450 wards. The other 13 have names too different from the boundary data to match safely, so `WardAt` finds nothing in those areas.
 - Boundaries are simplified, so a point within a few hundred metres of a ward line can land in the neighbouring ward. A handful of wards on county borders have centroids that fall just across the line.
-- Post office locations are given only for the 553 offices matched to a real place. `county_source` says how each office's county was decided: `geonames`, `location`, `manual` or `neighbours`.
+- Post office locations are given for 577 of the 890 offices. GeoNames places 553 of them precisely; the other 24 come from OpenStreetMap. `location_source` says which: `geonames`, `openstreetmap`, or empty when the location is unknown. `county_source` says how each office's county was decided: `geonames`, `location`, `manual` or `neighbours`.
+- An OpenStreetMap post office is used only when it matches exactly one office without a location: by postal code and name, by the same name, or by a name that is part of the office's name (`Hardy` for `Langata Hardy`). A match is skipped when the point lies in a different county, when another office could claim it, or when a name-only match sits within 300 m of an office GeoNames already places. That leaves out, for example, Kamiti and Kenyatta University, which OpenStreetMap places just inside Nairobi while GeoNames files them under Kiambu.
 - The source data had several errors, such as wards filed under the wrong constituency, mixed census years and a malformed ward code. They are corrected when the data is generated; see `internal/gendata/fixes.go`.
 
 ## Sources
@@ -291,9 +292,16 @@ The same JSON files can be used from any language.
 | [KNBS 2019 Kenya Population and Housing Census, Volume I](https://open.africa/dataset/2019-kenya-population-and-housing-census) | county population by sex, land area | open data |
 | [geoBoundaries gbOpen KEN ADM1/ADM2/ADM3](https://www.geoboundaries.org/) | ISO codes, centroids, bounding boxes, ward boundaries | public domain |
 | [GeoNames postal codes](https://www.geonames.org/) | post offices | CC BY 4.0 |
+| [OpenStreetMap](https://www.openstreetmap.org/copyright) via Overpass API | post office locations GeoNames lacks | ODbL 1.0 |
 | IEBC county and ward lists | codes, names, headquarters, wards, 2022 voters | public record |
 
-Post office data is © GeoNames, used under CC BY 4.0.
+Post office data is © GeoNames, used under CC BY 4.0. Some post office locations are © OpenStreetMap contributors, available under the Open Database License.
+
+`data/source/osm-postoffices.json` is a saved Overpass API result, so generating the data doesn't depend on Overpass being up. To refresh it, run this and then regenerate:
+
+```sh
+curl -sS https://overpass-api.de/api/interpreter --data-urlencode 'data=[out:json][timeout:180];area["ISO3166-1"="KE"][admin_level=2]->.ke;(node["amenity"="post_office"](area.ke);way["amenity"="post_office"](area.ke);relation["amenity"="post_office"](area.ke););out center tags;' -o data/source/osm-postoffices.json
+```
 
 ## Contributing
 

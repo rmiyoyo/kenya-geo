@@ -1,0 +1,2388 @@
+{
+  "version": 0.6,
+  "generator": "Overpass API 0.7.62.11 87bfad18",
+  "osm3s": {
+    "timestamp_osm_base": "2026-06-01T08:52:28Z",
+    "timestamp_areas_base": "2026-06-01T08:52:28Z",
+    "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
+  },
+  "elements": [
+
+{
+  "type": "node",
+  "id": 300800837,
+  "lat": -1.2326508,
+  "lon": 36.8149357,
+  "tags": {
+    "amenity": "post_office"
+  }
+},
+{
+  "type": "node",
+  "id": 413939766,
+  "lat": -0.4712333,
+  "lon": 34.0671635,
+  "tags": {
+    "amenity": "post_office"
+  }
+},
+{
+  "type": "node",
+  "id": 429843866,
+  "lat": -0.3696574,
+  "lon": 35.2849453,
+  "tags": {
+    "amenity": "post_office",
+    "name": "Kericho GPO"
+  }
+},
+{
+  "type": "node",
+  "id": 650338835,
+  "lat": -3.9915070,
+  "lon": 39.7334620,
+  "tags": {
+    "amenity": "post_office",
+    "name": "Bamburi 80101"
+  }
+},
+{
+  "type": "node",
+  "id": 651910898,
+  "lat": -0.2308372,
+  "lon": 37.6272707,
+  "tags": {
+    "amenity": "post_office",
+    "name": "Chogoria",
+    "source": "GPS"
+  }
+},
+{
+  "type": "node",
+  "id": 694431150,
+  "lat": -1.3229757,
+  "lon": 36.7071249,
+  "tags": {
+    "addr:housenumber": "At Karen Shopping Center, Ngong Rd, Nairobi",
+    "amenity": "post_office",
+    "name": "Karen Post Office (00502)",
+    "operator": "Postal Corporation of Kenya",
+    "postal_code": "00502",
+    "website": "https://posta.co.ke/"
+  }
+},
+{
+  "type": "node",
+  "id": 833388765,
+  "lat": -4.1375843,
+  "lon": 39.3179648,
+  "tags": {
+    "amenity": "post_office",
+    "name": "Kinango Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 979391485,
+  "lat": -3.6323092,
+  "lon": 39.8536978,
+  "tags": {
+    "addr:city": "Kilifi",
+    "amenity": "post_office",
+    "name": "Kilifi Post Office",
+    "operator": "Poster",
+    "postal_code": "8010",
+    "website": "https://posta.co.ke/"
+  }
+},
+{
+  "type": "node",
+  "id": 1038193527,
+  "lat": -1.2653482,
+  "lon": 36.8571902,
+  "tags": {
+    "amenity": "post_office",
+    "name": "mathare post office"
+  }
+},
+{
+  "type": "node",
+  "id": 1057422136,
+  "lat": -0.2850042,
+  "lon": 36.0700088,
+  "tags": {
+    "amenity": "post_office",
+    "name": "Nakuru General Post Office",
+    "postal_code": "20100",
+    "short_name": "Nakuru GPO",
+    "website": "https://posta.co.ke/"
+  }
+},
+{
+  "type": "node",
+  "id": 1315243442,
+  "lat": -3.2130650,
+  "lon": 40.1182112,
+  "tags": {
+    "addr:city": "Malindi",
+    "amenity": "post_office",
+    "name": "Malindi Post Office",
+    "name:en": "Malindi Post Office",
+    "operator": "Postal Corporation of Kenya",
+    "postal_code": "80200",
+    "website": "https://posta.co.ke/"
+  }
+},
+{
+  "type": "node",
+  "id": 1317015129,
+  "lat": -1.2845594,
+  "lon": 36.8799527,
+  "tags": {
+    "addr:city": "Buruburu",
+    "addr:street": "Ol Doinyo Sabuk Road",
+    "amenity": "post_office",
+    "name": "Buru Buru Post Office",
+    "toilets:wheelchair": "no",
+    "wheelchair": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 1330729928,
+  "lat": -2.2694303,
+  "lon": 40.9027212,
+  "tags": {
+    "amenity": "post_office",
+    "name": "Posta"
+  }
+},
+{
+  "type": "node",
+  "id": 1340835747,
+  "lat": -3.3055633,
+  "lon": 40.0115930,
+  "tags": {
+    "addr:city": "Gede",
+    "amenity": "post_office",
+    "name": "Gede Posta"
+  }
+},
+{
+  "type": "node",
+  "id": 1420054570,
+  "lat": -1.2801737,
+  "lon": 36.8126741,
+  "tags": {
+    "amenity": "post_office",
+    "name": "YMCA",
+    "operator": "YMCA MANAGEMENT"
+  }
+},
+{
+  "type": "node",
+  "id": 1426057735,
+  "lat": 0.1803602,
+  "lon": 34.2949471,
+  "tags": {
+    "amenity": "post_office",
+    "name": "Ugunja Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 1457670894,
+  "lat": -4.2873978,
+  "lon": 39.5657762,
+  "tags": {
+    "amenity": "post_office",
+    "name": "Ukunda post office"
+  }
+},
+{
+  "type": "node",
+  "id": 1507565817,
+  "lat": -1.2908637,
+  "lon": 36.8249138,
+  "tags": {
+    "addr:city": "Nairobi",
+    "addr:postcode": "00200",
+    "addr:street": "Haile Selassie Avenue",
+    "amenity": "post_office",
+    "name": "City Square Post Office",
+    "opening_hours": "Mo-Fr 09:00-17:00",
+    "operator": "Postal Services Of Kenya",
+    "postal_code": "00200",
+    "website": "https://posta.co.ke/"
+  }
+},
+{
+  "type": "node",
+  "id": 1537504486,
+  "lat": -1.2862950,
+  "lon": 36.8196418,
+  "tags": {
+    "addr:city": "Nairobi",
+    "addr:postcode": "00100",
+    "addr:street": "Kenyatta Avenue",
+    "amenity": "post_office",
+    "brand": "Post Office",
+    "brand:wikidata": "Q7233983",
+    "name": "Nairobi General Post Office",
+    "operator": "Kenya Postal Corporation",
+    "short_name": "Nairobi GPO",
+    "website": "https://posta.co.ke/"
+  }
+},
+{
+  "type": "node",
+  "id": 1720982961,
+  "lat": -1.2825521,
+  "lon": 36.8240141,
+  "tags": {
+    "addr:city": "Nairobi",
+    "addr:street": "Tom Mboya Street",
+    "amenity": "post_office",
+    "brand": "Posta Kenya",
+    "brand:wikidata": "Q7233983",
+    "name": "Tom Mboya",
+    "operator": "Postal Corporation of Kenya",
+    "operator:wikidata": "Q7233983",
+    "postal_code": "00400",
+    "website": "https://posta.co.ke/"
+  }
+},
+{
+  "type": "node",
+  "id": 1791432975,
+  "lat": -4.0127101,
+  "lon": 39.6938045,
+  "tags": {
+    "amenity": "post_office",
+    "name": "Mtopanga 80117"
+  }
+},
+{
+  "type": "node",
+  "id": 1821782081,
+  "lat": 0.2065413,
+  "lon": 34.7717158,
+  "tags": {
+    "amenity": "post_office",
+    "name": "Khayega Post Office",
+    "operator": "Kenya Posta",
+    "source": "Survey"
+  }
+},
+{
+  "type": "node",
+  "id": 1864105646,
+  "lat": 0.1545755,
+  "lon": 34.3799088,
+  "tags": {
+    "amenity": "post_office",
+    "name": "Sidindi Post office"
+  }
+},
+{
+  "type": "node",
+  "id": 1874189588,
+  "lat": -1.3010283,
+  "lon": 36.7805708,
+  "tags": {
+    "addr:city": "Nairobi",
+    "addr:street": "Ngong Road",
+    "amenity": "post_office",
+    "name": "Adams Arcade Post Office 00505"
+  }
+},
+{
+  "type": "node",
+  "id": 1888114295,
+  "lat": -4.3030516,
+  "lon": 39.5794681,
+  "tags": {
+    "addr:city": "Kwale",
+    "addr:housenumber": "80401",
+    "addr:street": "Diani Beach Road",
+    "amenity": "post_office",
+    "name": "Diani Post Office",
+    "operator": "Kenyan Post"
+  }
+},
+{
+  "type": "node",
+  "id": 1991534899,
+  "lat": -1.1478781,
+  "lon": 36.9601302,
+  "tags": {
+    "addr:city": "Ruiru",
+    "addr:street": "Ruiru Road",
+    "amenity": "post_office",
+    "name": "Ruiru Post Office",
+    "operator": "postal coporation of kenya"
+  }
+},
+{
+  "type": "node",
+  "id": 2032776508,
+  "lat": -0.2456886,
+  "lon": 35.7300819,
+  "tags": {
+    "amenity": "post_office"
+  }
+},
+{
+  "type": "node",
+  "id": 2249916021,
+  "lat": -4.0487780,
+  "lon": 39.6826424,
+  "tags": {
+    "amenity": "post_office",
+    "brand": "Post Office",
+    "brand:wikidata": "Q7233983",
+    "name": "Mkomani Post Office",
+    "operator": "Postal Corporation of Kenya",
+    "operator:wikidata": "Q7233983",
+    "postal_code": "80106",
+    "website": "https://posta.co.ke/"
+  }
+},
+{
+  "type": "node",
+  "id": 2438808320,
+  "lat": -0.3705412,
+  "lon": 34.6489308,
+  "tags": {
+    "amenity": "post_office",
+    "name": "Kendu Bay Post Office",
+    "operator": "Posta Kenya"
+  }
+},
+{
+  "type": "node",
+  "id": 2641024259,
+  "lat": -0.3285928,
+  "lon": 35.9415858,
+  "tags": {
+    "amenity": "post_office",
+    "name": "Njoro G.P.O"
+  }
+},
+{
+  "type": "node",
+  "id": 2653552592,
+  "lat": -1.2497855,
+  "lon": 36.8202048,
+  "tags": {
+    "addr:city": "Nairobi",
+    "addr:street": "Limuru Road",
+    "amenity": "post_office",
+    "name": "Muthaiga Post Office",
+    "operator": "Postal Corporation of Kenya",
+    "postal_code": "00619",
+    "website": "https://posta.co.ke/"
+  }
+},
+{
+  "type": "node",
+  "id": 2699195525,
+  "lat": -1.3671695,
+  "lon": 38.0125638,
+  "tags": {
+    "addr:city": "Kitui",
+    "addr:street": "Kibwezi - Kitui Road",
+    "amenity": "post_office",
+    "name": "Kitui Post Office",
+    "operator": "Kenya Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 3141461082,
+  "lat": -0.7819975,
+  "lon": 35.3408365,
+  "tags": {
+    "addr:city": "Bomet",
+    "addr:street": "B3",
+    "amenity": "post_office",
+    "collection_times": "12",
+    "name": "Bomet Post Office",
+    "operator": "Posta"
+  }
+},
+{
+  "type": "node",
+  "id": 3219925545,
+  "lat": -0.1652126,
+  "lon": 35.5945568,
+  "tags": {
+    "addr:city": "Londiani",
+    "amenity": "post_office",
+    "name": "Londiani Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 3393468068,
+  "lat": -1.3649741,
+  "lon": 36.7422702,
+  "tags": {
+    "amenity": "post_office",
+    "name": "Hardy Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 3486550355,
+  "lat": -3.3932847,
+  "lon": 38.5635260,
+  "tags": {
+    "addr:city": "Voi",
+    "amenity": "post_office",
+    "name": "Voi Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 3519375334,
+  "lat": -1.3614819,
+  "lon": 36.6553287,
+  "tags": {
+    "addr:city": "Ngong",
+    "addr:street": "Ngong Road",
+    "amenity": "post_office",
+    "name": "Ngong Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 3723693516,
+  "lat": 0.3363352,
+  "lon": 34.4887528,
+  "tags": {
+    "addr:city": "Mumias",
+    "addr:street": "Mumias-Bungoma Road",
+    "amenity": "post_office",
+    "name": "Mumias post office"
+  }
+},
+{
+  "type": "node",
+  "id": 3731344103,
+  "lat": 0.2173230,
+  "lon": 34.4998727,
+  "tags": {
+    "amenity": "post_office"
+  }
+},
+{
+  "type": "node",
+  "id": 3735798744,
+  "lat": -1.1042713,
+  "lon": 37.0148738,
+  "tags": {
+    "addr:street": "Gatundu Juja Road",
+    "amenity": "post_office",
+    "collection_times": "8-4",
+    "name": "Post Office, Juja branch",
+    "operator": "Posta Kenya"
+  }
+},
+{
+  "type": "node",
+  "id": 4065838377,
+  "lat": -1.2446544,
+  "lon": 36.6632789,
+  "tags": {
+    "amenity": "post_office",
+    "name": "Kikuyu Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 4357663932,
+  "lat": 0.0139624,
+  "lon": 37.0784060,
+  "tags": {
+    "addr:city": "Nanyuki",
+    "addr:street": "Nyeri-Nanyuki Road",
+    "amenity": "post_office",
+    "name": "Posta Nanyuki"
+  }
+},
+{
+  "type": "node",
+  "id": 4361762508,
+  "lat": 0.2792521,
+  "lon": 34.7530798,
+  "tags": {
+    "addr:city": "Kakamega",
+    "addr:street": "Kisumu-Kakamega Road",
+    "amenity": "post_office",
+    "name": "Kakamega Post Office",
+    "operator": "Postal Corporation of Kenya",
+    "postal_code": "50100",
+    "website": "https://posta.co.ke/"
+  }
+},
+{
+  "type": "node",
+  "id": 4691241690,
+  "lat": 0.5500788,
+  "lon": 34.5595994,
+  "tags": {
+    "amenity": "post_office",
+    "name": "Khalaba",
+    "name:en": "Khalaba"
+  }
+},
+{
+  "type": "node",
+  "id": 4847002802,
+  "lat": 1.0964497,
+  "lon": 36.6976906,
+  "tags": {
+    "amenity": "post_office",
+    "name": "Maralal Post Office / Huduma Center"
+  }
+},
+{
+  "type": "node",
+  "id": 5279452621,
+  "lat": -1.2929843,
+  "lon": 36.7875563,
+  "tags": {
+    "addr:street": "Ring Road",
+    "amenity": "post_office",
+    "check_date": "2023-05-11",
+    "name:uk": "Пошта",
+    "opening_hours": "Mo-Fr 07:30-17:30; Sa 7:30-13:30",
+    "operator": "Postal Corporation of Kenya"
+  }
+},
+{
+  "type": "node",
+  "id": 5327781857,
+  "lat": -1.1681648,
+  "lon": 36.8257876,
+  "tags": {
+    "addr:city": "Kiambu",
+    "addr:housenumber": "00900",
+    "addr:postcode": "00900",
+    "amenity": "post_office",
+    "name": "Kiambu Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 5339116168,
+  "lat": -1.2806157,
+  "lon": 36.7704533,
+  "tags": {
+    "amenity": "post_office",
+    "check_date": "2023-05-02",
+    "name": "Lavington Post Office",
+    "operator": "Postal Corporation of Kenya",
+    "postal_code": "00603",
+    "website": "https://posta.co.ke/"
+  }
+},
+{
+  "type": "node",
+  "id": 5356811483,
+  "lat": -1.3282972,
+  "lon": 36.7251519,
+  "tags": {
+    "addr:housenumber": "Torenia Gardens, Nairobi",
+    "amenity": "post_office",
+    "name": "Karen Plains Courier Ltd"
+  }
+},
+{
+  "type": "node",
+  "id": 5360202706,
+  "lat": -1.2616822,
+  "lon": 36.8019471,
+  "tags": {
+    "addr:housenumber": "Parklands Rd, Nairobi City",
+    "amenity": "post_office",
+    "name": "Kenya Postal Services"
+  }
+},
+{
+  "type": "node",
+  "id": 5372487893,
+  "lat": -1.3051039,
+  "lon": 36.8237344,
+  "tags": {
+    "addr:city": "Nairobi",
+    "addr:housenumber": "Nyayo Stadium, Langata Rd, Nairobi",
+    "addr:street": "Langata Road",
+    "amenity": "post_office",
+    "name": "Postal Corporation"
+  }
+},
+{
+  "type": "node",
+  "id": 5425986865,
+  "lat": -1.0564260,
+  "lon": 37.1124609,
+  "tags": {
+    "addr:city": "Thika",
+    "addr:street": "Garissa Road",
+    "amenity": "post_office",
+    "name": "Madaraka Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 5466736919,
+  "lat": 1.3072791,
+  "lon": 35.2044847,
+  "tags": {
+    "addr:street": "Kapenguria-Lodwar Road",
+    "amenity": "post_office",
+    "name": "Chepareria Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 5496066089,
+  "lat": -1.2952669,
+  "lon": 36.8448557,
+  "tags": {
+    "addr:city": "Nairobi",
+    "addr:street": "Kilimambogo Road",
+    "amenity": "post_office",
+    "name": "Kaloleni Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 5504249622,
+  "lat": -1.4970896,
+  "lon": 40.0377036,
+  "tags": {
+    "amenity": "post_office",
+    "name": "Posta Office Hola"
+  }
+},
+{
+  "type": "node",
+  "id": 5539579832,
+  "lat": -1.3077083,
+  "lon": 36.8569137,
+  "tags": {
+    "addr:city": "Nairobi",
+    "addr:street": "Likoni Road",
+    "amenity": "post_office",
+    "name": "Viwandani Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 5545563751,
+  "lat": -0.2905986,
+  "lon": 36.0550621,
+  "tags": {
+    "addr:city": "Nakuru",
+    "addr:street": "Nakuru Kisumu Road",
+    "amenity": "post_office",
+    "name": "SF Lanag Langa",
+    "opening_hours": "Sa 09:00-13:00"
+  }
+},
+{
+  "type": "node",
+  "id": 5588170687,
+  "lat": -1.8189450,
+  "lon": 37.5369750,
+  "tags": {
+    "amenity": "post_office",
+    "image": "https://kc.humanitarianresponse.info/attachment/original?media_file=mapkibera/attachments/1524645723287.jpg",
+    "name": "Nziu Post Office",
+    "opening_hours": "Mo-Fr 8:00-4:00",
+    "village": "Nziu",
+    "wb_pb:id": "21749047",
+    "wheelchair": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 5641420333,
+  "lat": -1.6608111,
+  "lon": 37.4477530,
+  "tags": {
+    "amenity": "post_office",
+    "image:pointofinterest": "https://kc.humanitarianresponse.info/attachment/original?media_file=mapkibera/attachments/1526977939498.jpg",
+    "name": "Kikima Posta",
+    "wb_pb:id": "22956178"
+  }
+},
+{
+  "type": "node",
+  "id": 5781797223,
+  "lat": 0.4928252,
+  "lon": 35.7446044,
+  "tags": {
+    "amenity": "post_office",
+    "image": "http://kc.humanitarianresponse.info/attachment/orginal?media_file=mapkibera/attachments/1532077029706.jpg",
+    "name": "Kabarnet Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 5903877226,
+  "lat": 2.3279118,
+  "lon": 37.9877681,
+  "tags": {
+    "addr:city": "Marsabit",
+    "addr:street": "Post office road",
+    "amenity": "post_office",
+    "name": "Marsabit post office",
+    "operator": "Postal Corporation of Kenya",
+    "postal_code": "60100",
+    "website": "https://posta.co.ke/"
+  }
+},
+{
+  "type": "node",
+  "id": 6043920486,
+  "lat": -3.9507953,
+  "lon": 39.7453513,
+  "tags": {
+    "addr:city": "Mtwapa",
+    "addr:street": "Malindi Road",
+    "amenity": "post_office",
+    "name": "Posta Mtwapa",
+    "operator": "Postal Corporation of Kenya",
+    "postal_code": "80109",
+    "website": "https://posta.co.ke/"
+  }
+},
+{
+  "type": "node",
+  "id": 6054282202,
+  "lat": -4.0612123,
+  "lon": 39.6620518,
+  "tags": {
+    "addr:city": "Kiunga Lane",
+    "addr:street": "Kiunga Lane",
+    "amenity": "post_office",
+    "brand": "Posta Kenya",
+    "brand:wikidata": "Q7233983",
+    "name": "Kilindini Post Office",
+    "operator": "Postal Corporation of Kenya",
+    "operator:wikidata": "Q7233983",
+    "postal_code": "80107",
+    "website": "https://posta.co.ke/"
+  }
+},
+{
+  "type": "node",
+  "id": 6054412130,
+  "lat": -4.0583641,
+  "lon": 39.6663752,
+  "tags": {
+    "addr:city": "Mombasa",
+    "addr:street": "Haile Selassie Road",
+    "amenity": "post_office"
+  }
+},
+{
+  "type": "node",
+  "id": 6054467727,
+  "lat": -4.0510297,
+  "lon": 39.6654265,
+  "tags": {
+    "addr:city": "Mombasa",
+    "addr:street": "Mombasa road",
+    "amenity": "post_office"
+  }
+},
+{
+  "type": "node",
+  "id": 6054523196,
+  "lat": -0.9845268,
+  "lon": 36.6308425,
+  "tags": {
+    "addr:city": "Bathi Location",
+    "addr:street": "Nairobi Road",
+    "amenity": "post_office",
+    "name": "Kimende Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 6054978090,
+  "lat": -4.5538386,
+  "lon": 39.1238137,
+  "tags": {
+    "addr:city": "Lunga-lunga",
+    "addr:street": "Lungalunga-Ramisi Road",
+    "amenity": "post_office",
+    "name": "Lungalunga Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 6057118927,
+  "lat": -4.4792886,
+  "lon": 39.4820250,
+  "tags": {
+    "addr:city": "Msambweni",
+    "addr:street": "Mwaembe road",
+    "amenity": "post_office",
+    "name": "Posta - Msambweni"
+  }
+},
+{
+  "type": "node",
+  "id": 6063644325,
+  "lat": -1.0590284,
+  "lon": 36.7748411,
+  "tags": {
+    "addr:city": "Githunguri",
+    "addr:street": "Kiambu Road",
+    "amenity": "post_office",
+    "name": "Githunguri Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 6063645025,
+  "lat": -1.0540131,
+  "lon": 36.6323647,
+  "tags": {
+    "addr:city": "Uplands",
+    "addr:street": "Upland Lane",
+    "amenity": "post_office",
+    "name": "Nyambari Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 6064457029,
+  "lat": -0.1671069,
+  "lon": 35.9625990,
+  "tags": {
+    "amenity": "post_office",
+    "name": "Kenya Posta"
+  }
+},
+{
+  "type": "node",
+  "id": 6072960954,
+  "lat": -4.0839907,
+  "lon": 39.6598323,
+  "tags": {
+    "addr:city": "Likoni",
+    "addr:street": "Likoni-Ukunda Road",
+    "amenity": "post_office",
+    "name": "Postal Corporation of Kenya- Likoni",
+    "operator": "Postal Corporation of Kenya",
+    "postal_code": "80110",
+    "website": "https://posta.co.ke/"
+  }
+},
+{
+  "type": "node",
+  "id": 6072999735,
+  "lat": -4.0824745,
+  "lon": 39.6604353,
+  "tags": {
+    "addr:city": "Likoni",
+    "addr:street": "Likoni-Ukunda Road",
+    "amenity": "post_office",
+    "name": "Posta Kenya - Likoni"
+  }
+},
+{
+  "type": "node",
+  "id": 6073489984,
+  "lat": -3.8647262,
+  "lon": 39.4744093,
+  "tags": {
+    "addr:city": "Mariakani",
+    "addr:street": "Mombasa Road",
+    "amenity": "post_office",
+    "name": "Mariakani Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 6076115581,
+  "lat": -3.5568955,
+  "lon": 38.7486028,
+  "tags": {
+    "addr:city": "Maungu",
+    "addr:street": "Mombasa Road",
+    "amenity": "post_office",
+    "name": "Maungu Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 6082451959,
+  "lat": -0.8444519,
+  "lon": 34.1555480,
+  "tags": {
+    "addr:city": "Karungu",
+    "addr:street": "C19",
+    "amenity": "post_office",
+    "name": "Sori Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 6085556815,
+  "lat": -0.7562506,
+  "lon": 34.6009078,
+  "tags": {
+    "addr:city": "Rongo",
+    "addr:street": "Homa Bay-Rongo Road",
+    "amenity": "post_office",
+    "name": "Rongo Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 6095562306,
+  "lat": -0.6768392,
+  "lon": 34.7720981,
+  "tags": {
+    "addr:city": "Kisii",
+    "addr:street": "B3",
+    "amenity": "post_office",
+    "name": "Kisii Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 6105994795,
+  "lat": -0.6916393,
+  "lon": 35.1101768,
+  "tags": {
+    "addr:city": "Sotik",
+    "addr:street": "Sotik",
+    "amenity": "post_office",
+    "name": "Sotik Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 6106202808,
+  "lat": 1.0152069,
+  "lon": 35.0042864,
+  "tags": {
+    "addr:city": "Kitale",
+    "addr:street": "Posta Road",
+    "amenity": "post_office",
+    "name": "Posta Kenya - Kitale"
+  }
+},
+{
+  "type": "node",
+  "id": 6113121398,
+  "lat": -0.8618254,
+  "lon": 35.3922680,
+  "tags": {
+    "addr:city": "Longisa",
+    "addr:street": "Kaplong-Narok-Maai Road",
+    "amenity": "post_office",
+    "name": "Longisa Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 6123327612,
+  "lat": -0.1037941,
+  "lon": 34.7529701,
+  "tags": {
+    "addr:city": "Kisumu",
+    "addr:street": "Oginga Odinga Street",
+    "amenity": "post_office",
+    "name": "E.M.S Posta",
+    "operator": "EMS Kenya",
+    "website": "https://www.ems.post/en/global-network/ems-operators/ems-kenya"
+  }
+},
+{
+  "type": "node",
+  "id": 6130562032,
+  "lat": -0.0985267,
+  "lon": 34.7504588,
+  "tags": {
+    "addr:city": "Kisumu",
+    "addr:street": "Makasembo Road",
+    "amenity": "post_office",
+    "name": "Winam Post Office",
+    "operator": "Postal Corporation of Kenya",
+    "postal_code": "40141",
+    "website": "https://posta.co.ke/"
+  }
+},
+{
+  "type": "node",
+  "id": 6144610326,
+  "lat": -0.0646056,
+  "lon": 37.6634158,
+  "tags": {
+    "addr:city": "Nkubu",
+    "addr:street": "Meru-Nairobi Highway",
+    "amenity": "post_office"
+  }
+},
+{
+  "type": "node",
+  "id": 6147580933,
+  "lat": 0.5210778,
+  "lon": 35.2654995,
+  "tags": {
+    "addr:city": "Eldoret",
+    "addr:street": "Eldoret -Webuye - Malaba Road",
+    "amenity": "post_office"
+  }
+},
+{
+  "type": "node",
+  "id": 6178041836,
+  "lat": -1.1776361,
+  "lon": 36.7500827,
+  "tags": {
+    "addr:city": "Kiambu",
+    "addr:street": "Kihara Road",
+    "amenity": "post_office",
+    "name": "Karuri Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 6210199376,
+  "lat": -1.3927572,
+  "lon": 36.9381585,
+  "tags": {
+    "addr:city": "Mlolongo",
+    "addr:street": "Mombasa Road",
+    "amenity": "post_office",
+    "name": "Mlolongo Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 6213154946,
+  "lat": -0.7176508,
+  "lon": 37.1589800,
+  "tags": {
+    "addr:city": "Murang'a",
+    "addr:street": "Muranga",
+    "amenity": "post_office",
+    "name": "Posta Muranga"
+  }
+},
+{
+  "type": "node",
+  "id": 6215733424,
+  "lat": -0.4832805,
+  "lon": 37.1240982,
+  "tags": {
+    "addr:city": "Karatina",
+    "addr:street": "A2",
+    "amenity": "post_office",
+    "name": "Posta Karatina"
+  }
+},
+{
+  "type": "node",
+  "id": 6215953831,
+  "lat": -0.4253568,
+  "lon": 36.9556569,
+  "tags": {
+    "addr:city": "Nyeri",
+    "addr:street": "378 Gakere Road",
+    "amenity": "post_office",
+    "name": "Gakere Postal Office"
+  }
+},
+{
+  "type": "node",
+  "id": 6218487558,
+  "lat": -1.4292645,
+  "lon": 36.6881651,
+  "tags": {
+    "addr:city": "Kiserian",
+    "addr:street": "Magadi Road",
+    "amenity": "post_office",
+    "name": "Kiserin Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 6218487559,
+  "lat": -1.4294598,
+  "lon": 36.6882140,
+  "tags": {
+    "addr:city": "Kiserian",
+    "addr:street": "Magadi Road",
+    "amenity": "post_office",
+    "name": "Kenya Posta"
+  }
+},
+{
+  "type": "node",
+  "id": 6218727828,
+  "lat": -1.3954321,
+  "lon": 36.7626575,
+  "tags": {
+    "addr:city": "Rongai",
+    "addr:street": "Magadi Road",
+    "amenity": "post_office",
+    "name": "Rongai post office",
+    "opening_hours": "Mo-Sa 08:00-17:00"
+  }
+},
+{
+  "type": "node",
+  "id": 6224771773,
+  "lat": -1.3765313,
+  "lon": 36.7690990,
+  "tags": {
+    "addr:city": "Nairobi",
+    "addr:street": "Magadi Road",
+    "amenity": "post_office",
+    "name": "Posta Mbagathi"
+  }
+},
+{
+  "type": "node",
+  "id": 6229376444,
+  "lat": -1.5182377,
+  "lon": 37.2668934,
+  "tags": {
+    "addr:city": "Machakos",
+    "addr:street": "Mbolu Malu Road",
+    "amenity": "post_office",
+    "brand": "Post Office",
+    "brand:wikidata": "Q7233983",
+    "name": "Posta Kenya"
+  }
+},
+{
+  "type": "node",
+  "id": 6229624517,
+  "lat": -1.8530553,
+  "lon": 37.2593622,
+  "tags": {
+    "addr:city": "Salama",
+    "addr:street": "Mombasa Road",
+    "amenity": "post_office",
+    "name": "Yoani Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 6232739119,
+  "lat": -2.0181512,
+  "lon": 37.3771337,
+  "tags": {
+    "addr:city": "Sultan Hamud",
+    "addr:street": "Mombasa Road",
+    "amenity": "post_office",
+    "name": "Sultan Hamud Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 6232739132,
+  "lat": -2.0796526,
+  "lon": 37.4746070,
+  "tags": {
+    "addr:city": "Emali",
+    "addr:street": "C99",
+    "amenity": "post_office",
+    "name": "Emali Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 6232806604,
+  "lat": -2.4132954,
+  "lon": 37.9660054,
+  "tags": {
+    "addr:city": "Kibwezi",
+    "addr:street": "Kibwezi - Kitui Road",
+    "amenity": "post_office",
+    "name": "Kibwezi Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 6232986241,
+  "lat": -2.6907328,
+  "lon": 38.1652607,
+  "tags": {
+    "addr:city": "Mtito Andei",
+    "addr:street": "Mombasa Road",
+    "amenity": "post_office",
+    "name": "Aidarus Aidarus"
+  }
+},
+{
+  "type": "node",
+  "id": 6235829853,
+  "lat": -3.9639414,
+  "lon": 39.5485825,
+  "tags": {
+    "addr:city": "Mazeras",
+    "addr:street": "Mombasa Road",
+    "amenity": "post_office",
+    "name": "Mazeras Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 6241342218,
+  "lat": -0.4994101,
+  "lon": 36.3226406,
+  "tags": {
+    "addr:city": "Gilgil",
+    "addr:street": "Gilgil-Nyahururu Road",
+    "amenity": "post_office",
+    "name": "Posta Gilgil"
+  }
+},
+{
+  "type": "node",
+  "id": 6244083342,
+  "lat": -0.3842287,
+  "lon": 37.0027027,
+  "tags": {
+    "addr:city": "Kiganjo",
+    "addr:street": "Kiganjo Town Road",
+    "amenity": "post_office"
+  }
+},
+{
+  "type": "node",
+  "id": 6247215843,
+  "lat": -1.2364290,
+  "lon": 36.8750908,
+  "tags": {
+    "addr:city": "Nairobi",
+    "addr:street": "Thika Road",
+    "amenity": "post_office",
+    "name": "Ruaraka Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 6249159837,
+  "lat": 0.3540012,
+  "lon": 37.5848587,
+  "tags": {
+    "addr:city": "Isiolo",
+    "addr:street": "Hospital Road",
+    "amenity": "post_office",
+    "name": "Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 6249159868,
+  "lat": 3.9393661,
+  "lon": 41.8596678,
+  "tags": {
+    "addr:city": "Mandera",
+    "amenity": "post_office",
+    "name": "Mandera Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 6249718146,
+  "lat": 1.7519783,
+  "lon": 40.0569376,
+  "tags": {
+    "addr:city": "Wajir",
+    "addr:street": "Isiolo-Mandera Road",
+    "amenity": "post_office"
+  }
+},
+{
+  "type": "node",
+  "id": 6251534620,
+  "lat": -1.1839317,
+  "lon": 36.9281657,
+  "tags": {
+    "addr:city": "Nairobi",
+    "amenity": "post_office",
+    "name": "Kenyatta University Post Office",
+    "operator": "Postal Corporation of Kenya",
+    "postal_code": "00609",
+    "website": "https://posta.co.ke/"
+  }
+},
+{
+  "type": "node",
+  "id": 6259798898,
+  "lat": -1.3083808,
+  "lon": 36.9120122,
+  "tags": {
+    "addr:city": "Nairobi",
+    "addr:street": "Embakasi Road",
+    "amenity": "post_office",
+    "name": "Embakasi Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 6259798920,
+  "lat": -1.3220525,
+  "lon": 36.8994239,
+  "tags": {
+    "addr:city": "Nairobi",
+    "addr:street": "Outer Ring Road",
+    "amenity": "post_office",
+    "brand": "Post Office",
+    "brand:wikidata": "Q7233983",
+    "name": "Posta Kenya"
+  }
+},
+{
+  "type": "node",
+  "id": 6799223061,
+  "lat": -3.3518984,
+  "lon": 40.0136690,
+  "tags": {
+    "addr:city": "Watamu",
+    "amenity": "post_office",
+    "check_date": "2024-07-05",
+    "name": "Watamu Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 6807413167,
+  "lat": 0.4692450,
+  "lon": 35.9816200,
+  "tags": {
+    "amenity": "post_office",
+    "image": "https://kc.humanitarianresponse.info/attachment/original?media_file=mapkibera/attachments/1568717555837.jpg",
+    "name": "Marigat Post office"
+  }
+},
+{
+  "type": "node",
+  "id": 6819930244,
+  "lat": -1.2699877,
+  "lon": 36.9135303,
+  "tags": {
+    "addr:city": "Nairobi",
+    "addr:street": "Kayole Spine Road",
+    "amenity": "post_office",
+    "name": "Kayole Post Office",
+    "operator": "Postal Corporation of Kenya",
+    "postal_code": "00518",
+    "website": "https://posta.co.ke/"
+  }
+},
+{
+  "type": "node",
+  "id": 6860231569,
+  "lat": -0.5390221,
+  "lon": 37.4559169,
+  "tags": {
+    "addr:city": "Embu",
+    "addr:street": "Embu - Siakago Road",
+    "amenity": "post_office",
+    "name": "KubuKubu"
+  }
+},
+{
+  "type": "node",
+  "id": 6860442722,
+  "lat": -0.5330149,
+  "lon": 37.4508060,
+  "tags": {
+    "addr:city": "Embu",
+    "addr:street": "Embu-Nairobi Highway",
+    "amenity": "post_office",
+    "name": "Embu Post Office/Huduma Centre"
+  }
+},
+{
+  "type": "node",
+  "id": 6869373188,
+  "lat": -3.5378548,
+  "lon": 38.2430960,
+  "tags": {
+    "amenity": "post_office",
+    "name": "Post 26"
+  }
+},
+{
+  "type": "node",
+  "id": 6869407885,
+  "lat": -3.5379839,
+  "lon": 38.2445307,
+  "tags": {
+    "amenity": "post_office",
+    "name": "Post 13b"
+  }
+},
+{
+  "type": "node",
+  "id": 6878369475,
+  "lat": -0.3362336,
+  "lon": 37.6466266,
+  "tags": {
+    "addr:city": "Chuka",
+    "addr:street": "Meru-Nairobi Highway",
+    "amenity": "post_office",
+    "name": "Chuka Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 6908909072,
+  "lat": 1.2571192,
+  "lon": 35.0943572,
+  "tags": {
+    "amenity": "post_office",
+    "image": "https://kc.humanitarianresponse.info/attachment/original?media_file=mapkibera/attachments/1571730030240.jpg",
+    "is_in:village": "Makutano",
+    "name": "Kapenguria Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 6924642284,
+  "lat": 0.3582457,
+  "lon": 35.3534327,
+  "tags": {
+    "addr:city": "Cheptiret",
+    "addr:street": "Eldoret - Nakuru Road",
+    "amenity": "post_office",
+    "name": "Cheptiret post office"
+  }
+},
+{
+  "type": "node",
+  "id": 6926999940,
+  "lat": 0.6340059,
+  "lon": 35.0490834,
+  "tags": {
+    "addr:city": "Turbo",
+    "addr:street": "Eldoret Road",
+    "amenity": "post_office",
+    "name": "Posta Kenya"
+  }
+},
+{
+  "type": "node",
+  "id": 6934958831,
+  "lat": 0.6357686,
+  "lon": 34.2704570,
+  "tags": {
+    "addr:city": "Malaba",
+    "addr:street": "A104",
+    "amenity": "post_office",
+    "name": "Posta Malaba"
+  }
+},
+{
+  "type": "node",
+  "id": 6948177512,
+  "lat": 0.2589105,
+  "lon": 34.2274216,
+  "tags": {
+    "addr:city": "Sega",
+    "addr:street": "Kisumu-Busia Road",
+    "amenity": "post_office",
+    "name": "Sega post office"
+  }
+},
+{
+  "type": "node",
+  "id": 6954407504,
+  "lat": 0.0241911,
+  "lon": 34.5874024,
+  "tags": {
+    "addr:city": "Luanda",
+    "amenity": "post_office",
+    "name": "Luanda Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 6966453739,
+  "lat": -0.0850842,
+  "lon": 34.7749117,
+  "tags": {
+    "addr:city": "Kondele",
+    "addr:street": "Bypass Highway",
+    "amenity": "post_office",
+    "name": "Kondele Postal Office",
+    "operator": "Postal Corporation of Kenya",
+    "postal_code": "40103",
+    "website": "https://posta.co.ke/"
+  }
+},
+{
+  "type": "node",
+  "id": 6966453744,
+  "lat": -0.1038373,
+  "lon": 34.7573652,
+  "tags": {
+    "addr:city": "Kisumu",
+    "addr:street": "Omolo Agar Road",
+    "amenity": "post_office",
+    "name": "Kisumu General Post Office",
+    "operator": "Postal Corporation of Kenya",
+    "postal_code": "40100",
+    "short_name": "Kisumu G.P.O",
+    "website": "https://posta.co.ke/"
+  }
+},
+{
+  "type": "node",
+  "id": 6976663162,
+  "lat": -0.5141913,
+  "lon": 34.7336725,
+  "tags": {
+    "addr:city": "Oyugis",
+    "addr:street": "Rongo-Kisii Road",
+    "amenity": "post_office",
+    "name": "Oyugis Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 7222729630,
+  "lat": 0.0959740,
+  "lon": 34.5385822,
+  "tags": {
+    "addr:city": "Yala",
+    "addr:street": "Old Town Road",
+    "amenity": "post_office",
+    "name": "Yala Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 7232815596,
+  "lat": 0.1181680,
+  "lon": 34.7330125,
+  "tags": {
+    "addr:city": "Chavakali",
+    "addr:street": "Kisumu Road",
+    "amenity": "post_office",
+    "name": "Chavakali Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 7258036331,
+  "lat": 3.7048189,
+  "lon": 34.8693867,
+  "tags": {
+    "addr:city": "Kakuma",
+    "addr:street": "Lodwar-Lokichogio Road",
+    "amenity": "post_office",
+    "name": "Post Office - Kakuma"
+  }
+},
+{
+  "type": "node",
+  "id": 7279836608,
+  "lat": -0.6273781,
+  "lon": 37.2541200,
+  "tags": {
+    "addr:city": "Kagio",
+    "amenity": "post_office",
+    "name": "Kagio Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 7282595082,
+  "lat": -0.9378791,
+  "lon": 37.1252183,
+  "tags": {
+    "addr:street": "Meru-Nairobi Highway",
+    "amenity": "post_office",
+    "name": "Kenol Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 7417650122,
+  "lat": -1.2324279,
+  "lon": 36.8001065,
+  "tags": {
+    "amenity": "post_office",
+    "name": "POSTA"
+  }
+},
+{
+  "type": "node",
+  "id": 7981336129,
+  "lat": -0.3899247,
+  "lon": 35.0116119,
+  "tags": {
+    "addr:city": "Sondu",
+    "addr:street": "Kisii-Kisumu Road",
+    "amenity": "post_office",
+    "name": "Sondu Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 9032309255,
+  "lat": 0.0567153,
+  "lon": 40.3077647,
+  "tags": {
+    "addr:city": "Dadaab",
+    "addr:street": "DMO Road",
+    "amenity": "post_office",
+    "name": "Dadaab Post Office"
+  }
+},
+{
+  "type": "node",
+  "id": 9101351108,
+  "lat": -0.2998900,
+  "lon": 36.0772288,
+  "tags": {
+    "amenity": "post_office",
+    "name": "Posta Kenya"
+  }
+},
+{
+  "type": "node",
+  "id": 10971482078,
+  "lat": 3.7071290,
+  "lon": 34.8649488,
+  "tags": {
+    "amenity": "post_office"
+  }
+},
+{
+  "type": "node",
+  "id": 11015595017,
+  "lat": 0.0603204,
+  "lon": 34.2858808,
+  "tags": {
+    "amenity": "post_office",
+    "name": "Huduma Center Siaya",
+    "opening_hours": "Mo-Fr 08:00-17:00",
+    "operator": "Ministry of Public Service, Gender and Affirmative Action"
+  }
+},
+{
+  "type": "node",
+  "id": 11155783025,
+  "lat": -0.1170643,
+  "lon": 34.7591910,
+  "tags": {
+    "amenity": "post_office",
+    "name": "Speedaf Kenya",
+    "operator": "speedaf",
+    "website": "https://speedaf.com/ke-en"
+  }
+},
+{
+  "type": "node",
+  "id": 11521258260,
+  "lat": -4.0612172,
+  "lon": 39.6720332,
+  "tags": {
+    "amenity": "post_office",
+    "name": "Mombasa General Post Office",
+    "operator": "Postal Corporation of Kenya",
+    "operator:wikidata": "Q7233983",
+    "postal_code": "80100",
+    "short_name": "Mombasa GPO",
+    "website": "https://posta.co.ke/"
+  }
+},
+{
+  "type": "node",
+  "id": 11521565145,
+  "lat": -4.0523132,
+  "lon": 39.6920210,
+  "tags": {
+    "amenity": "post_office",
+    "name": "Nyali Post Office",
+    "operator": "Postal Corporation of Kenya",
+    "operator:wikidata": "Q7233983",
+    "postal_code": "80118",
+    "website": "https://posta.co.ke/"
+  }
+},
+{
+  "type": "node",
+  "id": 11521565146,
+  "lat": -4.0451585,
+  "lon": 39.6579933,
+  "tags": {
+    "amenity": "post_office",
+    "brand": "Posta Kenya",
+    "brand:wikidata": "Q7233983",
+    "name": "Makupa Post Office",
+    "operator": "Postal Corporation of Kenya",
+    "operator:wikidata": "Q7233983",
+    "postal_code": "80112",
+    "website": "https://posta.co.ke/"
+  }
+},
+{
+  "type": "node",
+  "id": 11521590903,
+  "lat": -4.0591812,
+  "lon": 39.6495509,
+  "tags": {
+    "amenity": "post_office",
+    "brand": "Posta Kenya",
+    "brand:wikidata": "Q7233983",
+    "name": "Docks Post Office",
+    "operator": "Postal Corporation of Kenya",
+    "operator:wikidata": "Q7233983",
+    "postal_code": "80104",
+    "website": "https://posta.co.ke/"
+  }
+},
+{
+  "type": "node",
+  "id": 11521594989,
+  "lat": -4.0331644,
+  "lon": 39.6027839,
+  "tags": {
+    "amenity": "post_office",
+    "brand": "Posta Kenya",
+    "brand:wikidata": "Q7233983",
+    "name": "Moi Airport Post Office",
+    "operator": "Postal Corporation of Kenya",
+    "postal_code": "80115",
+    "website": "https://posta.co.ke/"
+  }
+},
+{
+  "type": "node",
+  "id": 11521594990,
+  "lat": -4.0249423,
+  "lon": 39.6270096,
+  "tags": {
+    "amenity": "post_office",
+    "brand": "Posta Kenya",
+    "brand:wikidata": "Q7233983",
+    "name": "Changamwe Post Office",
+    "operator": "Postal Corporation of Kenya",
+    "postal_code": "80102",
+    "website": "https://posta.co.ke/"
+  }
+},
+{
+  "type": "node",
+  "id": 11531683809,
+  "lat": -1.3051466,
+  "lon": 36.8375498,
+  "tags": {
+    "amenity": "post_office",
+    "name": "Enterprise Road Post Office",
+    "operator": "Postal Corporation of Kenya",
+    "postal_code": "00500",
+    "website": "https://posta.co.ke/"
+  }
+},
+{
+  "type": "node",
+  "id": 11531683810,
+  "lat": -1.2848045,
+  "lon": 36.8300477,
+  "tags": {
+    "amenity": "post_office",
+    "brand": "Posta Kenya",
+    "brand:wikidata": "Q7233983",
+    "name": "Ronald Ngala Post office",
+    "operator": "Postal Corporation of Kenya",
+    "operator:wikidata": "Q7233983",
+    "postal_code": "00300",
+    "website": "https://posta.co.ke/"
+  }
+},
+{
+  "type": "node",
+  "id": 11534752711,
+  "lat": -1.2302240,
+  "lon": 36.8046391,
+  "tags": {
+    "amenity": "post_office",
+    "name": "Gigiri Post Office",
+    "operator": "Postal Corporation of Kenya",
+    "postal_code": "00601",
+    "website": "https://posta.co.ke/"
+  }
+},
+{
+  "type": "node",
+  "id": 11534752712,
+  "lat": -1.2763483,
+  "lon": 36.8523301,
+  "tags": {
+    "amenity": "post_office",
+    "name": "Eastleigh Post Office",
+    "operator": "Postal Corporation of Kenya",
+    "postal_code": "00610",
+    "website": "https://posta.co.ke/"
+  }
+},
+{
+  "type": "node",
+  "id": 11534756291,
+  "lat": -1.2645401,
+  "lon": 36.7504612,
+  "tags": {
+    "amenity": "post_office",
+    "name": "Kangemi Post Office",
+    "operator": "Postal Corporation of Kenya",
+    "postal_code": "00625",
+    "website": "https://posta.co.ke/"
+  }
+},
+{
+  "type": "node",
+  "id": 11534756292,
+  "lat": -1.1783079,
+  "lon": 36.8919343,
+  "tags": {
+    "amenity": "post_office",
+    "name": "Kamiti Post Office",
+    "operator": "Postal Corporation of Kenya",
+    "postal_code": "00607",
+    "website": "https://posta.co.ke/"
+  }
+},
+{
+  "type": "node",
+  "id": 11534864580,
+  "lat": -1.2404424,
+  "lon": 36.7457111,
+  "tags": {
+    "amenity": "post_office",
+    "name": "Lower Kabete Post Office",
+    "operator": "Postal Corporation of Kenya",
+    "postal_code": "00604",
+    "website": "https://posta.co.ke/"
+  }
+},
+{
+  "type": "node",
+  "id": 11549698085,
+  "lat": 3.9396159,
+  "lon": 41.8542033,
+  "tags": {
+    "amenity": "post_office",
+    "name": "E.M.S Posta Mandera",
+    "operator": "EMS Kenya",
+    "website": "https://www.ems.post/en/global-network/ems-operators/ems-kenya"
+  }
+},
+{
+  "type": "node",
+  "id": 11549698086,
+  "lat": 3.9393590,
+  "lon": 41.8597716,
+  "tags": {
+    "amenity": "post_office",
+    "name": "Mandera Post Office",
+    "operator": "Postal Corporation of Kenya",
+    "postal_code": "70100",
+    "website": "https://posta.co.ke/"
+  }
+},
+{
+  "type": "node",
+  "id": 12716835768,
+  "lat": 0.6698909,
+  "lon": 35.5073617,
+  "tags": {
+    "amenity": "post_office",
+    "name": "Iten Post Office",
+    "opening_hours": "Mo-Fr 08:00-17:00"
+  }
+},
+{
+  "type": "node",
+  "id": 12886221896,
+  "lat": -1.5177100,
+  "lon": 37.2672883,
+  "tags": {
+    "addr:county": "Machakos",
+    "addr:location": "Machakos Town",
+    "amenity": "post_office",
+    "name": "Posta"
+  }
+},
+{
+  "type": "node",
+  "id": 13040771959,
+  "lat": -4.1796838,
+  "lon": 39.4562535,
+  "tags": {
+    "amenity": "post_office",
+    "name": "kwale post office; 80403"
+  }
+},
+{
+  "type": "node",
+  "id": 13167457538,
+  "lat": -1.2499626,
+  "lon": 36.8201912,
+  "tags": {
+    "amenity": "post_office",
+    "name": "Posta Kenya"
+  }
+},
+{
+  "type": "node",
+  "id": 13174890261,
+  "lat": -1.2499960,
+  "lon": 36.8204382,
+  "tags": {
+    "amenity": "post_office",
+    "name": "DHL Express"
+  }
+},
+{
+  "type": "node",
+  "id": 13187240880,
+  "lat": -1.2928329,
+  "lon": 36.7879842,
+  "tags": {
+    "amenity": "post_office",
+    "name": "DHL"
+  }
+},
+{
+  "type": "node",
+  "id": 13531630050,
+  "lat": -0.9762245,
+  "lon": 37.6042412,
+  "tags": {
+    "amenity": "post_office",
+    "name": "masinga sub chief's office"
+  }
+},
+{
+  "type": "node",
+  "id": 13531672170,
+  "lat": -0.9665046,
+  "lon": 37.6144163,
+  "tags": {
+    "amenity": "post_office",
+    "name": "masinga　CDF"
+  }
+},
+{
+  "type": "node",
+  "id": 13531672171,
+  "lat": -0.9652741,
+  "lon": 37.6150316,
+  "tags": {
+    "amenity": "post_office"
+  }
+},
+{
+  "type": "node",
+  "id": 13809406851,
+  "lat": 0.5198643,
+  "lon": 35.2702912,
+  "tags": {
+    "amenity": "post_office",
+    "brand": "Posta Kenya",
+    "brand:wikidata": "Q7233983",
+    "name": "Posta Kenya",
+    "operator": "Postal Corporation of Kenya",
+    "postal_code": "30100"
+  }
+},
+{
+  "type": "way",
+  "id": 129213273,
+  "center": {
+    "lat": 0.1804916,
+    "lon": 34.2940779
+  },
+  "tags": {
+    "amenity": "post_office",
+    "name": "Ugunja Post Office"
+  }
+},
+{
+  "type": "way",
+  "id": 160910858,
+  "center": {
+    "lat": -1.2627486,
+    "lon": 36.7187047
+  },
+  "tags": {
+    "amenity": "post_office",
+    "name": "Uthiru Post Office",
+    "operator": "Kenya Postal Corporation",
+    "ref": "00605"
+  }
+},
+{
+  "type": "way",
+  "id": 175851570,
+  "center": {
+    "lat": 0.1546277,
+    "lon": 34.3799513
+  },
+  "tags": {
+    "amenity": "post_office",
+    "name": "Sidindi Post Office"
+  }
+},
+{
+  "type": "way",
+  "id": 226714112,
+  "center": {
+    "lat": -1.3229983,
+    "lon": 36.7071057
+  },
+  "tags": {
+    "addr:city": "Nairobi",
+    "addr:street": "Karen Roundabout",
+    "amenity": "post_office",
+    "building": "yes",
+    "name": "Karen Post Office"
+  }
+},
+{
+  "type": "way",
+  "id": 226878241,
+  "center": {
+    "lat": -1.2653946,
+    "lon": 36.8574596
+  },
+  "tags": {
+    "amenity": "post_office",
+    "name": "Posta",
+    "operator": "staffs"
+  }
+},
+{
+  "type": "way",
+  "id": 239761066,
+  "center": {
+    "lat": 0.0389810,
+    "lon": 36.3657907
+  },
+  "tags": {
+    "addr:city": "Nyahururu",
+    "addr:street": "Gilgil-Nyahururu Road",
+    "amenity": "post_office",
+    "building": "yes",
+    "name": "Nyahururu Post Office"
+  }
+},
+{
+  "type": "way",
+  "id": 261477672,
+  "center": {
+    "lat": -1.2763213,
+    "lon": 36.8272467
+  },
+  "tags": {
+    "addr:city": "Nairobi",
+    "addr:postcode": "00600",
+    "addr:street": "Ngara Road",
+    "amenity": "post_office",
+    "brand": "Posta Kenya",
+    "brand:wikidata": "Q7233983",
+    "building": "yes",
+    "check_date": "2023-05-11",
+    "name": "Ngara Road Post Office",
+    "operator": "Posta Kenya",
+    "postal_code": "00600"
+  }
+},
+{
+  "type": "way",
+  "id": 294007760,
+  "center": {
+    "lat": -1.0564488,
+    "lon": 37.1127405
+  },
+  "tags": {
+    "addr:city": "Thika",
+    "addr:street": "Garissa Road",
+    "amenity": "post_office",
+    "building": "yes",
+    "name": "Makongeni Posta"
+  }
+},
+{
+  "type": "way",
+  "id": 306085338,
+  "center": {
+    "lat": -1.0130648,
+    "lon": 36.9051001
+  },
+  "tags": {
+    "addr:city": "Kiambu",
+    "addr:postcode": "01030",
+    "addr:street": "Gatundu-Kinare Road",
+    "amenity": "post_office",
+    "building": "yes",
+    "name": "Gatundu Post Office"
+  }
+},
+{
+  "type": "way",
+  "id": 313516167,
+  "center": {
+    "lat": -0.4471852,
+    "lon": 34.8926145
+  },
+  "tags": {
+    "amenity": "post_office",
+    "building": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 322160157,
+  "center": {
+    "lat": -0.6804874,
+    "lon": 34.6178213
+  },
+  "tags": {
+    "amenity": "post_office"
+  }
+},
+{
+  "type": "way",
+  "id": 360001672,
+  "center": {
+    "lat": -1.0896020,
+    "lon": 35.8734773
+  },
+  "tags": {
+    "addr:city": "Narok",
+    "addr:street": "Kaplong-Narok-Maai Road",
+    "amenity": "post_office",
+    "building": "yes",
+    "name": "POSTA"
+  }
+},
+{
+  "type": "way",
+  "id": 386760599,
+  "center": {
+    "lat": 0.0603825,
+    "lon": 34.2860323
+  },
+  "tags": {
+    "amenity": "post_office",
+    "building": "commercial",
+    "building:levels": "1",
+    "smoking": "isolated"
+  }
+},
+{
+  "type": "way",
+  "id": 484432109,
+  "center": {
+    "lat": 0.5672130,
+    "lon": 34.5600565
+  },
+  "tags": {
+    "addr:city": "Bungoma",
+    "addr:street": "Moi Avenue",
+    "amenity": "post_office",
+    "building": "yes",
+    "name": "Bungoma Post Office"
+  }
+},
+{
+  "type": "way",
+  "id": 511915146,
+  "center": {
+    "lat": -3.3956463,
+    "lon": 37.6760814
+  },
+  "tags": {
+    "addr:city": "Taveta",
+    "amenity": "post_office",
+    "building": "yes",
+    "name": "Taveta Post Office"
+  }
+},
+{
+  "type": "way",
+  "id": 653767381,
+  "center": {
+    "lat": -1.2660736,
+    "lon": 36.8130542
+  },
+  "tags": {
+    "addr:city": "Nairobi",
+    "addr:street": "Parklands Road",
+    "amenity": "post_office",
+    "building": "yes",
+    "name": "Post Office Parkalnds"
+  }
+},
+{
+  "type": "way",
+  "id": 864281119,
+  "center": {
+    "lat": 3.1200298,
+    "lon": 35.5953778
+  },
+  "tags": {
+    "addr:city": "Lodwar",
+    "amenity": "post_office",
+    "building": "yes",
+    "name": "Lodwar Post Office",
+    "operator": "Postal Corporation of Kenya",
+    "postal_code": "30500",
+    "website": "https://posta.co.ke/"
+  }
+},
+{
+  "type": "way",
+  "id": 1072253138,
+  "center": {
+    "lat": -0.1601639,
+    "lon": 35.0718093
+  },
+  "tags": {
+    "addr:city": "Awasi",
+    "addr:street": "Kericho-Kisumu Highway",
+    "amenity": "post_office",
+    "building": "yes",
+    "name": "Awasi Post Office",
+    "source": "microsoft/BuildingFootprints"
+  }
+},
+{
+  "type": "way",
+  "id": 1072253385,
+  "center": {
+    "lat": -0.1602504,
+    "lon": 35.0718397
+  },
+  "tags": {
+    "addr:city": "Awasi",
+    "addr:street": "Kericho-Kisumu Highway",
+    "amenity": "post_office",
+    "building": "yes",
+    "name": "Awasi Post Office",
+    "source": "microsoft/BuildingFootprints"
+  }
+},
+{
+  "type": "way",
+  "id": 1116501173,
+  "center": {
+    "lat": -1.3033852,
+    "lon": 36.8074105
+  },
+  "tags": {
+    "amenity": "post_office",
+    "building": "yes",
+    "name": "Kenyatta Hospital Post Office 00202",
+    "postal_code": "00202",
+    "source": "microsoft/BuildingFootprints"
+  }
+},
+{
+  "type": "way",
+  "id": 1224550727,
+  "center": {
+    "lat": -0.5299629,
+    "lon": 34.4571526
+  },
+  "tags": {
+    "addr:city": "Homa Bay",
+    "addr:street": "C19",
+    "amenity": "post_office",
+    "building": "yes",
+    "name": "HomaBay Post Office",
+    "source": "microsoft/BuildingFootprints"
+  }
+},
+{
+  "type": "way",
+  "id": 1232969611,
+  "center": {
+    "lat": -4.0450745,
+    "lon": 39.7021759
+  },
+  "tags": {
+    "addr:city": "Mombasa",
+    "addr:street": "Mbuni Road",
+    "amenity": "post_office",
+    "brand": "FedEx",
+    "brand:wikidata": "Q459477",
+    "building": "yes",
+    "name": "Fedex Mombasa",
+    "shop": "copyshop",
+    "source": "microsoft/BuildingFootprints"
+  }
+},
+{
+  "type": "way",
+  "id": 1272478888,
+  "center": {
+    "lat": -1.2654989,
+    "lon": 36.8037353
+  },
+  "tags": {
+    "addr:city": "Nairobi",
+    "addr:postcode": "00800",
+    "addr:street": "Mpaka Road",
+    "amenity": "post_office",
+    "brand": "Post Office",
+    "brand:wikidata": "Q7233983",
+    "building": "yes",
+    "name": "Posta Kenya Westlands",
+    "operator": "Posta Kenya"
+  }
+},
+{
+  "type": "way",
+  "id": 1330120299,
+  "center": {
+    "lat": -0.4214057,
+    "lon": 36.9485928
+  },
+  "tags": {
+    "addr:city": "Nyeri",
+    "addr:street": "Kimathi Way",
+    "amenity": "post_office",
+    "building": "yes",
+    "name": "Posta Nyeri"
+  }
+},
+{
+  "type": "way",
+  "id": 1360153827,
+  "center": {
+    "lat": -1.8410686,
+    "lon": 36.7911620
+  },
+  "tags": {
+    "amenity": "post_office",
+    "building": "yes",
+    "name": "Huduma Centre"
+  }
+}
+
+  ]
+}

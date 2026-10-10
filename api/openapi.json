@@ -1043,6 +1043,15 @@
                 "type": "null"
               }
             ]
+          },
+          "location_source": {
+            "type": "string",
+            "description": "Empty when location is null.",
+            "enum": [
+              "",
+              "geonames",
+              "openstreetmap"
+            ]
           }
         },
         "required": [
@@ -1050,7 +1059,8 @@
           "name",
           "county_code",
           "county_source",
-          "location"
+          "location",
+          "location_source"
         ]
       },
       "NearbyPostOffice": {
