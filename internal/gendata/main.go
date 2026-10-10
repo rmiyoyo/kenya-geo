@@ -45,6 +45,7 @@ type County struct {
 	AreaKm2            float64    `json:"area_km2"`
 	Centroid           LatLng     `json:"centroid"`
 	BBox               [4]float64 `json:"bbox"`
+	Neighbours         []int      `json:"neighbours"`
 }
 
 type Ward struct {
@@ -151,6 +152,7 @@ func buildCounties() ([]County, []CountyShape, error) {
 	}
 	sort.Slice(out, func(i, j int) bool { return out[i].Code < out[j].Code })
 	sort.Slice(outShapes, func(i, j int) bool { return outShapes[i].Code < outShapes[j].Code })
+	setNeighbours(out, outShapes)
 	return out, outShapes, nil
 }
 

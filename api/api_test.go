@@ -46,6 +46,10 @@ func TestCountyLists(t *testing.T) {
 	if get(t, "/counties/22/constituencies", &consts); len(consts) != 12 {
 		t.Errorf("Kiambu has %d constituencies, want 12", len(consts))
 	}
+	var neighbours []kenyageo.County
+	if get(t, "/counties/nairobi/neighbours", &neighbours); len(neighbours) != 3 {
+		t.Errorf("Nairobi has %d neighbours, want 3", len(neighbours))
+	}
 	var wards []kenyageo.Ward
 	if get(t, "/counties/mombasa/wards", &wards); len(wards) != 30 {
 		t.Errorf("Mombasa has %d wards, want 30", len(wards))

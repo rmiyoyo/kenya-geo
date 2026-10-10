@@ -9,7 +9,7 @@ Kenya's 47 counties, 290 constituencies, 1,450 wards and 890 post offices for Go
 
 - Every county, constituency and ward, with IEBC ward codes and 2022 registered voters
 - 2019 census population by sex, land area and density for each county
-- ISO 3166-2 codes and former provinces
+- ISO 3166-2 codes, former provinces and neighbouring counties
 - Centroids and bounding boxes for counties, centroids for wards
 - Find the ward, constituency and county for any coordinate, or just the county from county boundaries
 - 890 post offices by postal code, each placed in a county, and the nearest offices to any point
@@ -60,6 +60,7 @@ geo.CountyByCode(47)           // Nairobi County
 geo.CountyByName("nairobi")    // the same county
 c.Population, c.Density()      // 4397073, about 6247 people per km²
 c.ISOCode, c.FormerProvince    // "KE-30", "Nairobi"
+geo.NeighbouringCounties(47)   // Machakos, Kiambu and Kajiado
 ```
 
 ### Constituencies and wards
@@ -156,6 +157,7 @@ kenyageo-server -addr :8080
 | `GET /counties` | all 47 counties |
 | `GET /counties/{county}` | one county, by code (`32`) or name (`nakuru`) |
 | `GET /counties/{county}/constituencies` | constituency names |
+| `GET /counties/{county}/neighbours` | counties that share a border with it |
 | `GET /counties/{county}/wards` | wards in the county |
 | `GET /counties/{county}/postoffices` | post offices in the county |
 | `GET /constituencies/{name}/wards` | wards in a constituency, e.g. `/constituencies/kibra/wards` |
@@ -178,7 +180,7 @@ mux.Handle("/geo/", http.StripPrefix("/geo", api.New(kenyageo.Default())))
 
 | File | Contents |
 | --- | --- |
-| `data/counties.json` | code, name, headquarters, ISO code, former province, population by sex, area, centroid, bounding box |
+| `data/counties.json` | code, name, headquarters, ISO code, former province, population by sex, area, centroid, bounding box, neighbouring county codes |
 | `data/wards.json` | ward code, name, constituency, county, 2022 registered voters, centroid |
 | `data/postoffices.json` | postal code, name, county, how the county was decided, location |
 | `data/wardshapes.json` | ward code and boundary polygons, as GeoJSON-style `[lng, lat]` rings |
@@ -188,6 +190,7 @@ The same JSON files can be used from any language.
 
 ### Accuracy notes
 
+- Neighbouring counties are worked out from the county boundaries: two counties are neighbours when their outlines run within about a kilometre of each other for at least three boundary points. Borders across Lake Victoria count, so Siaya and Homa Bay are neighbours.
 - Ward centroids and boundaries are known for 1,437 of the 1,450 wards. The other 13 have names too different from the boundary data to match safely, so `WardAt` finds nothing in those areas.
 - Boundaries are simplified, so a point within a few hundred metres of a ward line can land in the neighbouring ward. A handful of wards on county borders have centroids that fall just across the line.
 - Post office locations are given only for the 553 offices matched to a real place. `county_source` says how each office's county was decided: `geonames`, `location`, `manual` or `neighbours`.
