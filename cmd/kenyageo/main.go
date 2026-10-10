@@ -25,6 +25,11 @@ func main() {
 			os.Exit(1)
 		}
 		fmt.Printf("%d  %s  (HQ %s, former %s Province)\n", c.Code, c.Name, c.Headquarters, c.FormerProvince)
+		var names []string
+		for _, n := range geo.NeighbouringCounties(c.Code) {
+			names = append(names, strings.TrimSuffix(n.Name, " County"))
+		}
+		fmt.Printf("  borders %s\n", strings.Join(names, ", "))
 		for _, name := range geo.Constituencies(c.Code) {
 			wards := geo.WardsInConstituency(name)
 			fmt.Printf("  %-22s %d wards\n", name, len(wards))

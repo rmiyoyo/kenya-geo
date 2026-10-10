@@ -27,6 +27,7 @@ func New(geo *kenyageo.Data) http.Handler {
 	mux.HandleFunc("GET /counties/at", s.countyAt)
 	mux.HandleFunc("GET /counties/{county}", s.county)
 	mux.HandleFunc("GET /counties/{county}/constituencies", s.constituencies)
+	mux.HandleFunc("GET /counties/{county}/neighbours", s.neighbours)
 	mux.HandleFunc("GET /counties/{county}/wards", s.countyWards)
 	mux.HandleFunc("GET /counties/{county}/postoffices", s.countyPostOffices)
 	mux.HandleFunc("GET /constituencies/{name}/wards", s.constituencyWards)
@@ -51,6 +52,12 @@ func (s server) county(w http.ResponseWriter, r *http.Request) {
 func (s server) constituencies(w http.ResponseWriter, r *http.Request) {
 	if c, ok := s.findCounty(w, r); ok {
 		writeJSON(w, http.StatusOK, s.geo.Constituencies(c.Code))
+	}
+}
+
+func (s server) neighbours(w http.ResponseWriter, r *http.Request) {
+	if c, ok := s.findCounty(w, r); ok {
+		writeJSON(w, http.StatusOK, s.geo.NeighbouringCounties(c.Code))
 	}
 }
 

@@ -44,8 +44,9 @@ type County struct {
 	PopulationIntersex int     `json:"population_intersex"`
 	AreaKm2            float64 `json:"area_km2"`
 
-	Centroid LatLng     `json:"centroid"`
-	BBox     [4]float64 `json:"bbox"`
+	Centroid   LatLng     `json:"centroid"`
+	BBox       [4]float64 `json:"bbox"`
+	Neighbours []int      `json:"neighbours"`
 }
 
 func (c County) Density() float64 {
@@ -210,6 +211,20 @@ func (d *Data) CountyByName(name string) (County, bool) {
 		return County{}, false
 	}
 	return d.counties[i], true
+}
+
+func (d *Data) NeighbouringCounties(code int) []County {
+	i, ok := d.countyByCode[code]
+	if !ok {
+		return nil
+	}
+	out := make([]County, 0, len(d.counties[i].Neighbours))
+	for _, n := range d.counties[i].Neighbours {
+		if j, ok := d.countyByCode[n]; ok {
+			out = append(out, d.counties[j])
+		}
+	}
+	return out
 }
 
 func (d *Data) WardByCode(code string) (Ward, bool) {
