@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 
 	kenyageo "github.com/rmiyoyo/kenya-geo"
@@ -10,7 +11,7 @@ import (
 
 func main() {
 	if len(os.Args) < 3 {
-		fmt.Fprintln(os.Stderr, "usage: kenyageo county <name> | postcode <code> | search <query>")
+		fmt.Fprintln(os.Stderr, "usage: kenyageo county <name> | postcode <code> | search <query> | at <lat> <lng>")
 		os.Exit(2)
 	}
 	geo := kenyageo.Default()
@@ -46,8 +47,34 @@ func main() {
 			county, _ := geo.CountyByCode(m.CountyCode)
 			fmt.Printf("%.2f  %-12s %-24s %s\n", m.Score, m.Kind, m.Name, county.Name)
 		}
+	case "at":
+		lat, lng, err := parseLatLng(arg)
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(2)
+		}
+		w, ok := geo.WardAt(lat, lng)
+		if !ok {
+			fmt.Fprintf(os.Stderr, "no ward at %v, %v\n", lat, lng)
+			os.Exit(1)
+		}
+		fmt.Printf("%s  %s ward, %s constituency, %s\n", w.Code, w.Name, w.Constituency, w.CountyName)
 	default:
 		fmt.Fprintf(os.Stderr, "unknown command %q\n", os.Args[1])
 		os.Exit(2)
 	}
+}
+
+func parseLatLng(s string) (lat, lng float64, err error) {
+	f := strings.Fields(strings.ReplaceAll(s, ",", " "))
+	if len(f) != 2 {
+		return 0, 0, fmt.Errorf("want a latitude and a longitude, got %q", s)
+	}
+	if lat, err = strconv.ParseFloat(f[0], 64); err != nil {
+		return 0, 0, err
+	}
+	if lng, err = strconv.ParseFloat(f[1], 64); err != nil {
+		return 0, 0, err
+	}
+	return lat, lng, nil
 }

@@ -20,6 +20,9 @@ var wardsJSON []byte
 //go:embed data/postoffices.json
 var postOfficesJSON []byte
 
+//go:embed data/wardshapes.json
+var wardShapesJSON []byte
+
 type LatLng struct {
 	Lat float64 `json:"lat"`
 	Lng float64 `json:"lng"`
@@ -84,6 +87,8 @@ type Data struct {
 
 	postByCode   map[string][]int
 	postByCounty map[int][]int
+
+	shapes func() []wardShape
 }
 
 var defaultData = sync.OnceValue(func() *Data {
@@ -91,6 +96,13 @@ var defaultData = sync.OnceValue(func() *Data {
 	if err != nil {
 		panic("kenyageo: embedded data is invalid: " + err.Error())
 	}
+	d.shapes = sync.OnceValue(func() []wardShape {
+		shapes, err := d.readWardShapes(bytes.NewReader(wardShapesJSON))
+		if err != nil {
+			panic("kenyageo: embedded ward shapes are invalid: " + err.Error())
+		}
+		return shapes
+	})
 	return d
 })
 
