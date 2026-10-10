@@ -18,6 +18,7 @@ Kenya's 47 counties, 290 constituencies, 1,450 wards and 890 post offices for Go
 - Forgiving name lookups: case, apostrophes, dashes and a trailing "County" don't matter
 - Fuzzy search across counties, constituencies, wards and post offices
 - A JSON HTTP API and a ready-to-run server
+- [kenya-geo-web](https://github.com/rmiyoyo/kenya-geo-web), a website built on the package
 - No dependencies outside the standard library; safe for concurrent use
 
 ## Install
@@ -213,7 +214,7 @@ The exit status is 0 on success, 1 when nothing matches (or an address's town an
 
 ## HTTP API
 
-The `api` package serves the same data as JSON, and `kenyageo-server` runs it:
+The `api` package serves the same data as JSON, and `kenyageo-server` runs it. [docs/API.md](docs/API.md) is the full reference, with parameters and example responses for every endpoint.
 
 ```sh
 go install github.com/rmiyoyo/kenya-geo/cmd/kenyageo-server@latest
