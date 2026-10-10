@@ -1,0 +1,9 @@
+.git
+.github
+data/raw
+data/source
+internal/gendata
+testdata
+*.test
+*.out
+/kenyageo
