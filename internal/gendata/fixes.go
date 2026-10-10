@@ -1,6 +1,7 @@
 package main
 
 import (
+	"sort"
 	"strings"
 	"unicode"
 )
@@ -72,6 +73,16 @@ func shapeCountyKey(name string) string {
 }
 
 func similarity(a, b string) float64 {
+	return max(editSimilarity(a, b), editSimilarity(sortWords(a), sortWords(b)))
+}
+
+func sortWords(s string) string {
+	w := strings.Fields(s)
+	sort.Strings(w)
+	return strings.Join(w, " ")
+}
+
+func editSimilarity(a, b string) float64 {
 	ra, rb := []rune(a), []rune(b)
 	longest := max(len(ra), len(rb))
 	if longest == 0 {

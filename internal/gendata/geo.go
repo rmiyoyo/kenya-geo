@@ -14,6 +14,7 @@ type (
 )
 
 type shape struct {
+	id       int
 	Name     string
 	ISO      string
 	polygons []polygon
@@ -59,7 +60,7 @@ func readShapes(path string) ([]shape, error) {
 		if err != nil {
 			return nil, fmt.Errorf("%s: %s: %w", path, f.Properties.Name, err)
 		}
-		s := shape{Name: f.Properties.Name, ISO: f.Properties.ISO, polygons: polys}
+		s := shape{id: len(out), Name: f.Properties.Name, ISO: f.Properties.ISO, polygons: polys}
 		s.Centroid = s.centroid()
 		s.BBox = s.bbox()
 		s.inside = s.interiorPoint()
@@ -171,6 +172,27 @@ func (s shape) interiorPoint() [2]float64 {
 		}
 	}
 	return best
+}
+
+func (s shape) rounded() []polygon {
+	out := make([]polygon, len(s.polygons))
+	for i, p := range s.polygons {
+		out[i] = make(polygon, len(p))
+		for j, r := range p {
+			var nr ring
+			for _, pt := range r {
+				q := [2]float64{round5(pt[0]), round5(pt[1])}
+				if len(nr) == 0 || nr[len(nr)-1] != q {
+					nr = append(nr, q)
+				}
+			}
+			if len(nr) > 1 && nr[0] == nr[len(nr)-1] {
+				nr = nr[:len(nr)-1]
+			}
+			out[i][j] = nr
+		}
+	}
+	return out
 }
 
 func round5(f float64) float64 { return math.Round(f*1e5) / 1e5 }

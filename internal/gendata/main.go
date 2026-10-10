@@ -21,6 +21,8 @@ var sources = map[string]string{
 		"f1fca3c3-af10-4b55-b33a-95e8fbbd8dc2/kenya-population-by-sub-county.csv",
 	"geoboundaries-ADM1.geojson": "https://media.githubusercontent.com/media/wmgeolab/geoBoundaries/" +
 		"main/releaseData/gbOpen/KEN/ADM1/geoBoundaries-KEN-ADM1_simplified.geojson",
+	"geoboundaries-ADM2.geojson": "https://media.githubusercontent.com/media/wmgeolab/geoBoundaries/" +
+		"main/releaseData/gbOpen/KEN/ADM2/geoBoundaries-KEN-ADM2_simplified.geojson",
 	"geoboundaries-ADM3.geojson": "https://media.githubusercontent.com/media/wmgeolab/geoBoundaries/" +
 		"main/releaseData/gbOpen/KEN/ADM3/geoBoundaries-KEN-ADM3_simplified.geojson",
 }
@@ -67,7 +69,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	wards, err := buildWards(counties)
+	wards, shapes, err := buildWards(counties)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -85,7 +87,11 @@ func main() {
 	if err := writeLines("data/postoffices.json", postOffices); err != nil {
 		log.Fatal(err)
 	}
-	log.Printf("wrote %d counties, %d wards and %d post offices", len(counties), len(wards), len(postOffices))
+	if err := writeLines("data/wardshapes.json", shapes); err != nil {
+		log.Fatal(err)
+	}
+	log.Printf("wrote %d counties, %d wards (%d with boundaries) and %d post offices",
+		len(counties), len(wards), len(shapes), len(postOffices))
 }
 
 func buildCounties() ([]County, error) {
@@ -142,10 +148,10 @@ func buildCounties() ([]County, error) {
 	return out, nil
 }
 
-func buildWards(counties []County) ([]Ward, error) {
+func buildWards(counties []County) ([]Ward, []WardShape, error) {
 	var src []Ward
 	if err := readJSON("data/source/wards.json", &src); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	countyByName := map[string]County{}
 	for _, c := range counties {
@@ -154,34 +160,73 @@ func buildWards(counties []County) ([]Ward, error) {
 
 	countyShapes, err := readShapes("data/raw/geoboundaries-ADM1.geojson")
 	if err != nil {
-		return nil, err
+		return nil, nil, err
+	}
+	constShapes, err := readShapes("data/raw/geoboundaries-ADM2.geojson")
+	if err != nil {
+		return nil, nil, err
 	}
 	wardShapes, err := readShapes("data/raw/geoboundaries-ADM3.geojson")
 	if err != nil {
-		return nil, err
+		return nil, nil, err
+	}
+	countyOf := func(pt [2]float64) int {
+		for _, cs := range countyShapes {
+			if cs.contains(pt) {
+				return countyByName[shapeCountyKey(cs.Name)].Code
+			}
+		}
+		return 0
+	}
+	constsInCounty := map[int][]shape{}
+	for _, cs := range constShapes {
+		code := countyOf(cs.inside)
+		constsInCounty[code] = append(constsInCounty[code], cs)
 	}
 	shapesInCounty := map[int][]shape{}
+	shapesInConst := map[int][]shape{}
 	for _, ws := range wardShapes {
-		for _, cs := range countyShapes {
+		code := countyOf(ws.inside)
+		shapesInCounty[code] = append(shapesInCounty[code], ws)
+		for _, cs := range constsInCounty[code] {
 			if cs.contains(ws.inside) {
-				code := countyByName[shapeCountyKey(cs.Name)].Code
-				shapesInCounty[code] = append(shapesInCounty[code], ws)
+				shapesInConst[cs.id] = append(shapesInConst[cs.id], ws)
 				break
 			}
 		}
 	}
+	constShape := map[string]int{}
+	unmatchedConsts := map[string]bool{}
 
 	matched := 0
+	var shapes []WardShape
+	usedBy := map[int]string{}
 	for i := range src {
 		w := &src[i]
 		applyWardFixes(w)
 		w.Name = strings.ToUpper(cleanName(w.Name))
 		c, ok := countyByName[norm(w.CountyName)]
 		if !ok {
-			return nil, fmt.Errorf("ward %s: unknown county %q", w.Code, w.CountyName)
+			return nil, nil, fmt.Errorf("ward %s: unknown county %q", w.Code, w.CountyName)
 		}
 		w.CountyCode, w.CountyName = c.Code, c.Name
-		s, ok := matchShape(w.Name, shapesInCounty[c.Code])
+		key := fmt.Sprint(c.Code, "/", norm(w.Constituency))
+		ci, ok := constShape[key]
+		if !ok && !unmatchedConsts[key] {
+			if cs, found := matchShape(w.Constituency, constsInCounty[c.Code]); found {
+				ci, ok = cs.id, true
+				constShape[key] = ci
+			} else {
+				unmatchedConsts[key] = true
+			}
+		}
+		var s shape
+		if ok {
+			s, ok = matchShapeIn(w.Name, shapesInConst[ci], shapesInCounty[c.Code])
+		}
+		if !ok {
+			s, ok = matchShape(w.Name, shapesInCounty[c.Code])
+		}
 		if !ok {
 			s, ok = uniqueExact(w.Name, wardShapes, c.BBox, 0.1)
 		}
@@ -189,23 +234,42 @@ func buildWards(counties []County) ([]Ward, error) {
 			p := s.Centroid
 			w.Centroid = &p
 			matched++
+			if other, dup := usedBy[s.id]; dup {
+				log.Printf("ward boundary %q matched by both %s and %s; boundary kept for %s", s.Name, other, w.Code, other)
+				continue
+			}
+			usedBy[s.id] = w.Code
+			shapes = append(shapes, WardShape{Code: w.Code, Polygons: s.rounded()})
 		}
 	}
-	log.Printf("ward centroids: matched %d of %d by name", matched, len(src))
+	log.Printf("ward centroids: matched %d of %d by name; %d constituencies without a boundary", matched, len(src), len(unmatchedConsts))
 	sort.Slice(src, func(i, j int) bool { return src[i].Code < src[j].Code })
-	return src, nil
+	sort.Slice(shapes, func(i, j int) bool { return shapes[i].Code < shapes[j].Code })
+	return src, shapes, nil
+}
+
+type WardShape struct {
+	Code     string    `json:"ward_code"`
+	Polygons []polygon `json:"polygons"`
 }
 
 func matchShape(name string, candidates []shape) (shape, bool) {
+	return matchShapeIn(name, candidates, candidates)
+}
+
+func matchShapeIn(name string, preferred, all []shape) (shape, bool) {
 	n := norm(strings.TrimSuffix(strings.ToLower(name), " ward"))
 	var best shape
-	bestSim, second := 0.0, 0.0
-	for _, s := range candidates {
-		sim := similarity(n, norm(s.Name))
-		if sim > bestSim {
-			bestSim, second, best = sim, bestSim, s
-		} else if sim > second {
-			second = sim
+	bestSim := 0.0
+	for _, s := range preferred {
+		if sim := similarity(n, norm(s.Name)); sim > bestSim {
+			bestSim, best = sim, s
+		}
+	}
+	second := 0.0
+	for _, s := range all {
+		if s.id != best.id {
+			second = max(second, similarity(n, norm(s.Name)))
 		}
 	}
 	if bestSim == 1 || (bestSim >= 0.8 && bestSim-second >= 0.1) {
