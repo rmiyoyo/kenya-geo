@@ -1,7 +1,8 @@
 package kenyageo
 
 import (
-	"sort"
+	"cmp"
+	"slices"
 	"strconv"
 	"strings"
 	"unicode"
@@ -38,47 +39,64 @@ type Match struct {
 	Score      float64
 }
 
+type searchEntry struct {
+	match Match
+	norm  string
+	runes []rune
+}
+
+func (d *Data) buildSearchIndex() {
+	add := func(m Match, name string) {
+		n := normalize(name)
+		d.searchIndex = append(d.searchIndex, searchEntry{match: m, norm: n, runes: []rune(n)})
+	}
+	for _, c := range d.counties {
+		add(Match{Kind: KindCounty, Name: c.Name, Code: strconv.Itoa(c.Code), CountyCode: c.Code}, c.Name)
+	}
+	for _, c := range d.counties {
+		for _, n := range d.constsByCounty[c.Code] {
+			add(Match{Kind: KindConstituency, Name: n, CountyCode: c.Code}, n)
+		}
+	}
+	for _, w := range d.wards {
+		add(Match{Kind: KindWard, Name: w.Name, Code: w.Code, CountyCode: w.CountyCode}, w.Name)
+	}
+	for _, p := range d.postOffices {
+		add(Match{Kind: KindPostOffice, Name: p.Name, Code: p.Code, CountyCode: p.CountyCode}, p.Name)
+	}
+}
+
 func (d *Data) Search(query string, limit int) []Match {
 	q := normalize(query)
 	if q == "" {
 		return nil
 	}
+	qr := []rune(q)
+	var scratch []int
 
 	var out []Match
-	consider := func(m Match, name string) {
-		if s := score(q, normalize(name)); s > 0 {
+	for i := range d.searchIndex {
+		e := &d.searchIndex[i]
+		var s float64
+		s, scratch = score(q, qr, e.norm, e.runes, scratch)
+		if s > 0 {
+			m := e.match
 			m.Score = s
 			out = append(out, m)
 		}
 	}
 
-	for _, c := range d.counties {
-		consider(Match{Kind: KindCounty, Name: c.Name, Code: strconv.Itoa(c.Code), CountyCode: c.Code}, c.Name)
-	}
-	for code, names := range d.constsByCounty {
-		for _, n := range names {
-			consider(Match{Kind: KindConstituency, Name: n, CountyCode: code}, n)
+	slices.SortStableFunc(out, func(a, b Match) int {
+		if c := cmp.Compare(b.Score, a.Score); c != 0 {
+			return c
 		}
-	}
-	for _, w := range d.wards {
-		consider(Match{Kind: KindWard, Name: w.Name, Code: w.Code, CountyCode: w.CountyCode}, w.Name)
-	}
-	for _, p := range d.postOffices {
-		consider(Match{Kind: KindPostOffice, Name: p.Name, Code: p.Code, CountyCode: p.CountyCode}, p.Name)
-	}
-
-	sort.SliceStable(out, func(i, j int) bool {
-		a, b := out[i], out[j]
-		if a.Score != b.Score {
-			return a.Score > b.Score
+		if c := cmp.Compare(a.Kind, b.Kind); c != 0 {
+			return c
 		}
-		if a.Kind != b.Kind {
-			return a.Kind < b.Kind
+		if c := cmp.Compare(a.Name, b.Name); c != 0 {
+			return c
 		}
-		if a.Name != b.Name {
-			return a.Name < b.Name
-		}
-		return a.CountyCode < b.CountyCode
+		return cmp.Compare(a.CountyCode, b.CountyCode)
 	})
 	if limit > 0 && len(out) > limit {
 		out = out[:limit]
@@ -86,30 +104,42 @@ func (d *Data) Search(query string, limit int) []Match {
 	return out
 }
 
-func score(q, n string) float64 {
+func score(q string, qr []rune, n string, nr []rune, scratch []int) (float64, []int) {
 	switch {
 	case q == n:
-		return 1
+		return 1, scratch
 	case strings.HasPrefix(n, q):
-		return 0.9
+		return 0.9, scratch
 	case strings.Contains(" "+n, " "+q):
-		return 0.8
+		return 0.8, scratch
 	case strings.Contains(n, q):
-		return 0.7
+		return 0.7, scratch
 	}
 
-	qr, nr := []rune(q), []rune(n)
 	longest := max(len(qr), len(nr))
-	sim := 1 - float64(levenshtein(qr, nr))/float64(longest)
-	if sim < 0.7 {
-		return 0
+	if diff := len(qr) - len(nr); float64(max(diff, -diff)) > 0.3*float64(longest) {
+		return 0, scratch
 	}
-	return 0.6 * sim
+	dist, scratch := levenshteinWith(qr, nr, scratch)
+	sim := 1 - float64(dist)/float64(longest)
+	if sim < 0.7 {
+		return 0, scratch
+	}
+	return 0.6 * sim, scratch
 }
 
 func levenshtein(a, b []rune) int {
-	prev := make([]int, len(b)+1)
-	cur := make([]int, len(b)+1)
+	d, _ := levenshteinWith(a, b, nil)
+	return d
+}
+
+func levenshteinWith(a, b []rune, scratch []int) (int, []int) {
+	need := 2 * (len(b) + 1)
+	if cap(scratch) < need {
+		scratch = make([]int, need)
+	}
+	scratch = scratch[:need]
+	prev, cur := scratch[:len(b)+1], scratch[len(b)+1:]
 	for j := range prev {
 		prev[j] = j
 	}
@@ -124,7 +154,7 @@ func levenshtein(a, b []rune) int {
 		}
 		prev, cur = cur, prev
 	}
-	return prev[len(b)]
+	return prev[len(b)], scratch
 }
 
 func normalize(s string) string {

@@ -89,6 +89,8 @@ type Data struct {
 	postByCounty map[int][]int
 
 	shapes func() []wardShape
+
+	searchIndex []searchEntry
 }
 
 var defaultData = sync.OnceValue(func() *Data {
@@ -175,6 +177,7 @@ func Load(counties, wards, postOffices io.Reader) (*Data, error) {
 			d.postByCounty[p.CountyCode] = append(d.postByCounty[p.CountyCode], i)
 		}
 	}
+	d.buildSearchIndex()
 	return d, nil
 }
 
