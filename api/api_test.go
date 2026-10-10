@@ -128,6 +128,13 @@ func TestBoundaries(t *testing.T) {
 	}
 }
 
+func TestAddress(t *testing.T) {
+	var a kenyageo.Address
+	if code := get(t, "/addresses?q=P.O.%20Box%20123-20100%20Nakuru", &a); code != http.StatusOK || a.Box != "123" || a.PostOffice == nil || a.PostOffice.Name != "Nakuru" {
+		t.Errorf("status %d, address %+v", code, a)
+	}
+}
+
 func TestSearch(t *testing.T) {
 	var matches []Match
 	if code := get(t, "/search?q=nakru&limit=3", &matches); code != http.StatusOK || len(matches) == 0 {
@@ -152,6 +159,10 @@ func TestErrors(t *testing.T) {
 		"/postcodes/99999":                         http.StatusNotFound,
 		"/constituencies/nowhere/wards":            http.StatusNotFound,
 		"/search":                                  http.StatusBadRequest,
+		"/addresses":                               http.StatusBadRequest,
+		"/addresses?q=12%20Moi%20Avenue":           http.StatusBadRequest,
+		"/addresses?q=Box%201-99999":               http.StatusNotFound,
+		"/addresses?q=Box%201-00100%20Mombasa":     http.StatusUnprocessableEntity,
 		"/search?q=x&limit=0":                      http.StatusBadRequest,
 		"/search?q=x&limit=lots":                   http.StatusBadRequest,
 		"/at?lat=north&lng=1":                      http.StatusBadRequest,
