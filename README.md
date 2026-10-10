@@ -18,7 +18,7 @@ Kenya's 47 counties, 290 constituencies, 1,450 wards and 890 post offices for Go
 - Forgiving name lookups: case, apostrophes, dashes and a trailing "County" don't matter
 - Fuzzy search across counties, constituencies, wards and post offices
 - A JSON HTTP API and a ready-to-run server
-- [kenya-geo-web](https://github.com/rmiyoyo/kenya-geo-web), a website built on the package
+- [mapping-kenya](https://github.com/rmiyoyo/mapping-kenya), a website built on the package
 - No dependencies outside the standard library; safe for concurrent use
 
 ## Install
