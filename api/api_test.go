@@ -108,6 +108,26 @@ func TestCountyAt(t *testing.T) {
 	}
 }
 
+func TestBoundaries(t *testing.T) {
+	for _, path := range []string{"/wards/1439/boundary", "/counties/nairobi/boundary"} {
+		rec := httptest.NewRecorder()
+		handler.ServeHTTP(rec, httptest.NewRequest(http.MethodGet, path, nil))
+		if rec.Code != http.StatusOK {
+			t.Fatalf("%s: status %d", path, rec.Code)
+		}
+		if ct := rec.Header().Get("Content-Type"); ct != "application/geo+json" {
+			t.Errorf("%s: Content-Type = %q", path, ct)
+		}
+		var f struct {
+			Type     string
+			Geometry struct{ Type string }
+		}
+		if err := json.Unmarshal(rec.Body.Bytes(), &f); err != nil || f.Type != "Feature" || f.Geometry.Type != "MultiPolygon" {
+			t.Errorf("%s: %+v, %v", path, f, err)
+		}
+	}
+}
+
 func TestSearch(t *testing.T) {
 	var matches []Match
 	if code := get(t, "/search?q=nakru&limit=3", &matches); code != http.StatusOK || len(matches) == 0 {
@@ -126,6 +146,9 @@ func TestErrors(t *testing.T) {
 		"/counties/48":                             http.StatusNotFound,
 		"/counties/atlantis":                       http.StatusNotFound,
 		"/wards/9999":                              http.StatusNotFound,
+		"/wards/9999/boundary":                     http.StatusNotFound,
+		"/wards/0097/boundary":                     http.StatusNotFound,
+		"/counties/48/boundary":                    http.StatusNotFound,
 		"/postcodes/99999":                         http.StatusNotFound,
 		"/constituencies/nowhere/wards":            http.StatusNotFound,
 		"/search":                                  http.StatusBadRequest,

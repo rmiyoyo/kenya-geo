@@ -26,12 +26,14 @@ func New(geo *kenyageo.Data) http.Handler {
 	mux.HandleFunc("GET /counties", s.counties)
 	mux.HandleFunc("GET /counties/at", s.countyAt)
 	mux.HandleFunc("GET /counties/{county}", s.county)
+	mux.HandleFunc("GET /counties/{county}/boundary", s.countyBoundary)
 	mux.HandleFunc("GET /counties/{county}/constituencies", s.constituencies)
 	mux.HandleFunc("GET /counties/{county}/neighbours", s.neighbours)
 	mux.HandleFunc("GET /counties/{county}/wards", s.countyWards)
 	mux.HandleFunc("GET /counties/{county}/postoffices", s.countyPostOffices)
 	mux.HandleFunc("GET /constituencies/{name}/wards", s.constituencyWards)
 	mux.HandleFunc("GET /wards/{code}", s.ward)
+	mux.HandleFunc("GET /wards/{code}/boundary", s.wardBoundary)
 	mux.HandleFunc("GET /postcodes/{code}", s.postcode)
 	mux.HandleFunc("GET /search", s.search)
 	mux.HandleFunc("GET /at", s.at)
@@ -47,6 +49,19 @@ func (s server) county(w http.ResponseWriter, r *http.Request) {
 	if c, ok := s.findCounty(w, r); ok {
 		writeJSON(w, http.StatusOK, c)
 	}
+}
+
+func (s server) countyBoundary(w http.ResponseWriter, r *http.Request) {
+	c, ok := s.findCounty(w, r)
+	if !ok {
+		return
+	}
+	f, ok := s.geo.CountyBoundary(c.Code)
+	if !ok {
+		writeError(w, http.StatusNotFound, "no boundary for "+c.Name)
+		return
+	}
+	writeGeoJSON(w, f)
 }
 
 func (s server) constituencies(w http.ResponseWriter, r *http.Request) {
@@ -106,6 +121,21 @@ func (s server) ward(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	writeJSON(w, http.StatusOK, ward)
+}
+
+func (s server) wardBoundary(w http.ResponseWriter, r *http.Request) {
+	code := r.PathValue("code")
+	ward, ok := s.geo.WardByCode(code)
+	if !ok {
+		writeError(w, http.StatusNotFound, "no ward with code "+strconv.Quote(code))
+		return
+	}
+	f, ok := s.geo.WardBoundary(code)
+	if !ok {
+		writeError(w, http.StatusNotFound, "no boundary for ward "+ward.Code+" "+ward.Name)
+		return
+	}
+	writeGeoJSON(w, f)
 }
 
 func (s server) postcode(w http.ResponseWriter, r *http.Request) {
@@ -204,7 +234,15 @@ func nonNil[T any](s []T) []T {
 }
 
 func writeJSON(w http.ResponseWriter, status int, v any) {
-	w.Header().Set("Content-Type", "application/json")
+	writeTyped(w, status, "application/json", v)
+}
+
+func writeGeoJSON(w http.ResponseWriter, v any) {
+	writeTyped(w, http.StatusOK, "application/geo+json", v)
+}
+
+func writeTyped(w http.ResponseWriter, status int, contentType string, v any) {
+	w.Header().Set("Content-Type", contentType)
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.WriteHeader(status)
 	json.NewEncoder(w).Encode(v)

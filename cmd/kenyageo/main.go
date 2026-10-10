@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"strconv"
@@ -11,7 +12,7 @@ import (
 
 func main() {
 	if len(os.Args) < 3 {
-		fmt.Fprintln(os.Stderr, "usage: kenyageo county <name> | postcode <code> | search <query> | at <lat> <lng> | near <lat> <lng>")
+		fmt.Fprintln(os.Stderr, "usage: kenyageo county <name> | postcode <code> | search <query> | at <lat> <lng> | near <lat> <lng> | boundary <ward code or county>")
 		os.Exit(2)
 	}
 	geo := kenyageo.Default()
@@ -79,6 +80,19 @@ func main() {
 			county, _ := geo.CountyByCode(p.CountyCode)
 			fmt.Printf("%s  %-20s %6.1f km  %s\n", p.Code, p.Name, p.DistanceKm, county.Name)
 		}
+	case "boundary":
+		var f any
+		var ok bool
+		if _, err := strconv.Atoi(arg); err == nil && len(arg) == 4 {
+			f, ok = geo.WardBoundary(arg)
+		} else if c, found := geo.CountyByName(arg); found {
+			f, ok = geo.CountyBoundary(c.Code)
+		}
+		if !ok {
+			fmt.Fprintf(os.Stderr, "no boundary for %q\n", arg)
+			os.Exit(1)
+		}
+		json.NewEncoder(os.Stdout).Encode(f)
 	default:
 		fmt.Fprintf(os.Stderr, "unknown command %q\n", os.Args[1])
 		os.Exit(2)

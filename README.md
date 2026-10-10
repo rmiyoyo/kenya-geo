@@ -12,6 +12,7 @@ Kenya's 47 counties, 290 constituencies, 1,450 wards and 890 post offices for Go
 - ISO 3166-2 codes, former provinces and neighbouring counties
 - Centroids and bounding boxes for counties, centroids for wards
 - Find the ward, constituency and county for any coordinate, or just the county from county boundaries
+- Ward and county boundaries as GeoJSON
 - 890 post offices by postal code, each placed in a county, and the nearest offices to any point
 - Forgiving name lookups: case, apostrophes, dashes and a trailing "County" don't matter
 - Fuzzy search across counties, constituencies, wards and post offices
@@ -94,6 +95,18 @@ c, ok := geo.CountyAt(-0.0917, 34.768)  // Kisumu County
 
 The two use different boundary sets, so within a few kilometres of a county line they can disagree: the ward's `CountyName` follows the IEBC ward list, while `CountyAt` follows the county outline.
 
+### Boundaries as GeoJSON
+
+`WardBoundary` and `CountyBoundary` return the outline as a GeoJSON Feature, ready for Leaflet, Mapbox or QGIS:
+
+```go
+f, ok := geo.WardBoundary("1439")
+b, _ := json.Marshal(f)
+// {"type":"Feature","geometry":{"type":"MultiPolygon","coordinates":[...]},"properties":{"ward_code":"1439",...}}
+```
+
+The geometry is always a `MultiPolygon` with closed rings, outer rings counterclockwise and holes clockwise, as RFC 7946 asks. `Properties` is the `Ward` or `County`, so the JSON carries the same fields as the other lookups. Each call returns a fresh copy, so changing it does not affect later lookups. Wards without a known boundary return false.
+
 ### Post offices
 
 ```go
@@ -127,8 +140,8 @@ Results are ranked by how closely they match, and each carries the code of the c
 
 ```go
 geo, err := kenyageo.Load(countiesFile, wardsFile, postOfficesFile)
-err = geo.LoadWardShapes(wardShapesFile)     // needed for WardAt
-err = geo.LoadCountyShapes(countyShapesFile) // needed for CountyAt
+err = geo.LoadWardShapes(wardShapesFile)     // needed for WardAt and WardBoundary
+err = geo.LoadCountyShapes(countyShapesFile) // needed for CountyAt and CountyBoundary
 ```
 
 ## Command-line tool
@@ -141,6 +154,7 @@ kenyageo postcode 30100   # post office lookup
 kenyageo search kibera    # fuzzy search
 kenyageo at -1.2884 36.8233  # ward, constituency and county for a point
 kenyageo near -0.2833 36.0667  # the five closest post offices
+kenyageo boundary 1439       # a ward or county outline as GeoJSON
 ```
 
 ## HTTP API
@@ -158,17 +172,19 @@ kenyageo-server -addr :8080
 | `GET /counties/{county}` | one county, by code (`32`) or name (`nakuru`) |
 | `GET /counties/{county}/constituencies` | constituency names |
 | `GET /counties/{county}/neighbours` | counties that share a border with it |
+| `GET /counties/{county}/boundary` | the county outline as a GeoJSON Feature |
 | `GET /counties/{county}/wards` | wards in the county |
 | `GET /counties/{county}/postoffices` | post offices in the county |
 | `GET /constituencies/{name}/wards` | wards in a constituency, e.g. `/constituencies/kibra/wards` |
 | `GET /wards/{code}` | one ward |
+| `GET /wards/{code}/boundary` | the ward outline as a GeoJSON Feature |
 | `GET /postcodes/{code}` | post offices with that postal code |
 | `GET /search?q=nakru&limit=10` | fuzzy search results with `kind`, `name`, `code`, `county_code` and `score` |
 | `GET /at?lat=-1.2884&lng=36.8233` | the ward at that point |
 | `GET /counties/at?lat=-0.0917&lng=34.768` | the county at that point |
 | `GET /postoffices/near?lat=-0.2833&lng=36.0667&limit=5` | the closest post offices, nearest first, with `distance_km` |
 
-Errors come back as `{"error": "..."}` with status 400 for a bad query and 404 when nothing matches. Responses allow requests from any origin, so a web page can call the API directly.
+Boundary responses use the `application/geo+json` content type. Errors come back as `{"error": "..."}` with status 400 for a bad query and 404 when nothing matches. Responses allow requests from any origin, so a web page can call the API directly.
 
 To add the endpoints to your own server, mount the handler:
 
