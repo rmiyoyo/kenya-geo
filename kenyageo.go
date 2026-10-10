@@ -69,11 +69,12 @@ type Ward struct {
 }
 
 type PostOffice struct {
-	Code         string  `json:"postal_code"`
-	Name         string  `json:"name"`
-	CountyCode   int     `json:"county_code"`
-	CountySource string  `json:"county_source"`
-	Location     *LatLng `json:"location"`
+	Code           string  `json:"postal_code"`
+	Name           string  `json:"name"`
+	CountyCode     int     `json:"county_code"`
+	CountySource   string  `json:"county_source"`
+	Location       *LatLng `json:"location"`
+	LocationSource string  `json:"location_source"`
 }
 
 type Data struct {

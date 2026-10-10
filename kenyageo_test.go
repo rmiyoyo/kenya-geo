@@ -130,8 +130,8 @@ func TestPostOffices(t *testing.T) {
 			unknownCounty++
 		}
 	}
-	if located != 553 || unknownCounty != 0 {
-		t.Errorf("located = %d, unknown county = %d; want 553 and 0", located, unknownCounty)
+	if located != 577 || unknownCounty != 0 {
+		t.Errorf("located = %d, unknown county = %d; want 577 and 0", located, unknownCounty)
 	}
 
 	for code, want := range map[string]int{"00202": 47, "50301": 38, "40639": 41, "50407": 40, "90216": 15} {

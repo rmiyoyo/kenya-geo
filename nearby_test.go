@@ -34,13 +34,17 @@ func TestPostOfficesNear(t *testing.T) {
 			t.Errorf("results not sorted by distance: %v", got)
 		}
 	}
+	near := d.PostOfficesNear(-1.2884, 36.8233, 2)
+	if len(near) != 2 || near[0].Code != "00200" || near[1].Code != "00100" {
+		t.Errorf("near KICC = %+v, want City Square then Nairobi GPO", near)
+	}
 	for _, p := range d.PostOfficesNear(-0.2833, 36.0667, 10) {
 		if p.Location == nil {
 			t.Errorf("%s %s has no location", p.Code, p.Name)
 		}
 	}
-	if n := len(d.PostOfficesNear(0, 37, 10000)); n != 553 {
-		t.Errorf("asking for everything returned %d offices, want the 553 with a location", n)
+	if n := len(d.PostOfficesNear(0, 37, 10000)); n != 577 {
+		t.Errorf("asking for everything returned %d offices, want the 577 with a location", n)
 	}
 	if got := d.PostOfficesNear(0, 37, 0); got != nil {
 		t.Errorf("n=0 returned %v", got)

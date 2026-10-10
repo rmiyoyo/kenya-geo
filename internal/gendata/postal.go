@@ -10,11 +10,12 @@ import (
 )
 
 type PostOffice struct {
-	Code         string  `json:"postal_code"`
-	Name         string  `json:"name"`
-	CountyCode   int     `json:"county_code"`
-	CountySource string  `json:"county_source"`
-	Location     *LatLng `json:"location"`
+	Code           string  `json:"postal_code"`
+	Name           string  `json:"name"`
+	CountyCode     int     `json:"county_code"`
+	CountySource   string  `json:"county_source"`
+	Location       *LatLng `json:"location"`
+	LocationSource string  `json:"location_source"`
 }
 
 func buildPostOffices(counties []County) ([]PostOffice, error) {
@@ -65,6 +66,7 @@ func buildPostOffices(counties []County) ([]PostOffice, error) {
 		precise := accuracy >= 3
 		if precise {
 			p.Location = &LatLng{Lat: lat, Lng: lng}
+			p.LocationSource = "geonames"
 		}
 		pt := [2]float64{lng, lat}
 		if code == 47 && !nairobiHeadOffice(p.Code) && !nairobi.contains(pt) {
@@ -89,6 +91,12 @@ func buildPostOffices(counties []County) ([]PostOffice, error) {
 			p.CountyCode, p.CountySource = c, "neighbours"
 		}
 	}
+
+	osm, err := readOSMPostOffices("data/source/osm-postoffices.json")
+	if err != nil {
+		return nil, err
+	}
+	addOSMLocations(out, osm, shapes, countyByKey)
 
 	sources := map[string]int{}
 	for _, p := range out {
