@@ -11,7 +11,7 @@ import (
 
 func main() {
 	if len(os.Args) < 3 {
-		fmt.Fprintln(os.Stderr, "usage: kenyageo county <name> | postcode <code> | search <query> | at <lat> <lng>")
+		fmt.Fprintln(os.Stderr, "usage: kenyageo county <name> | postcode <code> | search <query> | at <lat> <lng> | near <lat> <lng>")
 		os.Exit(2)
 	}
 	geo := kenyageo.Default()
@@ -59,6 +59,16 @@ func main() {
 			os.Exit(1)
 		}
 		fmt.Printf("%s  %s ward, %s constituency, %s\n", w.Code, w.Name, w.Constituency, w.CountyName)
+	case "near":
+		lat, lng, err := parseLatLng(arg)
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(2)
+		}
+		for _, p := range geo.PostOfficesNear(lat, lng, 5) {
+			county, _ := geo.CountyByCode(p.CountyCode)
+			fmt.Printf("%s  %-20s %6.1f km  %s\n", p.Code, p.Name, p.DistanceKm, county.Name)
+		}
 	default:
 		fmt.Fprintf(os.Stderr, "unknown command %q\n", os.Args[1])
 		os.Exit(2)

@@ -33,6 +33,7 @@ func New(geo *kenyageo.Data) http.Handler {
 	mux.HandleFunc("GET /postcodes/{code}", s.postcode)
 	mux.HandleFunc("GET /search", s.search)
 	mux.HandleFunc("GET /at", s.at)
+	mux.HandleFunc("GET /postoffices/near", s.near)
 	return mux
 }
 
@@ -115,14 +116,9 @@ func (s server) search(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusBadRequest, "missing q")
 		return
 	}
-	limit := 10
-	if v := r.URL.Query().Get("limit"); v != "" {
-		n, err := strconv.Atoi(v)
-		if err != nil || n < 1 || n > 100 {
-			writeError(w, http.StatusBadRequest, "limit must be a number from 1 to 100")
-			return
-		}
-		limit = n
+	limit, ok := parseLimit(w, r, 10)
+	if !ok {
+		return
 	}
 	out := []Match{}
 	for _, m := range s.geo.Search(q, limit) {
@@ -132,10 +128,8 @@ func (s server) search(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s server) at(w http.ResponseWriter, r *http.Request) {
-	lat, err1 := strconv.ParseFloat(r.URL.Query().Get("lat"), 64)
-	lng, err2 := strconv.ParseFloat(r.URL.Query().Get("lng"), 64)
-	if err1 != nil || err2 != nil {
-		writeError(w, http.StatusBadRequest, "lat and lng must be numbers")
+	lat, lng, ok := parseLatLng(w, r)
+	if !ok {
 		return
 	}
 	ward, ok := s.geo.WardAt(lat, lng)
@@ -144,6 +138,41 @@ func (s server) at(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	writeJSON(w, http.StatusOK, ward)
+}
+
+func (s server) near(w http.ResponseWriter, r *http.Request) {
+	lat, lng, ok := parseLatLng(w, r)
+	if !ok {
+		return
+	}
+	limit, ok := parseLimit(w, r, 5)
+	if !ok {
+		return
+	}
+	writeJSON(w, http.StatusOK, s.geo.PostOfficesNear(lat, lng, limit))
+}
+
+func parseLatLng(w http.ResponseWriter, r *http.Request) (lat, lng float64, ok bool) {
+	lat, err1 := strconv.ParseFloat(r.URL.Query().Get("lat"), 64)
+	lng, err2 := strconv.ParseFloat(r.URL.Query().Get("lng"), 64)
+	if err1 != nil || err2 != nil {
+		writeError(w, http.StatusBadRequest, "lat and lng must be numbers")
+		return 0, 0, false
+	}
+	return lat, lng, true
+}
+
+func parseLimit(w http.ResponseWriter, r *http.Request, def int) (int, bool) {
+	v := r.URL.Query().Get("limit")
+	if v == "" {
+		return def, true
+	}
+	n, err := strconv.Atoi(v)
+	if err != nil || n < 1 || n > 100 {
+		writeError(w, http.StatusBadRequest, "limit must be a number from 1 to 100")
+		return 0, false
+	}
+	return n, true
 }
 
 func nonNil[T any](s []T) []T {

@@ -12,7 +12,7 @@ Kenya's 47 counties, 290 constituencies, 1,450 wards and 890 post offices for Go
 - ISO 3166-2 codes and former provinces
 - Centroids and bounding boxes for counties, centroids for wards
 - Find the ward, constituency and county for any coordinate
-- 890 post offices by postal code, each placed in a county
+- 890 post offices by postal code, each placed in a county, and the nearest offices to any point
 - Forgiving name lookups: case, apostrophes, dashes and a trailing "County" don't matter
 - Fuzzy search across counties, constituencies, wards and post offices
 - A JSON HTTP API and a ready-to-run server
@@ -94,6 +94,14 @@ geo.PostOfficesInCounty(27)    // every post office in Uasin Gishu
 
 A few postal codes are shared by two offices, so `PostOffices` returns a slice.
 
+```go
+for _, p := range geo.PostOfficesNear(-0.2833, 36.0667, 3) {
+    fmt.Println(p.Code, p.Name, p.DistanceKm)  // 20100 Nakuru 2.7, then Lanet, Kabatini
+}
+```
+
+`PostOfficesNear` returns the closest post offices to a point, nearest first, with the straight-line distance in kilometres. Only the 553 offices with a known location are considered, so the nearest result can be a few kilometres off where an office without a location (such as Nairobi GPO) is closer.
+
 ### Search
 
 ```go
@@ -122,6 +130,7 @@ kenyageo county nakuru    # constituencies and ward counts
 kenyageo postcode 30100   # post office lookup
 kenyageo search kibera    # fuzzy search
 kenyageo at -1.2884 36.8233  # ward, constituency and county for a point
+kenyageo near -0.2833 36.0667  # the five closest post offices
 ```
 
 ## HTTP API
@@ -145,6 +154,7 @@ kenyageo-server -addr :8080
 | `GET /postcodes/{code}` | post offices with that postal code |
 | `GET /search?q=nakru&limit=10` | fuzzy search results with `kind`, `name`, `code`, `county_code` and `score` |
 | `GET /at?lat=-1.2884&lng=36.8233` | the ward at that point |
+| `GET /postoffices/near?lat=-0.2833&lng=36.0667&limit=5` | the closest post offices, nearest first, with `distance_km` |
 
 Errors come back as `{"error": "..."}` with status 400 for a bad query and 404 when nothing matches. Responses allow requests from any origin, so a web page can call the API directly.
 
