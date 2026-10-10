@@ -46,7 +46,7 @@ func main() {
     if !ok {
         return
     }
-    fmt.Println(c.Code, c.Name, c.Headquarters) // 21 Murang'a County Murang'a
+    fmt.Println(c.Code, c.Name, c.Headquarters)
 
     for _, name := range geo.Constituencies(c.Code) {
         fmt.Println(name, len(geo.WardsInConstituency(name)))
@@ -54,27 +54,29 @@ func main() {
 }
 ```
 
+This prints `21 Murang'a County Murang'a`, then each of Murang'a's constituencies with its number of wards.
+
 ### Counties
 
-```go
-geo.Counties()                 // all 47, ordered by county code
-geo.CountyByCode(47)           // Nairobi County
-geo.CountyByName("nairobi")    // the same county
-c.Population, c.Density()      // 4397073, about 6247 people per km²
-c.ISOCode, c.FormerProvince    // "KE-30", "Nairobi"
-geo.NeighbouringCounties(47)   // Machakos, Kiambu and Kajiado
-```
+| Call | Returns |
+| --- | --- |
+| `geo.Counties()` | all 47 counties, ordered by county code |
+| `geo.CountyByCode(47)` | Nairobi County |
+| `geo.CountyByName("nairobi")` | the same county |
+| `c.Population`, `c.Density()` | 4397073, about 6247 people per km² for Nairobi |
+| `c.ISOCode`, `c.FormerProvince` | `"KE-30"`, `"Nairobi"` |
+| `geo.NeighbouringCounties(47)` | Machakos, Kiambu and Kajiado |
 
 ### Constituencies and wards
 
-```go
-geo.Constituencies(32)         // Nakuru's 11 constituencies, alphabetical
-geo.WardsInCounty(32)          // []Ward
-geo.WardsInConstituency("Kibra")
-geo.WardByCode("0040")         // WAA, in Matuga, Kwale
-w.Centroid                     // *LatLng, nil when unknown
-w.RegisteredVoters2022         // *int, nil when unknown
-```
+| Call | Returns |
+| --- | --- |
+| `geo.Constituencies(32)` | Nakuru's 11 constituency names, alphabetical |
+| `geo.WardsInCounty(32)` | Nakuru's wards as a `[]Ward` |
+| `geo.WardsInConstituency("Kibra")` | Kibra's wards |
+| `geo.WardByCode("0040")` | WAA ward, in Matuga, Kwale |
+| `w.Centroid` | a `*LatLng`, nil when unknown |
+| `w.RegisteredVoters2022` | an `*int`, nil when unknown |
 
 Ward names repeat across the country (there are several CENTRAL and TOWNSHIP wards), so store ward codes, not names.
 
@@ -83,28 +85,31 @@ Ward names repeat across the country (there are several CENTRAL and TOWNSHIP war
 Voter totals add up the 2022 ward figures:
 
 ```go
-v, ok := geo.CountyVoters(47)         // Nairobi: {RegisteredVoters2022: 2415310, Wards: 85, Complete: true}
+v, ok := geo.CountyVoters(47)
 v, ok = geo.ConstituencyVoters("Kibra")
-n := geo.NationalVoters()             // all 1,450 wards
+n := geo.NationalVoters()
 ```
+
+For Nairobi, `CountyVoters(47)` gives `{RegisteredVoters2022: 2415310, Wards: 85, Complete: true}`. `NationalVoters` adds up all 1,450 wards.
 
 `Complete` is false when a ward in the total has no figure. Only Della ward (Eldas, Wajir) is missing one, so the Eldas, Wajir and national totals are slightly low. The national total is 22,096,344, a little under IEBC's published 22,120,458, which also counts voters registered in the diaspora and in prisons.
 
 ### Which ward is this point in?
 
 ```go
-w, ok := geo.WardAt(-1.2884, 36.8233)  // latitude, longitude
+w, ok := geo.WardAt(-1.2884, 36.8233)
 fmt.Println(w.Name, w.Constituency, w.CountyName)
-// NAIROBI CENTRAL Starehe Nairobi County
 ```
 
-`WardAt` returns false for points outside Kenya, in the sea, or in one of the few areas without a ward boundary (see the accuracy notes). The boundaries are loaded the first time you call it, which takes about 30 ms; after that a lookup takes a few microseconds.
+The arguments are latitude then longitude; this point is the KICC, and it prints `NAIROBI CENTRAL Starehe Nairobi County`. `WardAt` returns false for points outside Kenya, in the sea, or in one of the few areas without a ward boundary (see the accuracy notes). The boundaries are loaded the first time you call it, which takes about 30 ms; after that a lookup takes a few microseconds.
 
 `CountyAt` does the same with county boundaries, so it also works where no ward boundary is known:
 
 ```go
-c, ok := geo.CountyAt(-0.0917, 34.768)  // Kisumu County
+c, ok := geo.CountyAt(-0.0917, 34.768)
 ```
+
+That point is in Kisumu County.
 
 The two use different boundary sets, so within a few kilometres of a county line they can disagree: the ward's `CountyName` follows the IEBC ward list, while `CountyAt` follows the county outline.
 
@@ -115,27 +120,23 @@ The two use different boundary sets, so within a few kilometres of a county line
 ```go
 f, ok := geo.WardBoundary("1439")
 b, _ := json.Marshal(f)
-// {"type":"Feature","geometry":{"type":"MultiPolygon","coordinates":[...]},"properties":{"ward_code":"1439",...}}
 ```
+
+`b` holds `{"type":"Feature","geometry":{"type":"MultiPolygon","coordinates":[...]},"properties":{"ward_code":"1439",...}}`.
 
 The geometry is always a `MultiPolygon` with closed rings, outer rings counterclockwise and holes clockwise, as RFC 7946 asks. `Properties` is the `Ward` or `County`, so the JSON carries the same fields as the other lookups. Each call returns a fresh copy, so changing it does not affect later lookups. Wards without a known boundary return false.
 
 ### Post offices
 
-```go
-geo.PostOffices("00100")       // Nairobi GPO
-geo.PostOfficesInCounty(27)    // every post office in Uasin Gishu
-```
-
-A few postal codes are shared by two offices, so `PostOffices` returns a slice.
+`geo.PostOffices("00100")` returns Nairobi GPO, and `geo.PostOfficesInCounty(27)` returns every post office in Uasin Gishu. A few postal codes are shared by two offices, so `PostOffices` returns a slice.
 
 ```go
 for _, p := range geo.PostOfficesNear(-0.2833, 36.0667, 3) {
-    fmt.Println(p.Code, p.Name, p.DistanceKm)  // 20100 Nakuru 2.7, then Lanet, Kabatini
+    fmt.Println(p.Code, p.Name, p.DistanceKm)
 }
 ```
 
-`PostOfficesNear` returns the closest post offices to a point, nearest first, with the straight-line distance in kilometres. Only the 553 offices with a known location are considered, so the nearest result can be a few kilometres off where an office without a location (such as Nairobi GPO) is closer.
+From central Nakuru this prints `20100 Nakuru 2.7`, then Lanet and Kabatini. `PostOfficesNear` returns the closest post offices to a point, nearest first, with the straight-line distance in kilometres. Only the 553 offices with a known location are considered, so the nearest result can be a few kilometres off where an office without a location (such as Nairobi GPO) is closer.
 
 ### Postal addresses
 
@@ -143,9 +144,11 @@ for _, p := range geo.PostOfficesNear(-0.2833, 36.0667, 3) {
 
 ```go
 a, err := geo.ParseAddress("P.O. Box 30100, 00100 GPO Nairobi")
-fmt.Println(a.Box, a.PostalCode, a.PostOffice.Name) // 30100 00100 Nairobi Gpo
-fmt.Println(a)                                      // P.O. Box 30100-00100 Nairobi
+fmt.Println(a.Box, a.PostalCode, a.PostOffice.Name)
+fmt.Println(a)
 ```
+
+This prints `30100 00100 Nairobi Gpo`, then the tidied address `P.O. Box 30100-00100 Nairobi`.
 
 It accepts the usual ways of writing one: `P.O. Box`, `P. O. BOX`, `PO Box`, `Box` and `Private Bag`, with the box number and postal code joined by a dash, a comma or a space, in any case, with a name on the lines before and "Kenya" at the end. When the postal code is missing it is taken from the town, so `Box 45, Kisumu` becomes `P.O. Box 45-40100 Kisumu`.
 
@@ -175,23 +178,27 @@ Results are ranked by how closely they match, and each carries the code of the c
 
 ```go
 geo, err := kenyageo.Load(countiesFile, wardsFile, postOfficesFile)
-err = geo.LoadWardShapes(wardShapesFile)     // needed for WardAt and WardBoundary
-err = geo.LoadCountyShapes(countyShapesFile) // needed for CountyAt and CountyBoundary
+err = geo.LoadWardShapes(wardShapesFile)
+err = geo.LoadCountyShapes(countyShapesFile)
 ```
+
+`WardAt` and `WardBoundary` need the ward shapes; `CountyAt` and `CountyBoundary` need the county shapes.
 
 ## Command-line tool
 
 ```sh
 go install github.com/rmiyoyo/kenya-geo/cmd/kenyageo@latest
-
-kenyageo county nakuru    # neighbours, voters, constituencies and ward counts
-kenyageo postcode 30100   # post office lookup
-kenyageo search kibera    # fuzzy search
-kenyageo at -1.2884 36.8233  # ward, constituency and county for a point
-kenyageo near -0.2833 36.0667  # the five closest post offices
-kenyageo boundary 1439       # a ward or county outline as GeoJSON
-kenyageo address "P.O. Box 123-00100 Nairobi"  # parse and check a postal address
 ```
+
+| Command | Prints |
+| --- | --- |
+| `kenyageo county nakuru` | neighbours, voters, constituencies and ward counts |
+| `kenyageo postcode 30100` | the post office for a postal code |
+| `kenyageo search kibera` | fuzzy search results |
+| `kenyageo at -1.2884 36.8233` | the ward, constituency and county for a point |
+| `kenyageo near -0.2833 36.0667` | the five closest post offices |
+| `kenyageo boundary 1439` | a ward or county outline as GeoJSON |
+| `kenyageo address "P.O. Box 123-00100 Nairobi"` | the parsed and checked postal address |
 
 Add `-json` before the command to get JSON instead of text, for scripts and `jq`:
 
@@ -290,19 +297,19 @@ Post office data is © GeoNames, used under CC BY 4.0.
 
 ## Contributing
 
-Issues and pull requests are welcome. To regenerate the data after changing a source or a fix:
+Issues and pull requests are welcome. To regenerate the data after changing a source or a fix, run the generator and then the tests. The generator downloads the raw sources, applies the fixes and writes `data/*.json`.
 
 ```sh
-go run ./internal/gendata   # downloads raw sources, applies fixes, writes data/*.json
+go run ./internal/gendata
 go test ./...
 ```
 
 Don't edit `data/*.json` by hand. Change the sources in `data/source/` or the fixes in `internal/gendata/` instead.
 
-CI runs these on every pull request, so run them before pushing:
+CI runs these on every pull request, so run them before pushing. `gofmt -l .` should print nothing.
 
 ```sh
-gofmt -l .                  # should print nothing
+gofmt -l .
 go vet ./...
 go run honnef.co/go/tools/cmd/staticcheck@2025.1.1 ./...
 go test -race ./...
