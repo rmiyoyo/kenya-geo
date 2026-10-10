@@ -15,6 +15,7 @@ Kenya's 47 counties, 290 constituencies, 1,450 wards and 890 post offices for Go
 - 890 post offices by postal code, each placed in a county
 - Forgiving name lookups: case, apostrophes, dashes and a trailing "County" don't matter
 - Fuzzy search across counties, constituencies, wards and post offices
+- A JSON HTTP API and a ready-to-run server
 - No dependencies outside the standard library; safe for concurrent use
 
 ## Install
@@ -121,6 +122,36 @@ kenyageo county nakuru    # constituencies and ward counts
 kenyageo postcode 30100   # post office lookup
 kenyageo search kibera    # fuzzy search
 kenyageo at -1.2884 36.8233  # ward, constituency and county for a point
+```
+
+## HTTP API
+
+The `api` package serves the same data as JSON, and `kenyageo-server` runs it:
+
+```sh
+go install github.com/rmiyoyo/kenya-geo/cmd/kenyageo-server@latest
+kenyageo-server -addr :8080
+```
+
+| Endpoint | Returns |
+| --- | --- |
+| `GET /counties` | all 47 counties |
+| `GET /counties/{county}` | one county, by code (`32`) or name (`nakuru`) |
+| `GET /counties/{county}/constituencies` | constituency names |
+| `GET /counties/{county}/wards` | wards in the county |
+| `GET /counties/{county}/postoffices` | post offices in the county |
+| `GET /constituencies/{name}/wards` | wards in a constituency, e.g. `/constituencies/kibra/wards` |
+| `GET /wards/{code}` | one ward |
+| `GET /postcodes/{code}` | post offices with that postal code |
+| `GET /search?q=nakru&limit=10` | fuzzy search results with `kind`, `name`, `code`, `county_code` and `score` |
+| `GET /at?lat=-1.2884&lng=36.8233` | the ward at that point |
+
+Errors come back as `{"error": "..."}` with status 400 for a bad query and 404 when nothing matches. Responses allow requests from any origin, so a web page can call the API directly.
+
+To add the endpoints to your own server, mount the handler:
+
+```go
+mux.Handle("/geo/", http.StripPrefix("/geo", api.New(kenyageo.Default())))
 ```
 
 ## Data
