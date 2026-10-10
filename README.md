@@ -167,7 +167,7 @@ for _, m := range geo.Search("nakru", 10) {
 }
 ```
 
-Results are ranked by how closely they match, and each carries the code of the county it belongs to.
+Results are ranked by how closely they match, and each carries the code of the county it belongs to. A limit of 0 or less returns every match.
 
 ### Your own data
 
@@ -293,5 +293,13 @@ go vet ./...
 go run honnef.co/go/tools/cmd/staticcheck@2025.1.1 ./...
 go test -race ./...
 ```
+
+CI also runs each fuzz test for 15 seconds. They throw random input at `normalize`, `ParseAddress` and `Search` and check properties that must always hold: normalizing twice gives the same result, a parsed address prints back to the same address, search results are sorted and scored between 0 and 1. To fuzz one for longer:
+
+```sh
+go test -run '^$' -fuzz FuzzParseAddress -fuzztime 5m .
+```
+
+A failing input is saved under `testdata/fuzz/` and from then on runs as an ordinary test case, so commit it with the fix.
 
 Pull requests that touch `internal/gendata/` or `data/` also regenerate the data from scratch and fail if the committed `data/*.json` doesn't match. The geoBoundaries files are downloaded from the latest release, so that check can also fail when geoBoundaries changes upstream; regenerating and committing the result fixes it.

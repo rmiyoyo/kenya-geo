@@ -174,5 +174,9 @@ func normalize(s string) string {
 			pendingSpace = true
 		}
 	}
-	return strings.TrimSuffix(b.String(), " county")
+	n := b.String()
+	for strings.HasSuffix(n, " county") {
+		n = strings.TrimSuffix(n, " county")
+	}
+	return n
 }
