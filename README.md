@@ -23,6 +23,8 @@ Kenya's 47 counties, 290 constituencies, 1,450 wards and 890 post offices for Go
 - [mapping-kenya](https://github.com/rmiyoyo/mapping-kenya), a website built on the package
 - No dependencies outside the standard library; safe for concurrent use
 
+See [CHANGELOG.md](CHANGELOG.md) for what changed in each release.
+
 ## Install
 
 ```sh
@@ -337,3 +339,34 @@ go test -run '^$' -fuzz FuzzParseAddress -fuzztime 5m .
 A failing input is saved under `testdata/fuzz/` and from then on runs as an ordinary test case, so commit it with the fix.
 
 Pull requests that touch `internal/gendata/` or `data/` also regenerate the data from scratch and fail if the committed `data/*.json` doesn't match. The geoBoundaries files are downloaded from the latest release, so that check can also fail when geoBoundaries changes upstream; regenerating and committing the result fixes it.
+
+## Releasing
+
+Releases are Git tags such as `v0.3.0`. The Go module proxy and pkg.go.dev pick a tag up on their own; nothing is uploaded anywhere.
+
+1. Make sure `main` has everything for the release and CI is green on it.
+2. In a pull request, change the top of [CHANGELOG.md](CHANGELOG.md) from "not yet tagged" to the release date, and check `"version"` in `api/openapi.json` and the version named at the top of `api/README.md` match the new tag. Merge it.
+3. Tag the merge commit on `main` and push the tag:
+
+   ```sh
+   git checkout main
+   git pull
+   git tag -a v0.3.0 -m "v0.3.0"
+   git push origin v0.3.0
+   ```
+
+4. On GitHub, open Releases → Draft a new release, pick the tag, and paste that version's section of the changelog as the notes.
+5. Ask the module proxy for the new version, so `go get` and pkg.go.dev see it straight away:
+
+   ```sh
+   GOPROXY=https://proxy.golang.org go list -m github.com/rmiyoyo/kenya-geo@v0.3.0
+   ```
+
+6. Move projects that use the package onto the tag, for example mapping-kenya:
+
+   ```sh
+   go get github.com/rmiyoyo/kenya-geo@v0.3.0
+   go mod tidy
+   ```
+
+Pick the number by what changed since the last tag: a new minor version (`v0.4.0`) for new features, a patch (`v0.3.1`) for fixes only. Until 1.0, a change that breaks existing code also goes in a minor version, and the changelog says so under **Breaking**.
