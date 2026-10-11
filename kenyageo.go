@@ -1,3 +1,13 @@
+// Package kenyageo holds Kenya's 47 counties, their constituencies and 1,450
+// wards, and 890 post offices, with 2019 census figures, IEBC registered
+// voters and boundaries, all embedded in the package.
+//
+// Start with [Default], which loads the embedded data once and is safe for
+// concurrent use:
+//
+//	geo := kenyageo.Default()
+//	nakuru, _ := geo.CountyByName("Nakuru")
+//	ward, _ := geo.WardAt(-1.2884, 36.8233)
 package kenyageo
 
 import (
@@ -29,11 +39,14 @@ var wardShapesJSON []byte
 //go:embed data/countyshapes.json
 var countyShapesJSON []byte
 
+// LatLng is a point in WGS 84 decimal degrees.
 type LatLng struct {
 	Lat float64 `json:"lat"`
 	Lng float64 `json:"lng"`
 }
 
+// County is one of Kenya's 47 counties, with its 2019 census figures,
+// location and neighbours.
 type County struct {
 	Code           int    `json:"code"`
 	Name           string `json:"name"`
@@ -57,6 +70,8 @@ type County struct {
 	Religion Religion `json:"religion"`
 }
 
+// Religion counts people in households by religious affiliation in the
+// 2019 census. The groups add up to Total.
 type Religion struct {
 	Total             int `json:"total"`
 	Catholic          int `json:"catholic"`
@@ -74,10 +89,12 @@ type Religion struct {
 	NotStated         int `json:"not_stated"`
 }
 
+// Christian returns the number of people in all the Christian groups.
 func (r Religion) Christian() int {
 	return r.Catholic + r.Protestant + r.Evangelical + r.AfricanInstituted + r.Orthodox + r.OtherChristian
 }
 
+// Pct returns n as a percentage of Total, or 0 when Total is 0.
 func (r Religion) Pct(n int) float64 {
 	if r.Total == 0 {
 		return 0
@@ -85,6 +102,7 @@ func (r Religion) Pct(n int) float64 {
 	return 100 * float64(n) / float64(r.Total)
 }
 
+// National holds the 2019 census figures for Kenya as a whole.
 type National struct {
 	PopulationUrban int      `json:"population_urban"`
 	PopulationRural int      `json:"population_rural"`
@@ -92,6 +110,8 @@ type National struct {
 	Religion        Religion `json:"religion"`
 }
 
+// Living holds living conditions from the 2019 census for a county or for
+// Kenya. The fields ending in Pct are percentages from 0 to 100.
 type Living struct {
 	Households          int     `json:"households"`
 	HouseholdSize       float64 `json:"average_household_size"`
@@ -102,6 +122,8 @@ type Living struct {
 	SchoolAttendancePct float64 `json:"school_attendance_pct"`
 }
 
+// UrbanPct returns the percentage of the county's people who live in urban
+// areas.
 func (c County) UrbanPct() float64 {
 	if c.Population == 0 {
 		return 0
@@ -109,6 +131,7 @@ func (c County) UrbanPct() float64 {
 	return 100 * float64(c.PopulationUrban) / float64(c.Population)
 }
 
+// Density returns people per square kilometre.
 func (c County) Density() float64 {
 	if c.AreaKm2 == 0 {
 		return 0
@@ -116,6 +139,8 @@ func (c County) Density() float64 {
 	return float64(c.Population) / c.AreaKm2
 }
 
+// Ward is an IEBC electoral ward, with its constituency, county and 2022
+// registered voters.
 type Ward struct {
 	Code         string `json:"ward_code"`
 	Name         string `json:"name"`
@@ -128,6 +153,7 @@ type Ward struct {
 	Centroid *LatLng `json:"centroid"`
 }
 
+// PostOffice is a post office and the postal code it serves.
 type PostOffice struct {
 	Code           string  `json:"postal_code"`
 	Name           string  `json:"name"`
@@ -137,6 +163,9 @@ type PostOffice struct {
 	LocationSource string  `json:"location_source"`
 }
 
+// Data holds the counties, wards and post offices and answers questions
+// about them. Use [Default] for the embedded data, or [Load] for your own.
+// A Data is safe for concurrent use once loaded.
 type Data struct {
 	counties    []County
 	wards       []Ward
@@ -189,8 +218,13 @@ var defaultData = sync.OnceValue(func() *Data {
 	return d
 })
 
+// Default returns the data embedded in the package, including boundaries
+// and national figures. It is loaded on first use and shared afterwards.
 func Default() *Data { return defaultData() }
 
+// Load reads counties, wards and post offices in the JSON format of the
+// files in the data directory. Boundaries are not loaded; add them with
+// [Data.LoadWardShapes] and [Data.LoadCountyShapes].
 func Load(counties, wards, postOffices io.Reader) (*Data, error) {
 	d := &Data{}
 	if err := json.NewDecoder(counties).Decode(&d.counties); err != nil {
@@ -264,6 +298,8 @@ func Load(counties, wards, postOffices io.Reader) (*Data, error) {
 	return d, nil
 }
 
+// National returns the census figures for Kenya as a whole. It reports
+// false for data from [Load], which has no national figures.
 func (d *Data) National() (National, bool) {
 	if d.national == nil {
 		return National{}, false
@@ -271,15 +307,18 @@ func (d *Data) National() (National, bool) {
 	return *d.national, true
 }
 
+// NationalLiving returns Kenya's living conditions, like [Data.National].
 func (d *Data) NationalLiving() (Living, bool) {
 	n, ok := d.National()
 	return n.Living, ok
 }
 
+// Counties returns all 47 counties in code order.
 func (d *Data) Counties() []County {
 	return append([]County(nil), d.counties...)
 }
 
+// CountyByCode returns the county with a code from 1 to 47.
 func (d *Data) CountyByCode(code int) (County, bool) {
 	i, ok := d.countyByCode[code]
 	if !ok {
@@ -288,6 +327,9 @@ func (d *Data) CountyByCode(code int) (County, bool) {
 	return d.counties[i], true
 }
 
+// CountyByName returns the county with a name. Case, apostrophes, dashes
+// and a trailing "County" don't matter, so "nakuru" and "Murang'a County"
+// both work.
 func (d *Data) CountyByName(name string) (County, bool) {
 	i, ok := d.countyByName[normalize(name)]
 	if !ok {
@@ -296,6 +338,8 @@ func (d *Data) CountyByName(name string) (County, bool) {
 	return d.counties[i], true
 }
 
+// NeighbouringCounties returns the counties that share a border with the
+// county with code.
 func (d *Data) NeighbouringCounties(code int) []County {
 	i, ok := d.countyByCode[code]
 	if !ok {
@@ -310,6 +354,7 @@ func (d *Data) NeighbouringCounties(code int) []County {
 	return out
 }
 
+// WardByCode returns the ward with a four-digit IEBC code such as "0040".
 func (d *Data) WardByCode(code string) (Ward, bool) {
 	i, ok := d.wardByCode[code]
 	if !ok {
@@ -318,14 +363,18 @@ func (d *Data) WardByCode(code string) (Ward, bool) {
 	return d.wards[i], true
 }
 
+// WardsInCounty returns the wards in a county, by ward code.
 func (d *Data) WardsInCounty(countyCode int) []Ward {
 	return d.pick(d.wardsByCounty[countyCode])
 }
 
+// Constituencies returns the names of a county's constituencies, sorted.
 func (d *Data) Constituencies(countyCode int) []string {
 	return append([]string(nil), d.constsByCounty[countyCode]...)
 }
 
+// WardsInConstituency returns the wards in the constituency with a name,
+// matched like [Data.CountyByName].
 func (d *Data) WardsInConstituency(name string) []Ward {
 	return d.pick(d.wardsByConst[normalize(name)])
 }
@@ -341,10 +390,13 @@ func (d *Data) pick(idx []int) []Ward {
 	return out
 }
 
+// PostOffices returns the post offices with a postal code. Several offices
+// can share one code.
 func (d *Data) PostOffices(postalCode string) []PostOffice {
 	return d.pickPost(d.postByCode[strings.TrimSpace(postalCode)])
 }
 
+// PostOfficesInCounty returns the post offices in a county, by postal code.
 func (d *Data) PostOfficesInCounty(countyCode int) []PostOffice {
 	return d.pickPost(d.postByCounty[countyCode])
 }

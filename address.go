@@ -9,12 +9,15 @@ import (
 	"unicode/utf8"
 )
 
+// Errors returned by [Data.ParseAddress]. Test for them with [errors.Is].
 var (
 	ErrNoBox             = errors.New("no P.O. Box or Private Bag found")
 	ErrUnknownPostOffice = errors.New("unknown post office")
 	ErrTownMismatch      = errors.New("town does not match the postal code")
 )
 
+// Address is a parsed Kenyan postal address such as
+// "P.O. Box 123-00100 Nairobi".
 type Address struct {
 	Box        string      `json:"box,omitempty"`
 	PrivateBag bool        `json:"private_bag"`
@@ -23,6 +26,8 @@ type Address struct {
 	PostOffice *PostOffice `json:"post_office"`
 }
 
+// String writes the address in the standard form, such as
+// "P.O. Box 123-00100 Nairobi".
 func (a Address) String() string {
 	var b strings.Builder
 	if a.PrivateBag {
@@ -59,6 +64,11 @@ var bagPrefixes = [][]string{
 	{"pbag"},
 }
 
+// ParseAddress parses a postal address and finds its post office. It
+// accepts "P.O. Box", "Box" and "Private Bag", with the postal code joined
+// to the box by a dash or written separately. When the town and postal code
+// belong to different offices it returns the parsed address with
+// [ErrTownMismatch].
 func (d *Data) ParseAddress(s string) (Address, error) {
 	words := strings.Fields(normalize(s))
 	var a Address

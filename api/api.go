@@ -1,3 +1,5 @@
+// Package api serves the kenyageo data as a JSON HTTP API. Mount [New] on
+// any [http.ServeMux]; [Docs] describes every endpoint.
 package api
 
 import (
@@ -11,6 +13,7 @@ import (
 	kenyageo "github.com/rmiyoyo/kenya-geo"
 )
 
+// Match is a search result as the API returns it.
 type Match struct {
 	Kind       string  `json:"kind"`
 	Name       string  `json:"name"`
@@ -55,6 +58,8 @@ var routes = []route{
 //go:embed openapi.json
 var openapiJSON []byte
 
+// New returns a handler that serves the API for geo from the root path. To
+// serve it under a prefix, wrap it in [http.StripPrefix].
 func New(geo *kenyageo.Data) http.Handler {
 	s := server{geo: geo}
 	mux := http.NewServeMux()

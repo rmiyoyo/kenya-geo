@@ -6,6 +6,8 @@ import (
 	"io"
 )
 
+// LoadCountyShapes reads county boundaries in the format of
+// data/countyshapes.json, for data from [Load].
 func (d *Data) LoadCountyShapes(r io.Reader) error {
 	shapes, err := d.readCountyShapes(r)
 	if err != nil {
@@ -38,6 +40,8 @@ func (d *Data) readCountyShapes(r io.Reader) ([]area, error) {
 	return shapes, nil
 }
 
+// CountyAt returns the county containing a point. Boundaries are
+// simplified, so treat points near a county line as approximate.
 func (d *Data) CountyAt(lat, lng float64) (County, bool) {
 	if d.countyShapes == nil {
 		return County{}, false

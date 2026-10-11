@@ -6,11 +6,15 @@ import (
 	"slices"
 )
 
+// NearbyPostOffice is a post office and its distance from a point.
 type NearbyPostOffice struct {
 	PostOffice
 	DistanceKm float64 `json:"distance_km"`
 }
 
+// PostOfficesNear returns up to n post offices closest to a point, nearest
+// first, by great-circle distance. Offices with no known location are
+// skipped.
 func (d *Data) PostOfficesNear(lat, lng float64, n int) []NearbyPostOffice {
 	if n <= 0 {
 		return nil

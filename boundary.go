@@ -1,16 +1,22 @@
 package kenyageo
 
+// Feature is a GeoJSON Feature with a MultiPolygon geometry and P as its
+// properties.
 type Feature[P any] struct {
 	Type       string   `json:"type"`
 	Geometry   Geometry `json:"geometry"`
 	Properties P        `json:"properties"`
 }
 
+// Geometry is a GeoJSON MultiPolygon: polygons made of rings of [lng, lat]
+// points.
 type Geometry struct {
 	Type        string           `json:"type"`
 	Coordinates [][][][2]float64 `json:"coordinates"`
 }
 
+// WardBoundary returns a ward's outline as a GeoJSON Feature. It reports
+// false for the few wards with no known boundary.
 func (d *Data) WardBoundary(code string) (Feature[Ward], bool) {
 	i, ok := d.wardByCode[code]
 	if !ok || d.wardShapes == nil {
@@ -23,6 +29,7 @@ func (d *Data) WardBoundary(code string) (Feature[Ward], bool) {
 	return Feature[Ward]{Type: "Feature", Geometry: g, Properties: d.wards[i]}, true
 }
 
+// CountyBoundary returns a county's outline as a GeoJSON Feature.
 func (d *Data) CountyBoundary(code int) (Feature[County], bool) {
 	i, ok := d.countyByCode[code]
 	if !ok || d.countyShapes == nil {
