@@ -103,6 +103,7 @@ func TestResponsesMatchSpec(t *testing.T) {
 		"/constituencies/{name}/voters":     "/constituencies/eldas/voters",
 		"/constituencies/{name}/wards":      "/constituencies/eldas/wards",
 		"/voters":                           "/voters",
+		"/national":                         "/national",
 		"/wards/{code}":                     "/wards/0181",
 		"/wards/{code}/boundary":            "/wards/1439/boundary",
 		"/postcodes/{code}":                 "/postcodes/00100",
