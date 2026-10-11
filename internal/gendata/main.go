@@ -42,11 +42,14 @@ type County struct {
 	PopulationMale     int        `json:"population_male"`
 	PopulationFemale   int        `json:"population_female"`
 	PopulationIntersex int        `json:"population_intersex"`
+	PopulationUrban    int        `json:"population_urban"`
+	PopulationRural    int        `json:"population_rural"`
 	AreaKm2            float64    `json:"area_km2"`
 	Centroid           LatLng     `json:"centroid"`
 	BBox               [4]float64 `json:"bbox"`
 	Neighbours         []int      `json:"neighbours"`
 	Living             Living     `json:"living"`
+	Religion           Religion   `json:"religion"`
 }
 
 type Ward struct {
@@ -85,8 +88,27 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	keys := make([]string, len(counties))
+	for i, c := range counties {
+		keys[i] = censusKey(c.Name)
+	}
+	urban, err := readUrbanRural(keys)
+	if err != nil {
+		log.Fatal(err)
+	}
+	religion, err := readReligion(keys)
+	if err != nil {
+		log.Fatal(err)
+	}
 	for i := range counties {
-		counties[i].Living = living[counties[i].Code]
+		c := &counties[i]
+		c.Living = living[c.Code]
+		u := urban[keys[i]]
+		if u.urban+u.rural != c.Population {
+			log.Fatalf("%s: urban %d + rural %d != population %d", c.Name, u.urban, u.rural, c.Population)
+		}
+		c.PopulationUrban, c.PopulationRural = u.urban, u.rural
+		c.Religion = religion[keys[i]]
 	}
 
 	if err := writeLines("data/counties.json", counties); err != nil {
@@ -104,7 +126,12 @@ func main() {
 	if err := writeLines("data/countyshapes.json", countyShapes); err != nil {
 		log.Fatal(err)
 	}
-	if err := writeJSON("data/kenya.json", National{Living: national}); err != nil {
+	if err := writeJSON("data/kenya.json", National{
+		PopulationUrban: urban[kenyaKey].urban,
+		PopulationRural: urban[kenyaKey].rural,
+		Living:          national,
+		Religion:        religion[kenyaKey],
+	}); err != nil {
 		log.Fatal(err)
 	}
 	log.Printf("wrote %d counties, %d wards (%d with boundaries) and %d post offices",

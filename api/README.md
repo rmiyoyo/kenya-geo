@@ -70,6 +70,8 @@ GET /counties/32
   "population_male": 1077272,
   "population_female": 1084835,
   "population_intersex": 95,
+  "population_urban": 1047080,
+  "population_rural": 1115122,
   "area_km2": 7462.4,
   "centroid": {"lat": -0.46402, "lng": 36.07634},
   "bbox": [35.41247, -1.15591, 36.59541, 0.23466],
@@ -82,6 +84,22 @@ GET /counties/32
     "internet_pct": 26.8,
     "mobile_phone_pct": 52.7,
     "school_attendance_pct": 96.4
+  },
+  "religion": {
+    "total": 2142667,
+    "catholic": 349527,
+    "protestant": 703881,
+    "evangelical": 647780,
+    "african_instituted": 154007,
+    "orthodox": 12182,
+    "other_christian": 140000,
+    "islam": 25479,
+    "hindu": 1660,
+    "traditionist": 4568,
+    "other_religion": 30739,
+    "no_religion": 67640,
+    "dont_know": 4937,
+    "not_stated": 267
   }
 }
 ```
@@ -91,10 +109,12 @@ GET /counties/32
 | `code` | county code, 1 to 47 |
 | `iso_code` | ISO 3166-2 code |
 | `population`, `population_male`, `population_female`, `population_intersex` | 2019 census (KNBS) |
+| `population_urban`, `population_rural` | people living in urban and rural areas, from 2019 census Volume II; they add up to `population` |
 | `area_km2` | land area in square kilometres |
 | `centroid`, `bbox` | from the simplified boundary |
 | `neighbours` | codes of counties that share a border |
 | `living` | living conditions from the 2019 census, below |
+| `religion` | people by religious affiliation from the 2019 census, below |
 
 `living` comes from the volumes of the [2019 Kenya Population and Housing Census](https://open.africa/dataset/2019-kenya-population-and-housing-census) published by KNBS. Percentages are out of 100.
 
@@ -107,6 +127,8 @@ GET /counties/32
 | `internet_pct` | people aged 3 and over who used the internet | Volume IV: population aged 3 and above using the internet |
 | `mobile_phone_pct` | people aged 3 and over who own a mobile phone | Volume IV: population aged 3 and above owning a mobile phone |
 | `school_attendance_pct` | children aged 6 to 17 at school or another learning institution | Volume IV: school attendance status by special age groups, adding the 6–13 and 14–17 groups |
+
+`religion` counts people in households by religious affiliation, from Volume IV's distribution of population by religious affiliation and county. `total` is the population in households, so it is a little smaller than `population`, and the other fields add up to it. The Christian groups are `catholic`, `protestant`, `evangelical`, `african_instituted`, `orthodox` and `other_christian`; the rest are `islam`, `hindu`, `traditionist`, `other_religion`, `no_religion`, `dont_know` and `not_stated`.
 
 ### GET /counties/{county}/constituencies
 

@@ -45,13 +45,51 @@ type County struct {
 	PopulationMale     int     `json:"population_male"`
 	PopulationFemale   int     `json:"population_female"`
 	PopulationIntersex int     `json:"population_intersex"`
+	PopulationUrban    int     `json:"population_urban"`
+	PopulationRural    int     `json:"population_rural"`
 	AreaKm2            float64 `json:"area_km2"`
 
 	Centroid   LatLng     `json:"centroid"`
 	BBox       [4]float64 `json:"bbox"`
 	Neighbours []int      `json:"neighbours"`
 
-	Living Living `json:"living"`
+	Living   Living   `json:"living"`
+	Religion Religion `json:"religion"`
+}
+
+type Religion struct {
+	Total             int `json:"total"`
+	Catholic          int `json:"catholic"`
+	Protestant        int `json:"protestant"`
+	Evangelical       int `json:"evangelical"`
+	AfricanInstituted int `json:"african_instituted"`
+	Orthodox          int `json:"orthodox"`
+	OtherChristian    int `json:"other_christian"`
+	Islam             int `json:"islam"`
+	Hindu             int `json:"hindu"`
+	Traditionist      int `json:"traditionist"`
+	OtherReligion     int `json:"other_religion"`
+	NoReligion        int `json:"no_religion"`
+	DontKnow          int `json:"dont_know"`
+	NotStated         int `json:"not_stated"`
+}
+
+func (r Religion) Christian() int {
+	return r.Catholic + r.Protestant + r.Evangelical + r.AfricanInstituted + r.Orthodox + r.OtherChristian
+}
+
+func (r Religion) Pct(n int) float64 {
+	if r.Total == 0 {
+		return 0
+	}
+	return 100 * float64(n) / float64(r.Total)
+}
+
+type National struct {
+	PopulationUrban int      `json:"population_urban"`
+	PopulationRural int      `json:"population_rural"`
+	Living          Living   `json:"living"`
+	Religion        Religion `json:"religion"`
 }
 
 type Living struct {
@@ -62,6 +100,13 @@ type Living struct {
 	InternetPct         float64 `json:"internet_pct"`
 	MobilePhonePct      float64 `json:"mobile_phone_pct"`
 	SchoolAttendancePct float64 `json:"school_attendance_pct"`
+}
+
+func (c County) UrbanPct() float64 {
+	if c.Population == 0 {
+		return 0
+	}
+	return 100 * float64(c.PopulationUrban) / float64(c.Population)
 }
 
 func (c County) Density() float64 {
@@ -114,7 +159,7 @@ type Data struct {
 
 	searchIndex []searchEntry
 
-	national *Living
+	national *National
 }
 
 var defaultData = sync.OnceValue(func() *Data {
@@ -122,13 +167,11 @@ var defaultData = sync.OnceValue(func() *Data {
 	if err != nil {
 		panic("kenyageo: embedded data is invalid: " + err.Error())
 	}
-	var kenya struct {
-		Living Living `json:"living"`
-	}
+	var kenya National
 	if err := json.Unmarshal(kenyaJSON, &kenya); err != nil {
 		panic("kenyageo: embedded national figures are invalid: " + err.Error())
 	}
-	d.national = &kenya.Living
+	d.national = &kenya
 	d.wardShapes = sync.OnceValue(func() []area {
 		shapes, err := d.readWardShapes(bytes.NewReader(wardShapesJSON))
 		if err != nil {
@@ -221,11 +264,16 @@ func Load(counties, wards, postOffices io.Reader) (*Data, error) {
 	return d, nil
 }
 
-func (d *Data) NationalLiving() (Living, bool) {
+func (d *Data) National() (National, bool) {
 	if d.national == nil {
-		return Living{}, false
+		return National{}, false
 	}
 	return *d.national, true
+}
+
+func (d *Data) NationalLiving() (Living, bool) {
+	n, ok := d.National()
+	return n.Living, ok
 }
 
 func (d *Data) Counties() []County {

@@ -22,6 +22,12 @@ var censusSources = map[string]string{
 		"7fe4200a-cccd-41bd-b761-3d424beae754/distribution-of-population-age-3-years-and-above-owning-a-mobile-phone-by-area-of-residence-sex-.csv",
 	"knbs-school.csv": openAfrica +
 		"9ac966d8-a391-46ab-8cbc-2a14028c668d/distribution-of-population-age-3-years-and-above-by-school-attendance-status-sex-special-age-gro.csv",
+	"knbs-urban.csv": openAfrica +
+		"a0437750-81a4-4c99-8a4a-d7b95f534a4f/distribution-of-urban-population-by-sex-and-county-2019-census-volume-ii.csv",
+	"knbs-rural.csv": openAfrica +
+		"06a1d670-fb58-44c6-8d88-f0c18ccc6981/distribution-of-rural-population-by-sex-and-county-2019-census-volume-ii.csv",
+	"knbs-religion.csv": openAfrica +
+		"2b2a7b48-ff46-4aa1-91c8-94b2c91e568b/distribution-of-population-by-religious-affiliation-and-county-2019-census-volume-iv.csv",
 }
 
 type Living struct {
@@ -34,8 +40,99 @@ type Living struct {
 	SchoolAttendancePct float64 `json:"school_attendance_pct"`
 }
 
+type Religion struct {
+	Total             int `json:"total"`
+	Catholic          int `json:"catholic"`
+	Protestant        int `json:"protestant"`
+	Evangelical       int `json:"evangelical"`
+	AfricanInstituted int `json:"african_instituted"`
+	Orthodox          int `json:"orthodox"`
+	OtherChristian    int `json:"other_christian"`
+	Islam             int `json:"islam"`
+	Hindu             int `json:"hindu"`
+	Traditionist      int `json:"traditionist"`
+	OtherReligion     int `json:"other_religion"`
+	NoReligion        int `json:"no_religion"`
+	DontKnow          int `json:"dont_know"`
+	NotStated         int `json:"not_stated"`
+}
+
 type National struct {
-	Living Living `json:"living"`
+	PopulationUrban int      `json:"population_urban"`
+	PopulationRural int      `json:"population_rural"`
+	Living          Living   `json:"living"`
+	Religion        Religion `json:"religion"`
+}
+
+type urbanRural struct {
+	urban, rural int
+}
+
+func readUrbanRural(keys []string) (map[string]urbanRural, error) {
+	out := map[string]urbanRural{}
+	for _, part := range []struct {
+		path string
+		set  func(*urbanRural, int)
+	}{
+		{"data/raw/knbs-urban.csv", func(u *urbanRural, n int) { u.urban = n }},
+		{"data/raw/knbs-rural.csv", func(u *urbanRural, n int) { u.rural = n }},
+	} {
+		t, err := readCensusTable(part.path, keys, func(r []string) bool { return strings.TrimSpace(r[0]) == "County" })
+		if err != nil {
+			return nil, err
+		}
+		col, err := t.column("Total")
+		if err != nil {
+			return nil, err
+		}
+		for k, row := range t.rows {
+			n, err := censusNumber(row[col])
+			if err != nil {
+				return nil, fmt.Errorf("%s %s: %w", part.path, k, err)
+			}
+			u := out[k]
+			part.set(&u, int(n))
+			out[k] = u
+		}
+	}
+	return out, nil
+}
+
+func readReligion(keys []string) (map[string]Religion, error) {
+	const path = "data/raw/knbs-religion.csv"
+	t, err := readCensusTable(path, keys, func(r []string) bool { return strings.TrimSpace(r[0]) == "County" })
+	if err != nil {
+		return nil, err
+	}
+	columns := []string{"Total", "Catholic", "Protestant", "Evangelical Churches", "African Instituted Churches",
+		"Orthodox", "Other Christian", "Islam", "Hindu", "Traditionists", "Other Religion",
+		"No religion /Atheists", "Don't Know", "Not Stated"}
+	idx := make([]int, len(columns))
+	for i, c := range columns {
+		if idx[i], err = t.column(c); err != nil {
+			return nil, err
+		}
+	}
+	out := map[string]Religion{}
+	for k, row := range t.rows {
+		v := make([]int, len(idx))
+		sum := 0
+		for i, c := range idx {
+			n, err := censusNumber(row[c])
+			if err != nil {
+				return nil, fmt.Errorf("%s %s: %w", path, k, err)
+			}
+			v[i] = int(n)
+			if i > 0 {
+				sum += v[i]
+			}
+		}
+		if sum != v[0] {
+			return nil, fmt.Errorf("%s %s: groups add up to %d, total is %d", path, k, sum, v[0])
+		}
+		out[k] = Religion{v[0], v[1], v[2], v[3], v[4], v[5], v[6], v[7], v[8], v[9], v[10], v[11], v[12], v[13]}
+	}
+	return out, nil
 }
 
 const kenyaKey = "kenya"
@@ -44,6 +141,8 @@ func censusKey(name string) string {
 	switch k := norm(name); k {
 	case "nairobi city":
 		return "nairobi"
+	case "elg eyo marakwet":
+		return "elgeyo marakwet"
 	default:
 		return k
 	}
