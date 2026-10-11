@@ -2,7 +2,7 @@
 
 The `api` package serves Kenya's counties, constituencies, wards and post offices as JSON, with 2019 census figures for every county: population by sex, urban and rural, households and living conditions, and religious affiliation, and the same for Kenya as a whole. Run it with `kenyageo-server`, or mount `api.New` in your own server.
 
-This page describes version 0.3.0. [CHANGELOG.md](https://github.com/rmiyoyo/kenya-geo/blob/main/CHANGELOG.md) lists what changed in each version.
+This page describes version 0.3.1. [CHANGELOG.md](https://github.com/rmiyoyo/kenya-geo/blob/main/CHANGELOG.md) lists what changed in each version.
 
 Every endpoint is a `GET`. Responses allow requests from any origin, so a web page can call the API directly. A machine-readable [OpenAPI 3.1](https://spec.openapis.org/oas/v3.1.0) description is served at `/openapi.json`.
 

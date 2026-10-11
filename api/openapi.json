@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "kenya-geo",
-    "version": "0.3.0",
+    "version": "0.3.1",
     "description": "Kenya's counties, constituencies, wards and post offices. Every response allows requests from any origin.",
     "license": {
       "name": "MIT",

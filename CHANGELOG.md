@@ -2,6 +2,16 @@
 
 Versions follow [semantic versioning](https://semver.org/). Before 1.0, a minor version can add features; anything that would break existing code is called out under **Breaking**.
 
+## v0.3.1 (2026-10-11)
+
+### Added
+
+- `GET /national` in the API returns Kenya's totals: population by sex, area, urban and rural population, living conditions, religion and registered voters.
+
+### Changed
+
+- `api/openapi.json` is now version 0.3.1.
+
 ## v0.3.0 (2026-10-11)
 
 Census data beyond population, and better post office locations.
@@ -12,7 +22,6 @@ Census data beyond population, and better post office locations.
 - Urban and rural population for every county: `County.PopulationUrban`, `County.PopulationRural` and `County.UrbanPct`; `population_urban` and `population_rural` in the API.
 - Religious affiliation for every county from the 2019 census: `County.Religion`, with `Religion.Christian` and `Religion.Pct`; a `religion` object in the API.
 - The same census figures for Kenya as a whole: `Data.National` and `Data.NationalLiving`, from `data/kenya.json`.
-- `GET /national` in the API returns Kenya's totals: population by sex, area, urban and rural population, living conditions, religion and registered voters.
 - Post office locations from OpenStreetMap where GeoNames has none, so 577 of the 890 offices are now placed. `location_source` says which source placed each one: `geonames`, `openstreetmap`, or empty.
 - The API reference in [`api/README.md`](api/README.md), with an example for every endpoint. It is embedded in the package as `api.Docs`, so websites can show docs that match the version they serve. Tests check that every route is documented and every example works.
 
