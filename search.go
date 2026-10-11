@@ -8,8 +8,10 @@ import (
 	"unicode"
 )
 
+// Kind is the kind of place a search [Match] found.
 type Kind int
 
+// The kinds of place [Data.Search] can find.
 const (
 	KindCounty Kind = iota
 	KindConstituency
@@ -17,6 +19,7 @@ const (
 	KindPostOffice
 )
 
+// String returns "county", "constituency", "ward" or "post office".
 func (k Kind) String() string {
 	switch k {
 	case KindCounty:
@@ -31,6 +34,9 @@ func (k Kind) String() string {
 	return "unknown"
 }
 
+// Match is one search result. Code is the county code, ward code or postal
+// code, and is empty for constituencies. Score runs from 0 to 1, where 1 is
+// an exact match.
 type Match struct {
 	Kind       Kind
 	Name       string
@@ -66,6 +72,9 @@ func (d *Data) buildSearchIndex() {
 	}
 }
 
+// Search finds counties, constituencies, wards and post offices whose names
+// match query, allowing for typos, best first. A limit of 0 or less returns
+// every match.
 func (d *Data) Search(query string, limit int) []Match {
 	q := normalize(query)
 	if q == "" {

@@ -6,6 +6,8 @@ import (
 	"io"
 )
 
+// LoadWardShapes reads ward boundaries in the format of
+// data/wardshapes.json, for data from [Load].
 func (d *Data) LoadWardShapes(r io.Reader) error {
 	shapes, err := d.readWardShapes(r)
 	if err != nil {
@@ -38,6 +40,8 @@ func (d *Data) readWardShapes(r io.Reader) ([]area, error) {
 	return shapes, nil
 }
 
+// WardAt returns the ward containing a point. It reports false outside
+// Kenya and in the few areas with no known ward boundary.
 func (d *Data) WardAt(lat, lng float64) (Ward, bool) {
 	if d.wardShapes == nil {
 		return Ward{}, false

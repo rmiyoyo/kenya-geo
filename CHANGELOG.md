@@ -2,6 +2,13 @@
 
 Versions follow [semantic versioning](https://semver.org/). Before 1.0, a minor version can add features; anything that would break existing code is called out under **Breaking**.
 
+## Unreleased
+
+### Added
+
+- Doc comments on every exported function, type, method, variable and constant, and an overview of each package, so pkg.go.dev describes the whole API.
+- Runnable examples for looking up a county, finding the ward or county at a point, searching, parsing an address, finding the nearest post offices, voter totals and the census figures. They run with the tests and show on pkg.go.dev with their output.
+
 ## v0.3.1 (2026-10-11)
 
 ### Added

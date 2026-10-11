@@ -2,6 +2,8 @@
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/rmiyoyo/kenya-geo.svg)](https://pkg.go.dev/github.com/rmiyoyo/kenya-geo)
 [![CI](https://github.com/rmiyoyo/kenya-geo/actions/workflows/ci.yml/badge.svg)](https://github.com/rmiyoyo/kenya-geo/actions/workflows/ci.yml)
+[![Go version](https://img.shields.io/github/go-mod/go-version/rmiyoyo/kenya-geo)](go.mod)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 Kenya's 47 counties, 290 constituencies, 1,450 wards and 890 post offices for Go, with 2019 census figures and map coordinates. The data is compiled into your binary, so there is nothing to download or configure at runtime.
 

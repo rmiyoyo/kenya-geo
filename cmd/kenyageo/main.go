@@ -1,3 +1,5 @@
+// Kenyageo looks up Kenya's counties, wards, post offices and addresses
+// from the command line. Run it with no arguments for the list of commands.
 package main
 
 import (

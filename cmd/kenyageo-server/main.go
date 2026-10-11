@@ -1,3 +1,5 @@
+// Kenyageo-server serves the kenyageo JSON API over HTTP. It listens on
+// $PORT when that is set, and otherwise on :8080; -addr overrides both.
 package main
 
 import (
