@@ -2,7 +2,7 @@
 
 Versions follow [semantic versioning](https://semver.org/). Before 1.0, a minor version can add features; anything that would break existing code is called out under **Breaking**.
 
-## v0.3.0 (not yet tagged)
+## v0.3.0 (2026-10-11)
 
 Census data beyond population, and better post office locations.
 
