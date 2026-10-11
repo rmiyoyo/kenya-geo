@@ -73,7 +73,16 @@ GET /counties/32
   "area_km2": 7462.4,
   "centroid": {"lat": -0.46402, "lng": 36.07634},
   "bbox": [35.41247, -1.15591, 36.59541, 0.23466],
-  "neighbours": [18, 22, 30, 31, 33, 34, 35]
+  "neighbours": [18, 22, 30, 31, 33, 34, 35],
+  "living": {
+    "households": 616046,
+    "average_household_size": 3.5,
+    "electricity_pct": 64.4,
+    "piped_water_pct": 27.5,
+    "internet_pct": 26.8,
+    "mobile_phone_pct": 52.7,
+    "school_attendance_pct": 96.4
+  }
 }
 ```
 
@@ -85,6 +94,19 @@ GET /counties/32
 | `area_km2` | land area in square kilometres |
 | `centroid`, `bbox` | from the simplified boundary |
 | `neighbours` | codes of counties that share a border |
+| `living` | living conditions from the 2019 census, below |
+
+`living` comes from the volumes of the [2019 Kenya Population and Housing Census](https://open.africa/dataset/2019-kenya-population-and-housing-census) published by KNBS. Percentages are out of 100.
+
+| Field | Meaning | Census table |
+| --- | --- | --- |
+| `households` | households, conventional and group quarters | Volume I: population, households and average household size by county |
+| `average_household_size` | people living in households divided by households, to one decimal place | Volume I, as above |
+| `electricity_pct` | conventional households lit mainly by mains electricity | Volume IV: main type of lighting fuel |
+| `piped_water_pct` | conventional households whose main drinking water is piped into the dwelling or to the yard or plot | Volume IV: main source of drinking water |
+| `internet_pct` | people aged 3 and over who used the internet | Volume IV: population aged 3 and above using the internet |
+| `mobile_phone_pct` | people aged 3 and over who own a mobile phone | Volume IV: population aged 3 and above owning a mobile phone |
+| `school_attendance_pct` | children aged 6 to 17 at school or another learning institution | Volume IV: school attendance status by special age groups, adding the 6–13 and 14–17 groups |
 
 ### GET /counties/{county}/constituencies
 
