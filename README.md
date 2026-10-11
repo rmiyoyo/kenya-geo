@@ -9,6 +9,7 @@ Kenya's 47 counties, 290 constituencies, 1,450 wards and 890 post offices for Go
 
 - Every county, constituency and ward, with IEBC ward codes and 2022 registered voters
 - 2019 census population by sex, land area and density for each county
+- 2019 census living conditions for each county and for Kenya: households, household size, electricity, piped water, internet use, mobile phone ownership and school attendance
 - ISO 3166-2 codes, former provinces and neighbouring counties
 - Centroids and bounding boxes for counties, centroids for wards
 - Find the ward, constituency and county for any coordinate, or just the county from county boundaries
@@ -269,7 +270,8 @@ mux.Handle("/geo/", http.StripPrefix("/geo", api.New(kenyageo.Default())))
 
 | File | Contents |
 | --- | --- |
-| `data/counties.json` | code, name, headquarters, ISO code, former province, population by sex, area, centroid, bounding box, neighbouring county codes |
+| `data/counties.json` | code, name, headquarters, ISO code, former province, population by sex, area, centroid, bounding box, neighbouring county codes, 2019 census living conditions |
+| `data/kenya.json` | the same living conditions for Kenya as a whole, from `Data.NationalLiving` |
 | `data/wards.json` | ward code, name, constituency, county, 2022 registered voters, centroid |
 | `data/postoffices.json` | postal code, name, county, how the county was decided, location |
 | `data/wardshapes.json` | ward code and boundary polygons, as GeoJSON-style `[lng, lat]` rings |
@@ -284,13 +286,14 @@ The same JSON files can be used from any language.
 - Boundaries are simplified, so a point within a few hundred metres of a ward line can land in the neighbouring ward. A handful of wards on county borders have centroids that fall just across the line.
 - Post office locations are given for 577 of the 890 offices. GeoNames places 553 of them precisely; the other 24 come from OpenStreetMap. `location_source` says which: `geonames`, `openstreetmap`, or empty when the location is unknown. `county_source` says how each office's county was decided: `geonames`, `location`, `manual` or `neighbours`.
 - An OpenStreetMap post office is used only when it matches exactly one office without a location: by postal code and name, by the same name, or by a name that is part of the office's name (`Hardy` for `Langata Hardy`). A match is skipped when the point lies in a different county, when another office could claim it, or when a name-only match sits within 300 m of an office GeoNames already places. That leaves out, for example, Kamiti and Kenyatta University, which OpenStreetMap places just inside Nairobi while GeoNames files them under Kiambu.
+- Living conditions are copied from the KNBS 2019 census tables, not estimated. Average household size is worked out from the Volume I population in households and number of households, because that table's own column has lost its decimal point (`39` for 3.9). Piped water counts water piped into the dwelling or to the yard or plot; public taps are left out. School attendance adds the 6–13 and 14–17 age groups; Kenya's figure is worked out from the county totals, since that table has no national row. The tests check the national figures against KNBS's published 50.4 % electricity, 22.6 % internet use and 47.3 % mobile phone ownership, and that the county households add up to the national 12,143,913.
 - The source data had several errors, such as wards filed under the wrong constituency, mixed census years and a malformed ward code. They are corrected when the data is generated; see `internal/gendata/fixes.go`.
 
 ## Sources
 
 | Source | Used for | Licence |
 | --- | --- | --- |
-| [KNBS 2019 Kenya Population and Housing Census, Volume I](https://open.africa/dataset/2019-kenya-population-and-housing-census) | county population by sex, land area | open data |
+| [KNBS 2019 Kenya Population and Housing Census, Volumes I, II and IV](https://open.africa/dataset/2019-kenya-population-and-housing-census) | county population by sex, land area, households and living conditions | CC BY |
 | [geoBoundaries gbOpen KEN ADM1/ADM2/ADM3](https://www.geoboundaries.org/) | ISO codes, centroids, bounding boxes, ward boundaries | public domain |
 | [GeoNames postal codes](https://www.geonames.org/) | post offices | CC BY 4.0 |
 | [OpenStreetMap](https://www.openstreetmap.org/copyright) via Overpass API | post office locations GeoNames lacks | ODbL 1.0 |

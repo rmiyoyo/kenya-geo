@@ -20,6 +20,9 @@ var wardsJSON []byte
 //go:embed data/postoffices.json
 var postOfficesJSON []byte
 
+//go:embed data/kenya.json
+var kenyaJSON []byte
+
 //go:embed data/wardshapes.json
 var wardShapesJSON []byte
 
@@ -47,6 +50,18 @@ type County struct {
 	Centroid   LatLng     `json:"centroid"`
 	BBox       [4]float64 `json:"bbox"`
 	Neighbours []int      `json:"neighbours"`
+
+	Living Living `json:"living"`
+}
+
+type Living struct {
+	Households          int     `json:"households"`
+	HouseholdSize       float64 `json:"average_household_size"`
+	ElectricityPct      float64 `json:"electricity_pct"`
+	PipedWaterPct       float64 `json:"piped_water_pct"`
+	InternetPct         float64 `json:"internet_pct"`
+	MobilePhonePct      float64 `json:"mobile_phone_pct"`
+	SchoolAttendancePct float64 `json:"school_attendance_pct"`
 }
 
 func (c County) Density() float64 {
@@ -98,6 +113,8 @@ type Data struct {
 	countyShapes func() []area
 
 	searchIndex []searchEntry
+
+	national *Living
 }
 
 var defaultData = sync.OnceValue(func() *Data {
@@ -105,6 +122,13 @@ var defaultData = sync.OnceValue(func() *Data {
 	if err != nil {
 		panic("kenyageo: embedded data is invalid: " + err.Error())
 	}
+	var kenya struct {
+		Living Living `json:"living"`
+	}
+	if err := json.Unmarshal(kenyaJSON, &kenya); err != nil {
+		panic("kenyageo: embedded national figures are invalid: " + err.Error())
+	}
+	d.national = &kenya.Living
 	d.wardShapes = sync.OnceValue(func() []area {
 		shapes, err := d.readWardShapes(bytes.NewReader(wardShapesJSON))
 		if err != nil {
@@ -195,6 +219,13 @@ func Load(counties, wards, postOffices io.Reader) (*Data, error) {
 	}
 	d.buildSearchIndex()
 	return d, nil
+}
+
+func (d *Data) NationalLiving() (Living, bool) {
+	if d.national == nil {
+		return Living{}, false
+	}
+	return *d.national, true
 }
 
 func (d *Data) Counties() []County {

@@ -945,6 +945,9 @@
               "type": "integer"
             },
             "description": "Codes of the counties that share a border."
+          },
+          "living": {
+            "$ref": "#/components/schemas/Living"
           }
         },
         "required": [
@@ -960,7 +963,8 @@
           "area_km2",
           "centroid",
           "bbox",
-          "neighbours"
+          "neighbours",
+          "living"
         ]
       },
       "Ward": {
@@ -1219,6 +1223,59 @@
           "type",
           "geometry",
           "properties"
+        ]
+      },
+      "Living": {
+        "type": "object",
+        "description": "Living conditions from the 2019 Kenya Population and Housing Census (KNBS).",
+        "properties": {
+          "households": {
+            "type": "integer",
+            "description": "Households, conventional and group quarters."
+          },
+          "average_household_size": {
+            "type": "number",
+            "description": "People living in households, divided by households."
+          },
+          "electricity_pct": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Share of conventional households lit mainly by mains electricity."
+          },
+          "piped_water_pct": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Share of conventional households whose main drinking water is piped into the dwelling or to the yard or plot."
+          },
+          "internet_pct": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Share of people aged 3 and over who used the internet."
+          },
+          "mobile_phone_pct": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Share of people aged 3 and over who own a mobile phone."
+          },
+          "school_attendance_pct": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Share of children aged 6 to 17 attending school or another learning institution."
+          }
+        },
+        "required": [
+          "households",
+          "average_household_size",
+          "electricity_pct",
+          "piped_water_pct",
+          "internet_pct",
+          "mobile_phone_pct",
+          "school_attendance_pct"
         ]
       }
     }

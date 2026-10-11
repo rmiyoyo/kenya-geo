@@ -46,6 +46,7 @@ type County struct {
 	Centroid           LatLng     `json:"centroid"`
 	BBox               [4]float64 `json:"bbox"`
 	Neighbours         []int      `json:"neighbours"`
+	Living             Living     `json:"living"`
 }
 
 type Ward struct {
@@ -60,9 +61,11 @@ type Ward struct {
 
 func main() {
 	log.SetFlags(0)
-	for name, url := range sources {
-		if err := fetch(filepath.Join("data", "raw", name), url); err != nil {
-			log.Fatal(err)
+	for _, set := range []map[string]string{sources, censusSources} {
+		for name, url := range set {
+			if err := fetch(filepath.Join("data", "raw", name), url); err != nil {
+				log.Fatal(err)
+			}
 		}
 	}
 
@@ -78,6 +81,13 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	living, national, err := readLiving(counties)
+	if err != nil {
+		log.Fatal(err)
+	}
+	for i := range counties {
+		counties[i].Living = living[counties[i].Code]
+	}
 
 	if err := writeLines("data/counties.json", counties); err != nil {
 		log.Fatal(err)
@@ -92,6 +102,9 @@ func main() {
 		log.Fatal(err)
 	}
 	if err := writeLines("data/countyshapes.json", countyShapes); err != nil {
+		log.Fatal(err)
+	}
+	if err := writeJSON("data/kenya.json", National{Living: national}); err != nil {
 		log.Fatal(err)
 	}
 	log.Printf("wrote %d counties, %d wards (%d with boundaries) and %d post offices",
@@ -431,6 +444,14 @@ func readCSV(path string) ([][]string, error) {
 	r := csv.NewReader(f)
 	r.FieldsPerRecord = -1
 	return r.ReadAll()
+}
+
+func writeJSON(path string, v any) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(path, append(b, '\n'), 0o644)
 }
 
 func writeLines[T any](path string, items []T) error {
