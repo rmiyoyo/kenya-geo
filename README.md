@@ -249,6 +249,7 @@ The image is about 18 MB: a static binary on the distroless base, running as a n
 | `GET /constituencies/{name}/wards` | wards in a constituency, e.g. `/constituencies/kibra/wards` |
 | `GET /constituencies/{name}/voters` | registered voters in a constituency |
 | `GET /voters` | the national total |
+| `GET /national` | Kenya as a whole: 2019 census population, urban and rural, living conditions and religion, plus 2022 voters |
 | `GET /wards/{code}` | one ward |
 | `GET /wards/{code}/boundary` | the ward outline as a GeoJSON Feature |
 | `GET /postcodes/{code}` | post offices with that postal code |

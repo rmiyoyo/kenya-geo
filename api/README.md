@@ -1,6 +1,6 @@
 # HTTP API
 
-The `api` package serves Kenya's counties, constituencies, wards and post offices as JSON, with 2019 census figures for every county: population by sex, urban and rural, households and living conditions, and religious affiliation. Run it with `kenyageo-server`, or mount `api.New` in your own server.
+The `api` package serves Kenya's counties, constituencies, wards and post offices as JSON, with 2019 census figures for every county: population by sex, urban and rural, households and living conditions, and religious affiliation, and the same for Kenya as a whole. Run it with `kenyageo-server`, or mount `api.New` in your own server.
 
 This page describes version 0.3.0. [CHANGELOG.md](https://github.com/rmiyoyo/kenya-geo/blob/main/CHANGELOG.md) lists what changed in each version.
 
@@ -291,6 +291,56 @@ GET /voters
 ```json
 {"registered_voters_2022": 22096344, "wards": 1450, "complete": false}
 ```
+
+## Kenya
+
+### GET /national
+
+Figures for Kenya as a whole: the 2019 census population, urban and rural population, living conditions and religion, and the 2022 registered voter total.
+
+```http
+GET /national
+```
+
+```json
+{
+  "population": 47564296,
+  "population_male": 23548056,
+  "population_female": 24014716,
+  "population_intersex": 1524,
+  "area_km2": 580876.5,
+  "population_urban": 14831700,
+  "population_rural": 32732596,
+  "living": {
+    "households": 12143913,
+    "average_household_size": 3.9,
+    "electricity_pct": 50.4,
+    "piped_water_pct": 24.2,
+    "internet_pct": 22.6,
+    "mobile_phone_pct": 47.3,
+    "school_attendance_pct": 87.8
+  },
+  "religion": {
+    "total": 47213282,
+    "catholic": 9726169,
+    "protestant": 15777473,
+    "evangelical": 9648690,
+    "african_instituted": 3292573,
+    "orthodox": 201263,
+    "other_christian": 1732911,
+    "islam": 5152194,
+    "hindu": 60287,
+    "traditionist": 318727,
+    "other_religion": 467083,
+    "no_religion": 755750,
+    "dont_know": 73253,
+    "not_stated": 6909
+  },
+  "voters": {"registered_voters_2022": 22096344, "wards": 1450, "complete": false}
+}
+```
+
+`population`, its parts by sex and `area_km2` add up the 47 counties. `living` and `religion` have the same fields as on a county; Kenya's figures come from the census's national rows, except school attendance, which is worked out from the county totals because that table has no national row. `voters` is the same as [`GET /voters`](#get-voters).
 
 ## Post offices
 
