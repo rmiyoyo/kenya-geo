@@ -4,6 +4,7 @@ import (
 	_ "embed"
 	"encoding/json"
 	"errors"
+	"math"
 	"net/http"
 	"strconv"
 
@@ -40,6 +41,7 @@ var routes = []route{
 	{"GET /constituencies/{name}/voters", server.constituencyVoters},
 	{"GET /constituencies/{name}/wards", server.constituencyWards},
 	{"GET /voters", server.voters},
+	{"GET /national", server.national},
 	{"GET /wards/{code}", server.ward},
 	{"GET /wards/{code}/boundary", server.wardBoundary},
 	{"GET /postcodes/{code}", server.postcode},
@@ -149,6 +151,34 @@ func (s server) constituencyVoters(w http.ResponseWriter, r *http.Request) {
 
 func (s server) voters(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, s.geo.NationalVoters())
+}
+
+type national struct {
+	Population         int     `json:"population"`
+	PopulationMale     int     `json:"population_male"`
+	PopulationFemale   int     `json:"population_female"`
+	PopulationIntersex int     `json:"population_intersex"`
+	AreaKm2            float64 `json:"area_km2"`
+	kenyageo.National
+	Voters kenyageo.VoterTotal `json:"voters"`
+}
+
+func (s server) national(w http.ResponseWriter, r *http.Request) {
+	n, ok := s.geo.National()
+	if !ok {
+		writeError(w, http.StatusNotFound, "no national figures")
+		return
+	}
+	out := national{National: n, Voters: s.geo.NationalVoters()}
+	for _, c := range s.geo.Counties() {
+		out.Population += c.Population
+		out.PopulationMale += c.PopulationMale
+		out.PopulationFemale += c.PopulationFemale
+		out.PopulationIntersex += c.PopulationIntersex
+		out.AreaKm2 += c.AreaKm2
+	}
+	out.AreaKm2 = math.Round(out.AreaKm2*10) / 10
+	writeJSON(w, http.StatusOK, out)
 }
 
 func (s server) constituencyWards(w http.ResponseWriter, r *http.Request) {

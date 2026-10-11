@@ -489,6 +489,25 @@
         }
       }
     },
+    "/national": {
+      "get": {
+        "operationId": "national",
+        "summary": "Figures for Kenya as a whole: 2019 census population, living conditions and religion, and 2022 registered voters.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Kenya's totals.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/National"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/wards/{code}": {
       "get": {
         "operationId": "getWard",
@@ -1368,6 +1387,57 @@
           "no_religion",
           "dont_know",
           "not_stated"
+        ]
+      },
+      "National": {
+        "type": "object",
+        "properties": {
+          "population": {
+            "type": "integer",
+            "description": "Sum of the 47 counties, 2019 census."
+          },
+          "population_male": {
+            "type": "integer"
+          },
+          "population_female": {
+            "type": "integer"
+          },
+          "population_intersex": {
+            "type": "integer"
+          },
+          "area_km2": {
+            "type": "number",
+            "description": "Sum of the counties' land areas, to one decimal place."
+          },
+          "population_urban": {
+            "type": "integer",
+            "description": "People living in urban areas, 2019 census Volume II."
+          },
+          "population_rural": {
+            "type": "integer",
+            "description": "People living in rural areas. Urban and rural add up to population."
+          },
+          "living": {
+            "$ref": "#/components/schemas/Living"
+          },
+          "religion": {
+            "$ref": "#/components/schemas/Religion"
+          },
+          "voters": {
+            "$ref": "#/components/schemas/VoterTotal"
+          }
+        },
+        "required": [
+          "population",
+          "population_male",
+          "population_female",
+          "population_intersex",
+          "area_km2",
+          "population_urban",
+          "population_rural",
+          "living",
+          "religion",
+          "voters"
         ]
       }
     }
