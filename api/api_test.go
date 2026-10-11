@@ -146,6 +146,20 @@ func TestVoters(t *testing.T) {
 	if code := get(t, "/voters", &v); code != http.StatusOK || v.Wards != 1450 {
 		t.Errorf("national: status %d, %+v", code, v)
 	}
+
+	var n struct {
+		Population      int `json:"population"`
+		PopulationUrban int `json:"population_urban"`
+		Living          struct {
+			Households int `json:"households"`
+		} `json:"living"`
+		Voters struct {
+			RegisteredVoters2022 int `json:"registered_voters_2022"`
+		} `json:"voters"`
+	}
+	if code := get(t, "/national", &n); code != http.StatusOK || n.Population != 47564296 || n.PopulationUrban != 14831700 || n.Living.Households != 12143913 || n.Voters.RegisteredVoters2022 != 22096344 {
+		t.Errorf("/national: %d %+v", code, n)
+	}
 }
 
 func TestSearch(t *testing.T) {
