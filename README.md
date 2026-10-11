@@ -214,7 +214,7 @@ The exit status is 0 on success, 1 when nothing matches (or an address's town an
 
 ## HTTP API
 
-The `api` package serves the same data as JSON, and `kenyageo-server` runs it. [docs/API.md](docs/API.md) is the full reference, with parameters and example responses for every endpoint.
+The `api` package serves the same data as JSON, and `kenyageo-server` runs it. [api/README.md](api/README.md) is the full reference, with parameters and example responses for every endpoint. The same file is embedded in the package as `api.Docs`, and [mapping-kenya](https://github.com/rmiyoyo/mapping-kenya) renders it as its API page, so the website's docs always match the version of the API it serves.
 
 ```sh
 go install github.com/rmiyoyo/kenya-geo/cmd/kenyageo-server@latest
