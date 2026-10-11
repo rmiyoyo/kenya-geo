@@ -2,7 +2,7 @@
 
 Versions follow [semantic versioning](https://semver.org/). Before 1.0, a minor version can add features; anything that would break existing code is called out under **Breaking**.
 
-## Unreleased
+## v0.3.2 (2026-10-11)
 
 ### Added
 
