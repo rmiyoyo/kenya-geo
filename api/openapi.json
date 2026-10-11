@@ -924,6 +924,14 @@
           "population_intersex": {
             "type": "integer"
           },
+          "population_urban": {
+            "type": "integer",
+            "description": "People living in urban areas, 2019 census Volume II."
+          },
+          "population_rural": {
+            "type": "integer",
+            "description": "People living in rural areas. Urban and rural add up to population."
+          },
           "area_km2": {
             "type": "number"
           },
@@ -948,6 +956,9 @@
           },
           "living": {
             "$ref": "#/components/schemas/Living"
+          },
+          "religion": {
+            "$ref": "#/components/schemas/Religion"
           }
         },
         "required": [
@@ -960,11 +971,14 @@
           "population_male",
           "population_female",
           "population_intersex",
+          "population_urban",
+          "population_rural",
           "area_km2",
           "centroid",
           "bbox",
           "neighbours",
-          "living"
+          "living",
+          "religion"
         ]
       },
       "Ward": {
@@ -1276,6 +1290,84 @@
           "internet_pct",
           "mobile_phone_pct",
           "school_attendance_pct"
+        ]
+      },
+      "Religion": {
+        "type": "object",
+        "description": "People in households by religious affiliation, from the 2019 Kenya Population and Housing Census (KNBS) Volume IV. The groups add up to total.",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "description": "People in households."
+          },
+          "catholic": {
+            "type": "integer",
+            "description": "Catholic."
+          },
+          "protestant": {
+            "type": "integer",
+            "description": "Protestant."
+          },
+          "evangelical": {
+            "type": "integer",
+            "description": "Evangelical churches."
+          },
+          "african_instituted": {
+            "type": "integer",
+            "description": "African instituted churches."
+          },
+          "orthodox": {
+            "type": "integer",
+            "description": "Orthodox."
+          },
+          "other_christian": {
+            "type": "integer",
+            "description": "Other Christian."
+          },
+          "islam": {
+            "type": "integer",
+            "description": "Islam."
+          },
+          "hindu": {
+            "type": "integer",
+            "description": "Hindu."
+          },
+          "traditionist": {
+            "type": "integer",
+            "description": "Traditionists."
+          },
+          "other_religion": {
+            "type": "integer",
+            "description": "Other religion."
+          },
+          "no_religion": {
+            "type": "integer",
+            "description": "No religion or atheist."
+          },
+          "dont_know": {
+            "type": "integer",
+            "description": "Didn't know."
+          },
+          "not_stated": {
+            "type": "integer",
+            "description": "Not stated."
+          }
+        },
+        "required": [
+          "total",
+          "catholic",
+          "protestant",
+          "evangelical",
+          "african_instituted",
+          "orthodox",
+          "other_christian",
+          "islam",
+          "hindu",
+          "traditionist",
+          "other_religion",
+          "no_religion",
+          "dont_know",
+          "not_stated"
         ]
       }
     }

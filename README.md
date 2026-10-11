@@ -9,6 +9,7 @@ Kenya's 47 counties, 290 constituencies, 1,450 wards and 890 post offices for Go
 
 - Every county, constituency and ward, with IEBC ward codes and 2022 registered voters
 - 2019 census population by sex, land area and density for each county
+- 2019 census urban and rural population and religious affiliation for each county and for Kenya
 - 2019 census living conditions for each county and for Kenya: households, household size, electricity, piped water, internet use, mobile phone ownership and school attendance
 - ISO 3166-2 codes, former provinces and neighbouring counties
 - Centroids and bounding boxes for counties, centroids for wards
@@ -270,8 +271,8 @@ mux.Handle("/geo/", http.StripPrefix("/geo", api.New(kenyageo.Default())))
 
 | File | Contents |
 | --- | --- |
-| `data/counties.json` | code, name, headquarters, ISO code, former province, population by sex, area, centroid, bounding box, neighbouring county codes, 2019 census living conditions |
-| `data/kenya.json` | the same living conditions for Kenya as a whole, from `Data.NationalLiving` |
+| `data/counties.json` | code, name, headquarters, ISO code, former province, population by sex, area, centroid, bounding box, neighbouring county codes, 2019 census urban and rural population, living conditions and religious affiliation |
+| `data/kenya.json` | urban and rural population, living conditions and religious affiliation for Kenya as a whole, from `Data.National` |
 | `data/wards.json` | ward code, name, constituency, county, 2022 registered voters, centroid |
 | `data/postoffices.json` | postal code, name, county, how the county was decided, location |
 | `data/wardshapes.json` | ward code and boundary polygons, as GeoJSON-style `[lng, lat]` rings |
