@@ -2,6 +2,17 @@
 
 Versions follow [semantic versioning](https://semver.org/). Before 1.0, a minor version can add features; anything that would break existing code is called out under **Breaking**.
 
+## Unreleased
+
+### Changed
+
+- Vihiga County's headquarters is now Mbale, the town where the county government sits. The old value, Vihiga, is kept in the new `County.HeadquartersAliases` (`headquarters_aliases` in the API).
+
+### Added
+
+- `County.HeadquartersAliases` lists other names in use for a county's headquarters town.
+- `Search` also finds places by other common spellings: Lokichogio finds Lokichoggio.
+
 ## v0.3.2 (2026-10-11)
 
 ### Added

@@ -53,6 +53,9 @@ type County struct {
 	ISOCode        string `json:"iso_code"`
 	FormerProvince string `json:"former_province"`
 	Headquarters   string `json:"headquarters"`
+	// HeadquartersAliases lists other names in use for the headquarters
+	// town, such as Vihiga for Mbale.
+	HeadquartersAliases []string `json:"headquarters_aliases,omitempty"`
 
 	Population         int     `json:"population"`
 	PopulationMale     int     `json:"population_male"`

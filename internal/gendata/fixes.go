@@ -15,6 +15,18 @@ func applyWardFixes(w *Ward) {
 	}
 }
 
+var headquartersFixes = map[int]string{
+	38: "Mbale",
+}
+
+func headquarters(code int, source string) (string, []string) {
+	fixed, ok := headquartersFixes[code]
+	if !ok || fixed == source {
+		return source, nil
+	}
+	return fixed, []string{source}
+}
+
 var postOfficeCountyFixes = map[string]int{
 	"00202": 47,
 	"50301": 38,

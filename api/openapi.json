@@ -931,6 +931,12 @@
           "headquarters": {
             "type": "string"
           },
+          "headquarters_aliases": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
           "population": {
             "type": "integer"
           },
