@@ -33,23 +33,24 @@ type LatLng struct {
 }
 
 type County struct {
-	Code               int        `json:"code"`
-	Name               string     `json:"name"`
-	ISOCode            string     `json:"iso_code"`
-	FormerProvince     string     `json:"former_province"`
-	Headquarters       string     `json:"headquarters"`
-	Population         int        `json:"population"`
-	PopulationMale     int        `json:"population_male"`
-	PopulationFemale   int        `json:"population_female"`
-	PopulationIntersex int        `json:"population_intersex"`
-	PopulationUrban    int        `json:"population_urban"`
-	PopulationRural    int        `json:"population_rural"`
-	AreaKm2            float64    `json:"area_km2"`
-	Centroid           LatLng     `json:"centroid"`
-	BBox               [4]float64 `json:"bbox"`
-	Neighbours         []int      `json:"neighbours"`
-	Living             Living     `json:"living"`
-	Religion           Religion   `json:"religion"`
+	Code                int        `json:"code"`
+	Name                string     `json:"name"`
+	ISOCode             string     `json:"iso_code"`
+	FormerProvince      string     `json:"former_province"`
+	Headquarters        string     `json:"headquarters"`
+	HeadquartersAliases []string   `json:"headquarters_aliases,omitempty"`
+	Population          int        `json:"population"`
+	PopulationMale      int        `json:"population_male"`
+	PopulationFemale    int        `json:"population_female"`
+	PopulationIntersex  int        `json:"population_intersex"`
+	PopulationUrban     int        `json:"population_urban"`
+	PopulationRural     int        `json:"population_rural"`
+	AreaKm2             float64    `json:"area_km2"`
+	Centroid            LatLng     `json:"centroid"`
+	BBox                [4]float64 `json:"bbox"`
+	Neighbours          []int      `json:"neighbours"`
+	Living              Living     `json:"living"`
+	Religion            Religion   `json:"religion"`
 }
 
 type Ward struct {
@@ -174,19 +175,21 @@ func buildCounties() ([]County, []CountyShape, error) {
 		if !ok {
 			return nil, nil, fmt.Errorf("no boundary for %q", name)
 		}
+		hq, hqAliases := headquarters(c.Code, cleanName(c.Headquarters))
 		out = append(out, County{
-			Code:               c.Code,
-			Name:               name,
-			ISOCode:            s.ISO,
-			FormerProvince:     formerProvince(c.Code),
-			Headquarters:       cleanName(c.Headquarters),
-			Population:         k.total,
-			PopulationMale:     k.male,
-			PopulationFemale:   k.female,
-			PopulationIntersex: k.intersex,
-			AreaKm2:            k.area,
-			Centroid:           s.Centroid,
-			BBox:               s.BBox,
+			Code:                c.Code,
+			Name:                name,
+			ISOCode:             s.ISO,
+			FormerProvince:      formerProvince(c.Code),
+			Headquarters:        hq,
+			HeadquartersAliases: hqAliases,
+			Population:          k.total,
+			PopulationMale:      k.male,
+			PopulationFemale:    k.female,
+			PopulationIntersex:  k.intersex,
+			AreaKm2:             k.area,
+			Centroid:            s.Centroid,
+			BBox:                s.BBox,
 		})
 		outShapes = append(outShapes, CountyShape{Code: c.Code, Polygons: s.rounded()})
 	}

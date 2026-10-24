@@ -360,3 +360,38 @@ func ExampleData_Search() {
 	// post office Makadara
 	// ward MJI WA KALE/MAKADARA
 }
+
+func TestHeadquartersAliases(t *testing.T) {
+	geo := Default()
+	vihiga, ok := geo.CountyByCode(38)
+	if !ok {
+		t.Fatal("no county 38")
+	}
+	if vihiga.Headquarters != "Mbale" {
+		t.Errorf("Vihiga headquarters = %q, want Mbale", vihiga.Headquarters)
+	}
+	if len(vihiga.HeadquartersAliases) != 1 || vihiga.HeadquartersAliases[0] != "Vihiga" {
+		t.Errorf("Vihiga headquarters aliases = %v, want [Vihiga]", vihiga.HeadquartersAliases)
+	}
+	for _, c := range geo.Counties() {
+		if c.Code != 38 && len(c.HeadquartersAliases) != 0 {
+			t.Errorf("%s has unexpected headquarters aliases %v", c.Name, c.HeadquartersAliases)
+		}
+	}
+}
+
+func TestSearchSpellingAliases(t *testing.T) {
+	matches := Default().Search("Lokichogio", 0)
+	found := map[Kind]bool{}
+	for _, m := range matches {
+		if m.Score == 1 && normalize(m.Name) == "lokichoggio" {
+			found[m.Kind] = true
+		}
+	}
+	if !found[KindWard] || !found[KindPostOffice] {
+		t.Errorf("Search(Lokichogio) exact matches = %v, want the Lokichoggio ward and post office", found)
+	}
+	if got := Default().Search("Lokichoggio", 1); len(got) == 0 || got[0].Score != 1 {
+		t.Errorf("Search(Lokichoggio) = %v", got)
+	}
+}

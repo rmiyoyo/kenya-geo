@@ -45,6 +45,12 @@ type Match struct {
 	Score      float64
 }
 
+// spellingAliases maps a normalized place name to other spellings in common
+// use, so a search for either finds the place.
+var spellingAliases = map[string][]string{
+	"lokichoggio": {"Lokichogio"},
+}
+
 type searchEntry struct {
 	match Match
 	norm  string
@@ -55,6 +61,10 @@ func (d *Data) buildSearchIndex() {
 	add := func(m Match, name string) {
 		n := normalize(name)
 		d.searchIndex = append(d.searchIndex, searchEntry{match: m, norm: n, runes: []rune(n)})
+		for _, alias := range spellingAliases[n] {
+			a := normalize(alias)
+			d.searchIndex = append(d.searchIndex, searchEntry{match: m, norm: a, runes: []rune(a)})
+		}
 	}
 	for _, c := range d.counties {
 		add(Match{Kind: KindCounty, Name: c.Name, Code: strconv.Itoa(c.Code), CountyCode: c.Code}, c.Name)
